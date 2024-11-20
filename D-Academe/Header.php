@@ -1,33 +1,53 @@
-
-
 <?php
-// Start session only if it's not already started
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-// Define the getAccountAddress function only if it’s not already defined
-if (!function_exists('getAccountAddress')) {
-    function getAccountAddress() {
-        return $_SESSION['account'] ?? null;
-    }
+function displayBalance($balance) {
+    return number_format((float)$balance, 4, '.', '');
 }
-
-// Define the displayBalance function only if it’s not already defined
-if (!function_exists('displayBalance')) {
-    function displayBalance($balance) {
-        return number_format((float)$balance, 4, '.', '');
-    }
-}
-
-$account = getAccountAddress();
-$tokenBalance = $_SESSION['tokenBalance'] ?? '0';
-$ethBalance = $_SESSION['ethBalance'] ?? '0';
 ?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>D-Academe</title>
+    <script src="https://cdn.jsdelivr.net/npm/web3/dist/web3.min.js"></script>
+    <style>
+        header {
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            transition: background-color 0.3s ease;
+        }
+
+        header h1:hover,
+        button:hover {
+            transform: scale(1.05);
+        }
+
+        button {
+            transition: transform 0.2s ease, background-color 0.2s ease;
+        }
+
+        button:active {
+            transform: scale(0.95);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .visible {
+            display: block;
+        }
+    </style>
+</head>
+<body>
 <header class="w-full flex items-center justify-between py-4 px-6 fixed top-0 left-0 right-0 z-50 bg-gray-900 bg-opacity-80 backdrop-blur-lg text-white">
-    <!-- Logo -->
+     <!-- Logo -->
     <h1 class="text-3xl font-bold tracking-wide hover:scale-105 transition-transform duration-300">D-Academe</h1>
-    
+
     <!-- Navigation (Hamburger menu on small screens) -->
     <nav class="hidden md:flex flex-1 justify-center">
         <ul class="flex gap-8">
@@ -41,8 +61,8 @@ $ethBalance = $_SESSION['ethBalance'] ?? '0';
         </ul>
     </nav>
 
-    <!-- Mobile Menu Button (Hamburger icon) -->
-    <div class="md:hidden flex items-center">
+     <!-- Mobile Menu Button (Hamburger icon) -->
+     <div class="md:hidden flex items-center">
         <button id="hamburger" class="text-white">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
@@ -50,23 +70,18 @@ $ethBalance = $_SESSION['ethBalance'] ?? '0';
         </button>
     </div>
 
-    <!-- Wallet Info and Connect Button -->
+
     <div class="flex items-center gap-6">
-        <?php if ($account): ?>
-            <div class="text-right">
-                <p class="font-medium">Tokens: <strong><?= $tokenBalance ?></strong></p>
-                <p class="font-medium">Address: <strong><?= substr($account, 0, 6) . '....' . substr($account, -4) ?></strong></p>
-                <p class="font-medium">Balance: <strong><?= displayBalance($ethBalance) ?> ETH</strong></p>
-            </div>
-            <form action="disconnect.php" method="POST">
-                <button class="bg-red-500 text-white py-2 px-4 rounded-full hover:bg-red-700 transition-colors duration-200 shadow-md hover:shadow-lg">Disconnect</button>
-            </form>
-        <?php else: ?>
-            <button onclick="connectWallet(event)" class="bg-green-600 text-white py-2 px-4 rounded-full hover:bg-green-700 transition-colors duration-200 shadow-md hover:shadow-lg">Connect Wallet</button>
-        <?php endif; ?>
+        <!-- Wallet Info -->
+        <div id="walletInfo" class="text-right hidden">
+            <p class="font-medium">Tokens: <strong id="tokenBalance">0</strong></p>
+            <p class="font-medium">Address: <strong id="account"></strong></p>
+            <p class="font-medium">Balance: <strong id="ethBalance">0 ETH</strong></p>
+        </div>
+        <!-- Wallet Button -->
+        <button id="walletButton" class="bg-green-600 text-white py-2 px-4 rounded-full hover:bg-green-700 transition-colors duration-200 shadow-md hover:shadow-lg" onclick="toggleWallet()">Connect Wallet</button>
     </div>
 </header>
-
 <script>
     // Toggle mobile menu visibility
     document.getElementById('hamburger').addEventListener('click', function() {
@@ -74,91 +89,93 @@ $ethBalance = $_SESSION['ethBalance'] ?? '0';
         mobileMenu.classList.toggle('hidden');
     });
 </script>
+<script type="module">
+    let isConnected = false;
+    const tokenContractAddress = '0xD7De1bCcD32b38907851821535308057F718eb32';
+    let tokenABI = [];
 
-<style>
-    /* Ensure the header is sticky and adjusts properly when scrolling */
-    header {
-        background-color: rgba(0, 0, 0, 0.8); /* Darker background when scrolled */
-        backdrop-filter: blur(10px); /* Add blur for glass effect */
-        transition: background-color 0.3s ease;
-    }
-    /* Enhance hover and color contrast for navigation links */
-    header ul li a {
-        color: #ffffff;
-    }
-    header ul li a:hover {
-        color: #00d1b2;
-    }
-    /* Button hover effect */
-    button:hover {
-        transform: scale(1.05);
-    }
-</style>
-
-
-
-
-
-
-<!-- JavaScript for connecting the wallet and handling AJAX -->
-<script src="https://cdn.jsdelivr.net/npm/web3/dist/web3.min.js"></script>
-<script>
-    async function connectWallet(event) {
-    event.preventDefault();  // Prevent form submission
-    if (window.ethereum) {
+    async function loadABI() {
         try {
-            const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
-            const account = accounts[0];
-            document.cookie = `account=${account}`;
-            location.reload();  // Reload the page after setting the cookie
-        } catch (error) {
-            console.error("Error connecting to wallet:", error);
-            alert("Failed to connect wallet. Please try again.");
-        }
-    } else {
-        alert('Please install MetaMask.');
-    }
-}
-
-
-    function saveAccountToSession(account) {
-        // Send AJAX request to server to set session
-        fetch('save_account.php', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ account: account })
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                console.log("Account saved to session.");
-            } else {
-                console.error("Failed to save account to session.");
+            const response = await fetch('./constants/ABI-Token.json');
+            if (!response.ok) {
+                throw new Error(`Failed to fetch ABI: ${response.statusText}`);
             }
-        })
-        .catch(error => console.error("Error:", error));
+            tokenABI = await response.json();
+        } catch (error) {
+            console.error("Error loading ABI:", error);
+            alert("Failed to load contract ABI. Please try again.");
+        }
     }
+
+    await loadABI();
+
+    async function toggleWallet() {
+        if (isConnected) {
+            disconnectWallet();
+        } else {
+            connectWallet();
+        }
+    }
+
+    async function connectWallet() {
+        if (window.ethereum) {
+            try {
+                const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
+                const account = accounts[0];
+
+                document.getElementById('account').textContent = `${account.substring(0, 6)}....${account.substring(account.length - 4)}`;
+                await fetchBalances(account);
+
+                document.getElementById('walletInfo').classList.remove('hidden');
+                document.getElementById('walletInfo').classList.add('visible');
+                document.getElementById('walletButton').textContent = 'Disconnect Wallet';
+                document.getElementById('walletButton').classList.replace('bg-green-600', 'bg-red-500');
+                isConnected = true;
+
+                alert(`Connected: ${account}`);
+            } catch (error) {
+                console.error("Error connecting to wallet:", error);
+                alert("Failed to connect wallet. Please try again.");
+            }
+        } else {
+            alert('MetaMask is not installed. Please install MetaMask and try again.');
+        }
+    }
+
+    async function disconnectWallet() {
+        document.getElementById('account').textContent = '';
+        document.getElementById('ethBalance').textContent = '0 ETH';
+        document.getElementById('tokenBalance').textContent = '0';
+
+        document.getElementById('walletInfo').classList.add('hidden');
+        document.getElementById('walletInfo').classList.remove('visible');
+        document.getElementById('walletButton').textContent = 'Connect Wallet';
+        document.getElementById('walletButton').classList.replace('bg-red-500', 'bg-green-600');
+        isConnected = false;
+
+        alert('Wallet disconnected.');
+    }
+
+    async function fetchBalances(account) {
+        const web3 = new Web3(window.ethereum);
+        try {
+            const ethBalance = await web3.eth.getBalance(account);
+            const ethDisplay = web3.utils.fromWei(ethBalance, 'ether');
+            document.getElementById('ethBalance').textContent = `${ethDisplay.substring(0, 6)} ETH`;
+
+            const tokenContract = new web3.eth.Contract(tokenABI, tokenContractAddress);
+            const tokenBalance = await tokenContract.methods.balanceOf(account).call();
+            document.getElementById('tokenBalance').textContent = tokenBalance;
+        } catch (error) {
+            console.error("Error fetching balances:", error);
+            alert("Failed to retrieve balances. Please try again.");
+        }
+    }
+
+    // Expose functions to the global scope
+    window.toggleWallet = toggleWallet;
 </script>
 
 
-<style>
-/* Additional styling to enhance the header */
-header {
-    background: rgba(0, 0, 0, 0.5); /* Semi-transparent black background */
-    backdrop-filter: blur(5px); /* Adds a blur effect */
-}
-
-
-header h1:hover {
-    color: #ffffff;
-    transform: scale(1.05);
-}
-
-header ul li a:hover {
-    color: #ffffff;
-}
-
-button:hover {
-    transform: scale(1.05);
-}
-</style>
+</body>
+</html>
