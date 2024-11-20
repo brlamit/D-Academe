@@ -9,7 +9,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Validate inputs
     if (!empty($name) && !empty($email) && !empty($message) && filter_var($email, FILTER_VALIDATE_EMAIL)) {
         // Set email parameters
-        $to = "dacamedeoffical@gmail.com"; // Your support email
+        $to = "dacademeoffical@gmail.com"; 
         $subject = "Help & Support Inquiry from " . $name;
         $body = "Name: $name\nEmail: $email\n\nMessage:\n$message";
         $headers = "From: $email";
