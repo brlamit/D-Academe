@@ -54,6 +54,11 @@
     </div>
         </form>
     </div>
+
+    <div id="loader" class="hidden fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center z-50">
+        <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-green-500"></div>
+    </div>
+
     
 
     <!-- Wallet Info Section -->
@@ -62,5 +67,167 @@
         <p class="font-bold text-3xl text-white"><strong id="availableTokenBalance">0</strong></p>
         <p id="walletAddress" class="text-green-400 text-sm mt-4"></p> <!-- Show wallet address here -->
     </div>
+
+    <script>
+        let isConnected = false;
+        let tokenABI = [];
+        const tokenContractAddress = "0xD7De1bCcD32b38907851821535308057F718eb32";
+        const rate = 1000; // Rate from the smart contract
+
+        // Load ABI
+        async function loadABI() {
+            try {
+                const response = await fetch('./constants/ABI-Token.json');
+                if (!response.ok) throw new Error(`Failed to fetch ABI: ${response.statusText}`);
+                tokenABI = await response.json();
+                console.log("ABI loaded successfully.");
+            } catch (error) {
+                console.error("Error loading ABI:", error);
+                alert("Failed to load contract ABI. Please try again.");
+            }
+        }
+
+        // Initialize Wallet Connection
+        async function initializeWallet() {
+            console.log("Initializing wallet...");
+            if (typeof window.ethereum === 'undefined') {
+                alert("MetaMask is not installed. Please install MetaMask to use this feature.");
+                updateWalletDisconnected();
+                return;
+            }
+
+            try {
+                const accounts = await window.ethereum.request({ method: 'eth_accounts' });
+                if (accounts.length > 0) {
+                    const account = accounts[0];
+                    console.log("Wallet connected:", account);
+                    localStorage.setItem('account', account);
+                    updateWalletConnected(account);
+                    await fetchBalances(account);
+                } else {
+                    updateWalletDisconnected();
+                }
+            } catch (error) {
+                console.error("Error initializing wallet:", error);
+                updateWalletDisconnected();
+            }
+        }
+
+        // Fetch Token Balances
+        async function fetchBalances(account) {
+            console.log("Fetching balances for:", account);
+            try {
+                const web3 = new Web3(window.ethereum);
+                const tokenContract = new web3.eth.Contract(tokenABI, tokenContractAddress);
+
+                // Fetch token balance in smallest unit (e.g., Wei)
+                const rawTokenBalance = await tokenContract.methods.balanceOf(account).call();
+                console.log("Token balance retrieved (raw):", rawTokenBalance);
+
+                // Fetch token decimals to properly convert balance
+                const tokenDecimals = await tokenContract.methods.decimals().call();
+                console.log("Token decimals:", tokenDecimals);
+
+                // Convert rawTokenBalance and tokenDecimals to BigInt before performing division
+                const balanceInTokens = BigInt(rawTokenBalance) / BigInt(10 ** parseInt(tokenDecimals));
+
+                // Update the available token balance (convert to string if necessary)
+                document.getElementById('availableTokenBalance').textContent = balanceInTokens.toString();
+            } catch (error) {
+                console.error("Error fetching balances:", error);
+                document.getElementById('availableTokenBalance').textContent = "0";
+                alert("Failed to retrieve balances. Please try again.");
+            }
+        }
+
+        // Update UI for Wallet Connected
+        function updateWalletConnected(account) {
+            console.log("Updating wallet connected state.");
+            isConnected = true;
+            document.getElementById('walletAddress').textContent = `Connected Wallet: ${account}`;
+        }
+
+        // Update UI for Wallet Disconnected
+        function updateWalletDisconnected() {
+            console.log("Updating wallet disconnected state.");
+            isConnected = false;
+            document.getElementById('walletAddress').textContent = "No Wallet Connected";
+            document.getElementById('availableTokenBalance').textContent = "0";
+            localStorage.removeItem('account');
+        }
+
+        // Handle Token Purchase
+        async function handleTokenPurchase(event) {
+            event.preventDefault();
+
+            const account = localStorage.getItem('account');
+            if (!isConnected || !account) {
+                alert("Please connect your wallet first.");
+                return;
+            }
+
+            const tokensToBuy = document.querySelector('input[name="tokensToBuy"]').value;
+            if (!tokensToBuy || tokensToBuy <= 0) {
+                alert("Please enter a valid amount of tokens to buy.");
+                return;
+            }
+
+            // Convert tokens to buy into ETH based on the rate
+            const ethToSend = (tokensToBuy * 1) / rate; // Adjust this formula as needed
+
+            const buyButton = event.target.querySelector('button[type="submit"]');
+            buyButton.disabled = true;
+
+            try {
+                const web3 = new Web3(window.ethereum);
+                const tokenContract = new web3.eth.Contract(tokenABI, tokenContractAddress);
+
+                // Call the buyTokens function with the required ETH
+                const receipt = await tokenContract.methods
+                    .buyTokens()
+                    .send({ from: account, value: web3.utils.toWei(ethToSend.toString(), 'ether') });
+
+                console.log("Purchase receipt:", receipt);
+                alert(`Successfully purchased ${tokensToBuy} tokens!`);
+                await fetchBalances(account); // Refresh the balance
+            } catch (error) {
+                console.error("Error purchasing tokens:", error);
+                alert("Token purchase failed. Please check the transaction details and try again.");
+            } finally {
+                buyButton.disabled = false;
+            }
+        }
+
+        // Initialize Application
+        window.onload = async () => {
+            await loadABI();
+            await initializeWallet();
+
+            // Attach form submit event listener
+            const form = document.querySelector('form');
+            form.addEventListener('submit', handleTokenPurchase);
+
+            // Listen for account or chain changes
+            window.ethereum.on('accountsChanged', async (accounts) => {
+                console.log("Accounts changed:", accounts);
+                if (accounts.length === 0) {
+                    updateWalletDisconnected();
+                } else {
+                    const account = accounts[0];
+                    localStorage.setItem('account', account);
+                    updateWalletConnected(account);
+                    await fetchBalances(account);
+                }
+            });
+
+            window.ethereum.on('chainChanged', async () => {
+                console.log("Chain changed. Reloading balances.");
+                const account = localStorage.getItem('account');
+                if (isConnected && account) {
+                    await fetchBalances(account);
+                }
+            });
+        };
+    </script>
 </body>
 </html>
