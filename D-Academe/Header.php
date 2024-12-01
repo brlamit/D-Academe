@@ -52,7 +52,7 @@ function displayBalance($balance) {
     <nav class="hidden md:flex flex-1 justify-center">
         <ul class="flex gap-8">
             <li><a href="?page=home" class="text-lg font-medium hover:text-blue-300 transition-colors duration-200">Home</a></li>
-            <li><a href="?page=BuyToken" class="text-lg font-medium hover:text-blue-300 transition-colors duration-200">Buy Token</a></li>
+            <li><a href="?page=buy-token" class="text-lg font-medium hover:text-blue-300 transition-colors duration-200">Buy Token</a></li>
             <li><a href="?page=buy-course" class="text-lg font-medium hover:text-blue-300 transition-colors duration-200">Buy Course</a></li>
             <li><a href="?page=live-class" class="text-lg font-medium hover:text-blue-300 transition-colors duration-200">Live Class</a></li>
             <li><a href="?page=enrolled-course" class="text-lg font-medium hover:text-blue-300 transition-colors duration-200">Enrolled Course</a></li>
