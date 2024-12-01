@@ -118,29 +118,41 @@ function displayBalance($balance) {
     }
 
     async function connectWallet() {
-        if (window.ethereum) {
-            try {
-                const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
-                const account = accounts[0];
+    if (window.ethereum) {
+        try {
+            const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
+            const account = accounts[0];
 
-                document.getElementById('account').textContent = `${account.substring(0, 6)}....${account.substring(account.length - 4)}`;
-                await fetchBalances(account);
+            const web3 = new Web3(window.ethereum);
 
-                document.getElementById('walletInfo').classList.remove('hidden');
-                document.getElementById('walletInfo').classList.add('visible');
-                document.getElementById('walletButton').textContent = 'Disconnect Wallet';
-                document.getElementById('walletButton').classList.replace('bg-green-600', 'bg-red-500');
-                isConnected = true;
+            // Fetch ETH balance
+            const ethBalance = await web3.eth.getBalance(account);
+            const ethDisplay = web3.utils.fromWei(ethBalance, 'ether').substring(0, 6) + " ETH";
 
-                alert(`Connected: ${account}`);
-            } catch (error) {
-                console.error("Error connecting to wallet:", error);
-                alert("Failed to connect wallet. Please try again.");
-            }
-        } else {
-            alert('MetaMask is not installed. Please install MetaMask and try again.');
+            // Fetch Token Balance
+            const tokenContract = new web3.eth.Contract(tokenABI, tokenContractAddress);
+            const tokenBalance = await tokenContract.methods.balanceOf(account).call();
+            const truncatedBalance = tokenBalance.toString().slice(0, 7);
+
+            // Save session state
+            saveWalletState(account, ethDisplay, truncatedBalance);
+
+            isConnected = true;
+            updateUI(account);
+            document.getElementById('ethBalance').textContent = ethDisplay;
+            document.getElementById('tokenBalance').textContent = truncatedBalance;
+        } catch (error) {
+            console.error(error);
+            alert("Error connecting to wallet.");
+        }
+    } else {
+        // Alert with link to MetaMask
+        if (confirm("MetaMask is not installed! Would you like to download it?")) {
+            window.open("https://metamask.io/download/", "_blank");
         }
     }
+}
+
 
     async function disconnectWallet() {
         document.getElementById('account').textContent = '';
