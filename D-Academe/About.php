@@ -1,7 +1,7 @@
 <?php
 function renderAbout() {
     return '
-    <div class="flex flex-col items-center py-12 px-6 bg-gradient-to-r from-gray-700 via-gray-800 to-gray-900 rounded-lg shadow-lg mt-24 max-w-4xl mx-auto ">
+    <div class="flex flex-col items-center py-12 px-6 bg-gradient-to-r from-gray-700 via-gray-800 to-gray-900 rounded-lg shadow-lg mt-32 max-w-4xl mx-auto ">
       <h2 class="text-4xl font-extrabold text-white mb-8 text-center">About Us</h2>
       <p class="text-gray-200 mb-6 text-lg leading-relaxed text-center max-w-3xl">
         At <span class="font-bold text-white">D-Academe</span>, we believe that learning should be accessible, equitable, and free from traditional barriers. Our decentralized platform empowers individuals to take control of their education by connecting learners, educators, and content creators from around the globe in a collaborative, peer-to-peer environment.
