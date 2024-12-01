@@ -97,7 +97,7 @@ $sessionTokenBalance = isset($_SESSION['tokenBalance']) ? $_SESSION['tokenBalanc
         try {
             const response = await fetch('./constants/ABI-Token.json');
             if (!response.ok) {
-                throw new Error(Failed to fetch ABI: ${response.statusText});
+                throw new Error(`Failed to fetch ABI: ${response.statusText}`);
             }
             tokenABI = await response.json();
         } catch (error) {
