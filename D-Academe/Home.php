@@ -74,6 +74,37 @@
         </div>
     </div>
 </section>
+ <!-- Free Courses Section -->
+ <section class="py-16 flex justify-center items-center" id="free-courses">
+    <div class="container mx-auto text-center flex flex-col justify-center items-center">
+        <h2 class="text-5xl font-semibold text-gray-900 mb-16" data-aos="fade-up" data-aos-delay="200">Our Free Courses</h2>
+        
+        <!-- Free Courses Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-12 justify-center items-center">
+            <!-- Free Course Card 1 -->
+            <div class="bg-gray-100 rounded-xl shadow-md hover:shadow-lg transition-all duration-500 transform hover:scale-105 p-6 border border-gray-200" data-aos="fade-up" data-aos-delay="300">
+                <img src="Free-Course-Contents/Clarity/assets/logo.svg" alt="Free Course Image" class="w-full h-56 rounded-lg mb-6 transition-transform duration-500 hover:scale-105">
+                <h3 class="text-2xl font-semibold text-gray-800 hover:text-green-500 transition-colors duration-300">Clarity Basics</h3>
+                <p class="text-xl font-bold text-green-600 mt-4">Free</p>
+                
+                <div class="mt-6">
+                    <a href="index.php?page=free-course-content" class="bg-green-600 hover:bg-green-700 text-white py-3 px-8 rounded-full text-lg inline-block transition-all duration-300 ease-in-out">Enroll Now</a>
+                </div>
+            </div>
+
+            <!-- Free Course Card 2 -->
+            <div class="bg-gray-100 rounded-xl shadow-md hover:shadow-lg transition-all duration-500 transform hover:scale-105 p-6 border border-gray-200" data-aos="fade-up" data-aos-delay="400">
+                <img src="Free-Course-Contents/Solidity/assets/sol.webp" alt="Free Course Image" class="w-full h-56 rounded-lg mb-6 transition-transform duration-500 hover:scale-105">
+                <h3 class="text-2xl font-semibold text-gray-800 hover:text-green-500 transition-colors duration-300">Basics of Solidity</h3>
+                <p class="text-xl font-bold text-green-600 mt-4">Free</p>
+                
+                <div class="mt-6">
+                    <a href="/free-course/2" class="bg-green-600 hover:bg-green-700 text-white py-3 px-8 rounded-full text-lg inline-block transition-all duration-300 ease-in-out">Enroll Now</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 
     <!-- Why Choose Us Section -->
     <section class="py-16 bg-green-400 text-white" id="why-us">

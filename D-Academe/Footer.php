@@ -1,4 +1,4 @@
-<footer class="w-full bg-gradient-to-r from-green-400 to-blue-500 text-white py-4 px-6 mt-8 rounded-b-lg">
+<footer class="w-full bg-gradient-to-r from-green-400 to-blue-500 text-white py-4 px-6 rounded-b-lg">
     <div class="flex items-center justify-between">
         <p class="text-sm">&copy; 2024 D-Academe. All rights reserved. </p>
         <nav>
