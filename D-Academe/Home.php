@@ -31,7 +31,7 @@
             <h1 class="text-5xl sm:text-6xl font-extrabold leading-tight max-w-3xl mx-auto animate__animated animate__fadeIn" data-aos="fade-up" data-aos-delay="200">Master Blockchain Development and Boost Your Career</h1>
             <p class="text-xl sm:text-2xl max-w-2xl mx-auto animate__animated animate__fadeIn animate__delay-1s" data-aos="fade-up" data-aos-delay="300">Join a world-class blockchain course and get hands-on experience in building decentralized apps and smart contracts.</p>
             <div class="flex gap-6">
-                <a href="/register" class="bg-green-600 hover:bg-green-700 text-white py-3 px-10 rounded-full text-lg transition duration-300 ease-in-out transform hover:scale-105" data-aos="fade-up" data-aos-delay="500">Get Started</a>
+                <a href="?page=userregister" class="bg-green-600 hover:bg-green-700 text-white py-3 px-10 rounded-full text-lg transition duration-300 ease-in-out transform hover:scale-105" data-aos="fade-up" data-aos-delay="500">Get Started</a>
                 <a href="/learn-more" class="text-white border-2 border-white py-3 px-10 rounded-full text-lg transition duration-300 ease-in-out hover:bg-white hover:text-gray-900" data-aos="fade-up" data-aos-delay="600">Learn More</a>
             </div>
         </div>
