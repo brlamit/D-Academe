@@ -49,7 +49,7 @@
                 <p class="text-lg text-gray-600 mt-2">Instructor: Suyan Thapa</p>
                 <p class="text-lg text-gray-600">12hrs 30min</p>
                 <p class="text-xl font-bold text-green-600 mt-4">Tkn 65</p>
-                <a href="?page=Solidity-Disc" class="bg-green-600 hover:bg-green-700 text-white py-3 px-8 rounded-full text-lg mt-6 inline-block transition duration-300 ease-in-out">View Course</a>
+                <a href="index.php?page=Solidity-Disc" class="bg-green-600 hover:bg-green-700 text-white py-3 px-8 rounded-full text-lg mt-6 inline-block transition duration-300 ease-in-out">View Course</a>
             </div>
 
             <!-- Course Card 2 -->
@@ -88,7 +88,7 @@
                 <p class="text-xl font-bold text-green-600 mt-4">Free</p>
                 
                 <div class="mt-6">
-                    <a href="index.php?page=free-course-content" class="bg-green-600 hover:bg-green-700 text-white py-3 px-8 rounded-full text-lg inline-block transition-all duration-300 ease-in-out">Enroll Now</a>
+                    <a href="index.php?page=Clarity_course" class="bg-green-600 hover:bg-green-700 text-white py-3 px-8 rounded-full text-lg inline-block transition-all duration-300 ease-in-out">Enroll Now</a>
                 </div>
             </div>
 
