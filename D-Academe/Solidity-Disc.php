@@ -7,7 +7,11 @@
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100">
+<<<<<<< HEAD
     <div class="container mx-auto px-4 py-8 mt-12 space-y-8">
+=======
+    <div class="container mx-auto px-4 py-8 mt-24">
+>>>>>>> 50db375095c4994cdaecaaa169d382ef48fa2cd6
         <!-- Course Description -->
         <div class="bg-green-100 shadow-md rounded-lg p-6">
             <h1 class="text-3xl font-bold mb-4 text-gray-800">Course Title: Web Development Mastery</h1>

@@ -44,6 +44,14 @@
                 class="w-full bg-gradient-to-r from-green-500 to-teal-500 text-white font-bold py-3 rounded-lg hover:from-green-600 hover:to-teal-600 transition transform hover:scale-105">
                 Buy Tokens
             </button>
+
+            <!-- Button for Esewa Payment  -->
+            <button
+            id="eSewaPaymentButton"
+            class="w-full mt-4 bg-gradient-to-r from-green-500 to-teal-500 text-white font-bold py-3 rounded-lg hover:from-green-600 hover:to-teal-600 transition transform hover:scale-105">
+            Pay via eSewa
+        </button>
+
              <!-- Token Price Section -->
         <div class="bg-green-800 p-8 mt-20 rounded-lg shadow-lg mx-auto max-w-md">
             <h2 class="text-3xl font-bold text-blue-400 text-center mb-6">Token Price</h2>
@@ -197,6 +205,37 @@
                 buyButton.disabled = false;
             }
         }
+
+         // Handle eSewa Payment
+         async function handleESewaPayment(event) {
+        event.preventDefault(); // Prevent any default behavior
+
+        const tokensToBuy = document.querySelector('input[name="tokensToBuy"]').value;
+        if (!tokensToBuy || tokensToBuy <= 0) {
+            alert("Please enter a valid amount of tokens to buy.");
+            return;
+        }
+
+        const amountInNPR = tokensToBuy * 50; // Example rate: 1 token = 50 NPR
+        const esewaURL = `https://uat.esewa.com.np/epay/main`;
+        const params = new URLSearchParams({
+            amt: amountInNPR,
+            psc: 0,
+            pdc: 0,
+            txAmt: 0,
+            tAmt: amountInNPR,
+            pid: `TOKEN_PURCHASE_${Date.now()}`,
+            scd: 'EPAYTEST',
+            su: 'http://yourwebsite.com/success', // Success URL
+            fu: 'http://yourwebsite.com/failure'  // Failure URL
+        });
+
+        // Change the location to open the eSewa URL in the same page
+        window.location.href = `${esewaURL}?${params.toString()}`;
+    }
+        
+    // eSewa Payment Button
+    document.getElementById('eSewaPaymentButton').addEventListener('click', handleESewaPayment);
 
         // Initialize Application
         window.onload = async () => {
