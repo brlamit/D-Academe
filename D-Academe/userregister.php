@@ -1,9 +1,33 @@
 <?php
-// Database connection settings
+// Step 1: Database creation and setup (run this once or ensure the database is created beforehand)
+$setupConnection = new mysqli("localhost", "root", "");
+if ($setupConnection->connect_error) {
+    die("Connection failed: " . $setupConnection->connect_error);
+}
+
+// Create database
+$setupConnection->query("CREATE DATABASE IF NOT EXISTS dacademe");
+$setupConnection->select_db("dacademe");
+
+// Create users table
+$tableCreationQuery = "CREATE TABLE IF NOT EXISTS users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(100) NOT NULL,
+    contact VARCHAR(15) NOT NULL,
+    picture VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+)";
+$setupConnection->query($tableCreationQuery);
+
+// Close the setup connection
+$setupConnection->close();
+
+// Step 2: Handle form submission and data insertion
 $servername = "localhost";
-$username = "root"; // Update as needed
-$password = "";     // Update as needed
-$dbname = "my_database"; // Update as needed
+$username = "root";
+$password = "";
+$dbname = "dacademe";
 
 // Create a connection
 $conn = new mysqli($servername, $username, $password, $dbname);
@@ -25,7 +49,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Sanitize input data
     $name = htmlspecialchars(trim($_POST['name']));
     $email = htmlspecialchars(trim($_POST['email']));
-    $contact = htmlspecialchars(trim($_POST['contact'])) ;
+    $contact = htmlspecialchars(trim($_POST['contact']));
 
     // Handle file upload
     $uploadDir = "uploads/";
@@ -37,33 +61,44 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $imageFileType = strtolower(pathinfo($uploadFile, PATHINFO_EXTENSION));
     $uniqueFilename = $uploadDir . uniqid() . '.' . $imageFileType;
 
-    // Validate file type
-    $allowedTypes = ['jpg', 'jpeg', 'png', 'gif'];
-    if (in_array($imageFileType, $allowedTypes)) {
-        if ($_FILES["picture"]["size"] <= 5 * 1024 * 1024) { // Max 5MB
-            if (move_uploaded_file($_FILES["picture"]["tmp_name"], $uniqueFilename)) {
-                // Prepare and execute database insertion
-                $stmt = $conn->prepare("INSERT INTO users (name, email, contact, picture) VALUES (?, ?, ?, ?)");
-                $stmt->bind_param("ssss", $name, $email, $contact, $uniqueFilename);
+    // Check for duplicate entries
+    $stmt = $conn->prepare("SELECT * FROM users WHERE email = ? OR contact = ?");
+    $stmt->bind_param("ss", $email, $contact);
+    $stmt->execute();
+    $result = $stmt->get_result();
 
-                if ($stmt->execute()) {
-                    // Save success message to a session variable
-                    session_start();
-                    $_SESSION['successMessage'] = "Record saved successfully!";
-                    header("Location: " . $_SERVER['PHP_SELF']); // Redirect to prevent form resubmission
-                    exit;
+    if ($result->num_rows > 0) {
+        // Duplicate entry found
+        $errorMessage = "A user with this email or contact number already exists.";
+    } else {
+        // Validate file type
+        $allowedTypes = ['jpg', 'jpeg', 'png', 'gif'];
+        if (in_array($imageFileType, $allowedTypes)) {
+            if ($_FILES["picture"]["size"] <= 5 * 1024 * 1024) { // Max 5MB
+                if (move_uploaded_file($_FILES["picture"]["tmp_name"], $uniqueFilename)) {
+                    // Prepare and execute database insertion
+                    $stmt = $conn->prepare("INSERT INTO users (name, email, contact, picture) VALUES (?, ?, ?, ?)");
+                    $stmt->bind_param("ssss", $name, $email, $contact, $uniqueFilename);
+
+                    if ($stmt->execute()) {
+                        // Save success message to a session variable
+                        session_start();
+                        $_SESSION['successMessage'] = "Record saved successfully!";
+                        header("Location: " . $_SERVER['PHP_SELF']); // Redirect to prevent form resubmission
+                        exit;
+                    } else {
+                        $errorMessage = "Error saving record: " . htmlspecialchars($stmt->error);
+                    }
+                    $stmt->close();
                 } else {
-                    $errorMessage = "Error saving record: " . htmlspecialchars($stmt->error);
+                    $errorMessage = "Error uploading file.";
                 }
-                $stmt->close();
             } else {
-                $errorMessage = "Error uploading file.";
+                $errorMessage = "File size exceeds the 5MB limit.";
             }
         } else {
-            $errorMessage = "File size exceeds the 5MB limit.";
+            $errorMessage = "Invalid file type. Only JPG, JPEG, PNG, and GIF are allowed.";
         }
-    } else {
-        $errorMessage = "Invalid file type. Only JPG, JPEG, PNG, and GIF are allowed.";
     }
 }
 
@@ -78,7 +113,6 @@ if (isset($_SESSION['successMessage'])) {
 $conn->close();
 ?>
 
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -88,7 +122,7 @@ $conn->close();
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-green-100 min-h-screen flex items-center justify-center">
-    <div class="bg-white shadow-lg rounded-lg p-8 max-w-md w-full items-center mt-24">
+    <div class="bg-white shadow-lg rounded-lg p-8 mt-24 max-w-md w-full">
         <h2 class="text-3xl font-semibold text-center text-indigo-600 mb-6">Register Your Details</h2>
 
         <!-- Success Message -->
@@ -119,35 +153,31 @@ $conn->close();
             <div>
                 <label for="email" class="block text-sm font-medium text-gray-700">Email Address</label>
                 <input type="email" name="email" id="email" required
-                       placeholder="e.g., example@domain.com"
                        class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
             </div>
 
-            <!-- Contact Number -->
+            <!-- Contact -->
             <div>
                 <label for="contact" class="block text-sm font-medium text-gray-700">Contact Number</label>
-                <input type="tel" name="contact" id="contact" required pattern="[0-9]{10}"
-                       placeholder="e.g., 98********"
+                <input type="tel" name="contact" id="contact" required
                        class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
             </div>
 
-            <!-- Upload Picture -->
+            <!-- Profile Picture -->
             <div>
                 <label for="picture" class="block text-sm font-medium text-gray-700">Profile Picture</label>
                 <input type="file" name="picture" id="picture" accept="image/*" required
-                       class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:bg-indigo-50 file:text-indigo-700">
+                       class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
             </div>
 
-            <!-- Submit Button -->
+            <!-- Submit -->
             <div class="flex justify-center">
                 <button type="submit"
-                        class="py-2 px-6 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 
-                               focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition duration-150 ease-in-out">
+                        class="py-2 px-4 bg-indigo-600 text-white font-semibold rounded-md hover:bg-indigo-700 focus:outline-none">
                     Register
                 </button>
             </div>
         </form>
     </div>
 </body>
-
 </html>
