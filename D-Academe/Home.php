@@ -99,7 +99,7 @@
                 <p class="text-xl font-bold text-green-600 mt-4">Free</p>
                 
                 <div class="mt-6">
-                    <a href="/free-course/2" class="bg-green-600 hover:bg-green-700 text-white py-3 px-8 rounded-full text-lg inline-block transition-all duration-300 ease-in-out">Enroll Now</a>
+                    <a href="index.php?page=Solidity-Course" class="bg-green-600 hover:bg-green-700 text-white py-3 px-8 rounded-full text-lg inline-block transition-all duration-300 ease-in-out">Enroll Now</a>
                 </div>
             </div>
         </div>
