@@ -29,7 +29,7 @@ if (file_exists($summaryFile)) {
             // Section headers (e.g., "Content")
             $header = str_replace("#", "", $trimmed);
             $sidebarItems .= "<li class='font-bold text-white'>$header</li>";
-        } elseif (preg_match('/^\- \[(.*?)\]\((.*?)\)$/', $trimmed, $matches)) {
+        } elseif (preg_match('/^- \[(.*?)\]\((.*?)\)$/', $trimmed, $matches)) {
             $indentLevel = substr_count($line, "  ");
 
             // Extract link text and path
@@ -64,7 +64,7 @@ if (isset($_GET['page']) && $_GET['page'] === 'Solidity-Course' && isset($_GET['
     $course = $_GET['course'];
 }
 
-$filePath = $clarityFolder . basename($course) . ".md";
+$filePath = $solidityFolder . basename($course) . ".md";
 if (file_exists($filePath)) {
     $markdownContent = file_get_contents($filePath);
     $htmlContent = $Parsedown->text($markdownContent);
@@ -83,7 +83,7 @@ $nextCourse = $currentIndex !== null && $currentIndex < count($pages) - 1 ? $pag
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- <title><?= htmlspecialchars($course === $defaultPage ? "Clarity of Mind" : $course) ?></title> -->
+    <title><?= htmlspecialchars($course === $defaultPage ? "Solidity_Course" : $course) ?></title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.0.2/dist/tailwind.min.css" rel="stylesheet">
     <style>
         html {
@@ -98,7 +98,6 @@ $nextCourse = $currentIndex !== null && $currentIndex < count($pages) - 1 ? $pag
 
         <!-- Sidebar -->
         <div class="w-1/4 bg-gray-800 text-white p-6 h-full overflow-y-auto">
-            <img src="Free-Course-Contents/Clarity/assets/logo.svg" alt="Clarity-Logo" class="w-60 h-auto object-contain hover:scale-105 transition-transform duration-300 opacity-80 hover:opacity-100">
             <?= $sidebarItems ?>
         </div>
 
@@ -106,7 +105,9 @@ $nextCourse = $currentIndex !== null && $currentIndex < count($pages) - 1 ? $pag
         <div class="w-3/4 p-8 bg-white overflow-y-auto">
             <div class="max-w-5xl mx-auto">
                 <!-- Course Title -->
-                <h1 class="text-4xl font-bold mb-4 text-gray-800 border-b-2 border-gray-200 pb-4"><?= htmlspecialchars($course === $defaultPage ? "Clarity of Mind" : $course) ?></h1>
+                <h1 class="text-4xl font-bold mb-4 text-gray-800 border-b-2 border-gray-200 pb-4">
+                    <?= htmlspecialchars($course === $defaultPage ? "Solidity_Course" : $course) ?>
+                </h1>
 
                 <!-- Content Section -->
                 <div class="prose prose-lg prose-green max-w-none leading-relaxed">
@@ -116,15 +117,15 @@ $nextCourse = $currentIndex !== null && $currentIndex < count($pages) - 1 ? $pag
                 <!-- Navigation Links -->
                 <div class="mt-8 flex justify-between">
                     <?php if ($prevCourse): ?>
-                        <a href="?page=Solidity_Course&course=<?= htmlspecialchars($prevCourse) ?>" class="text-blue-500 hover:text-blue-700">&larr; Previous</a>
+                        <a href="?page=Solidity-Course&course=<?= htmlspecialchars($prevCourse) ?>" class="text-blue-500 hover:text-blue-700">&larr; Previous</a>
                     <?php else: ?>
-                        <span class="text-gray-400">&larr; Previous</span> <!-- Disabled -->
+                        <span class="text-gray-400">&larr; Previous</span>
                     <?php endif; ?>
                     
                     <?php if ($nextCourse): ?>
-                        <a href="?page=Solidity_Course&course=<?= htmlspecialchars($nextCourse) ?>" class="text-blue-500 hover:text-blue-700">Next &rarr;</a>
+                        <a href="?page=Solidity-Course&course=<?= htmlspecialchars($nextCourse) ?>" class="text-blue-500 hover:text-blue-700">Next &rarr;</a>
                     <?php else: ?>
-                        <span class="text-gray-400">Next &rarr;</span> <!-- Disabled -->
+                        <span class="text-gray-400">Next &rarr;</span>
                     <?php endif; ?>
                 </div>
             </div>
@@ -133,8 +134,7 @@ $nextCourse = $currentIndex !== null && $currentIndex < count($pages) - 1 ? $pag
 
     <!-- JavaScript to highlight the active sidebar link -->
     <script>
-        // Add active class based on the current course
-        const currentCourse = "<?= htmlspecialchars($course) ?>"; // Get current course dynamically
+        const currentCourse = "<?= htmlspecialchars($course) ?>";
         const activeLink = document.getElementById('link-' + currentCourse);
         if (activeLink) {
             activeLink.classList.add('text-blue-500', 'font-semibold');
