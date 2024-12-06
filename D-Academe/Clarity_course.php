@@ -83,11 +83,49 @@ $nextCourse = $currentIndex !== null && $currentIndex < count($pages) - 1 ? $pag
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= htmlspecialchars($course === $defaultPage ? "Clarity of Mind" : $course) ?></title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.0.2/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css"> <!-- For code block styling -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <title><?= htmlspecialchars($course === $defaultPage ? "Clarity of Mind" : $course) ?></title>
     <style>
         html {
             scroll-behavior: smooth;
+        }
+        .content h1, .content h2, .content h3 {
+            color: #2d3748; /* Matching Clarity book color */
+            font-weight: 700;
+            margin-top: 1.5em;
+        }
+        .content p {
+            margin-top: 1em;
+            line-height: 1.75;
+            font-size: 1.125rem;
+            color: #4a5568;
+        }
+        .content pre {
+            background-color: #1a202c;
+            color: #a0aec0;
+            padding: 1em;
+            border-radius: 0.5em;
+            overflow-x: auto;
+        }
+        .content code {
+            background-color: #edf2f7;
+            padding: 0.2em 0.4em;
+            border-radius: 0.25em;
+            color: #2d3748;
+            font-size: 0.95em;
+        }
+        .content a {
+            color: #3182ce;
+            text-decoration: underline;
+        }
+        .content ul, .content ol {
+            margin-top: 1em;
+            padding-left: 1.5em;
+        }
+        .content li {
+            margin-top: 0.5em;
         }
     </style>
 </head>
@@ -97,19 +135,19 @@ $nextCourse = $currentIndex !== null && $currentIndex < count($pages) - 1 ? $pag
     <div class="flex min-h-screen pt-16 mt-10">
 
         <!-- Sidebar -->
-        <div class="w-1/4 bg-gray-800 text-white p-6 h-full overflow-y-auto">
+        <div class="w-1/5 bg-gray-800 text-white p-6 h-full overflow-y-auto">
             <img src="Free-Course-Contents/Clarity/assets/logo.svg" alt="Clarity-Logo" class="w-60 h-auto object-contain hover:scale-105 transition-transform duration-300 opacity-80 hover:opacity-100">
             <?= $sidebarItems ?>
         </div>
 
         <!-- Content Area -->
-        <div class="w-3/4 p-8 bg-white overflow-y-auto">
-            <div class="max-w-5xl mx-auto">
+        <div class="w-full p-8 bg-white overflow-y-auto">
+            <div class="max-w-1xl mx-auto content">
                 <!-- Course Title -->
-                <h1 class="text-4xl font-bold mb-4 text-gray-800 border-b-2 border-gray-200 pb-4"><?= htmlspecialchars($course === $defaultPage ? "Clarity of Mind" : $course) ?></h1>
+                <!-- <h1 class="text-4xl font-bold mb-4 text-gray-800 border-b-2 border-gray-200 pb-4"><?= htmlspecialchars($course === $defaultPage ? "Clarity of Mind" : $course) ?></h1> -->
 
                 <!-- Content Section -->
-                <div class="prose prose-lg prose-green max-w-none leading-relaxed">
+                <div class="prose prose-lg prose-green max-w-none leading-relaxed text-2xl">
                     <?= $htmlContent ?>
                 </div>
 
