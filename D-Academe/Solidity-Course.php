@@ -6,8 +6,8 @@ $solidityFolder = __DIR__ . '/Free-Course-Contents/Solidity/';
 $summaryFile = $solidityFolder . "Solidity_Course.md";
 
 // Default page: Solidity_Course
-$defaultPage = 'Solidity_Course';
 $course = $defaultPage;
+$defaultPage = 'Solidity_Course';
 $htmlContent = "<p>Select a topic from the sidebar.</p>";
 $sidebarItems = "";
 
