@@ -1,50 +1,36 @@
 <?php
-// Step 1: Database creation and setup (run this once or ensure the database is created beforehand)
-$setupConnection = new mysqli("localhost", "root", "");
-if ($setupConnection->connect_error) {
-    die("Connection failed: " . $setupConnection->connect_error);
-}
-
-// Create database
-$setupConnection->query("CREATE DATABASE IF NOT EXISTS dacademe");
-$setupConnection->select_db("dacademe");
-
-// Create users table
-$tableCreationQuery = "CREATE TABLE IF NOT EXISTS users (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(100) NOT NULL,
-    email VARCHAR(100) NOT NULL,
-    contact VARCHAR(15) NOT NULL,
-    picture VARCHAR(255) NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-)";
-$setupConnection->query($tableCreationQuery);
-
-// Close the setup connection
-$setupConnection->close();
-
-// Step 2: Handle form submission and data insertion
+// Database setup and table creation
 $servername = "localhost";
 $username = "root";
 $password = "";
 $dbname = "dacademe";
 
-// Create a connection
-$conn = new mysqli($servername, $username, $password, $dbname);
+$conn = new mysqli($servername, $username, $password);
 
-// Check connection
 if ($conn->connect_error) {
-    die("<div class='bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative m-4' role='alert'>
-            <strong class='font-bold'>Connection Failed!</strong>
-            <span class='block sm:inline'> " . htmlspecialchars($conn->connect_error) . "</span>
-          </div>");
+    die("Connection failed: " . $conn->connect_error);
 }
 
-// Initialize variables for feedback messages
-$successMessage = "";
-$errorMessage = "";
+$sql = "CREATE DATABASE IF NOT EXISTS $dbname";
+if ($conn->query($sql) !== TRUE) {
+    die("Error creating database: " . $conn->error);
+}
 
-// Handle form submission
+$conn->select_db($dbname);
+
+$tableCreationQuery = "CREATE TABLE IF NOT EXISTS users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    contact VARCHAR(15) UNIQUE NOT NULL,
+    picture VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+)";
+if ($conn->query($tableCreationQuery) !== TRUE) {
+    die("Error creating table: " . $conn->error);
+}
+
+// Handle form submission with AJAX request
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Sanitize input data
     $name = htmlspecialchars(trim($_POST['name']));
@@ -53,95 +39,72 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Handle file upload
     $uploadDir = "uploads/";
-    if (!is_dir($uploadDir)) {
-        mkdir($uploadDir, 0755, true); // Create directory if it doesn't exist
-    }
-
-    $uploadFile = $uploadDir . basename($_FILES["picture"]["name"]);
-    $imageFileType = strtolower(pathinfo($uploadFile, PATHINFO_EXTENSION));
-    $uniqueFilename = $uploadDir . uniqid() . '.' . $imageFileType;
-
-    // Check for duplicate entries
-    $stmt = $conn->prepare("SELECT * FROM users WHERE email = ? OR contact = ?");
-    $stmt->bind_param("ss", $email, $contact);
-    $stmt->execute();
-    $result = $stmt->get_result();
-
-    if ($result->num_rows > 0) {
-        // Duplicate entry found
-        $errorMessage = "A user with this email or contact number already exists.";
+    if (!is_dir($uploadDir) && !mkdir($uploadDir, 0755, true)) {
+        echo json_encode(["status" => "error", "message" => "Failed to create upload directory."]);
+        exit;
     } else {
-        // Validate file type
-        $allowedTypes = ['jpg', 'jpeg', 'png', 'gif'];
-        if (in_array($imageFileType, $allowedTypes)) {
-            if ($_FILES["picture"]["size"] <= 5 * 1024 * 1024) { // Max 5MB
-                if (move_uploaded_file($_FILES["picture"]["tmp_name"], $uniqueFilename)) {
-                    // Prepare and execute database insertion
-                    $stmt = $conn->prepare("INSERT INTO users (name, email, contact, picture) VALUES (?, ?, ?, ?)");
-                    $stmt->bind_param("ssss", $name, $email, $contact, $uniqueFilename);
+        $uploadFile = $uploadDir . basename($_FILES["picture"]["name"]);
+        $imageFileType = strtolower(pathinfo($uploadFile, PATHINFO_EXTENSION));
+        $uniqueFilename = $uploadDir . uniqid() . '.' . $imageFileType;
 
-                    if ($stmt->execute()) {
-                        // Save success message to a session variable
-                        session_start();
-                        $_SESSION['successMessage'] = "Record saved successfully!";
-                        header("Location: " . $_SERVER['PHP_SELF']); // Redirect to prevent form resubmission
-                        exit;
+        // Check for duplicate entries
+        $stmt = $conn->prepare("SELECT * FROM users WHERE email = ? OR contact = ?");
+        $stmt->bind_param("ss", $email, $contact);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if ($result->num_rows > 0) {
+            echo json_encode(["status" => "error", "message" => "A user with this email or contact number already exists."]);
+            exit;
+        } else {
+            // Validate file type
+            $allowedTypes = ['jpg', 'jpeg', 'png', 'gif'];
+            if (in_array($imageFileType, $allowedTypes)) {
+                if ($_FILES["picture"]["size"] <= 5 * 1024 * 1024) { // Max 5MB
+                    if (move_uploaded_file($_FILES["picture"]["tmp_name"], $uniqueFilename)) {
+                        // Prepare and execute database insertion
+                        $stmt = $conn->prepare("INSERT INTO users (name, email, contact, picture) VALUES (?, ?, ?, ?)");
+                        $stmt->bind_param("ssss", $name, $email, $contact, $uniqueFilename);
+
+                        if ($stmt->execute()) {
+                            echo json_encode(["status" => "success", "message" => "Record saved successfully!"]);
+                        } else {
+                            echo json_encode(["status" => "error", "message" => "Error saving record: " . htmlspecialchars($stmt->error)]);
+                        }
+                        $stmt->close();
                     } else {
-                        $errorMessage = "Error saving record: " . htmlspecialchars($stmt->error);
+                        echo json_encode(["status" => "error", "message" => "Error uploading file."]);
                     }
-                    $stmt->close();
                 } else {
-                    $errorMessage = "Error uploading file.";
+                    echo json_encode(["status" => "error", "message" => "File size exceeds the 5MB limit."]);
                 }
             } else {
-                $errorMessage = "File size exceeds the 5MB limit.";
+                echo json_encode(["status" => "error", "message" => "Invalid file type. Only JPG, JPEG, PNG, and GIF are allowed."]);
             }
-        } else {
-            $errorMessage = "Invalid file type. Only JPG, JPEG, PNG, and GIF are allowed.";
         }
     }
+    exit;
 }
 
-// Handle success message after redirection
-session_start();
-if (isset($_SESSION['successMessage'])) {
-    $successMessage = $_SESSION['successMessage'];
-    unset($_SESSION['successMessage']);
-}
-
-// Close connection
 $conn->close();
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Enhanced Form Submission</title>
+    <title>Register Your Details</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
-<body class="bg-green-100 min-h-screen flex items-center justify-center">
-    <div class="bg-white shadow-lg rounded-lg p-8 mt-24 max-w-md w-full">
+<body class="bg-green-100 flex items-center justify-center min-h-screen">
+    <div class="bg-white items-center shadow-lg rounded-lg p-8 mt-32 max-w-md w-full">
         <h2 class="text-3xl font-semibold text-center text-indigo-600 mb-6">Register Your Details</h2>
 
-        <!-- Success Message -->
-        <?php if ($successMessage): ?>
-            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
-                <strong class="font-bold">Success!</strong>
-                <span class="block sm:inline"><?php echo htmlspecialchars($successMessage); ?></span>
-            </div>
-        <?php endif; ?>
+        <!-- Success or Error Messages -->
+        <div id="message"></div>
 
-        <!-- Error Message -->
-        <?php if ($errorMessage): ?>
-            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
-                <strong class="font-bold">Error!</strong>
-                <span class="block sm:inline"><?php echo htmlspecialchars($errorMessage); ?></span>
-            </div>
-        <?php endif; ?>
-
-        <form action="" method="POST" enctype="multipart/form-data" class="space-y-6">
+        <form id="registerForm" method="POST" enctype="multipart/form-data" class="space-y-6">
             <!-- Name -->
             <div>
                 <label for="name" class="block text-sm font-medium text-gray-700">Full Name</label>
@@ -179,5 +142,45 @@ $conn->close();
             </div>
         </form>
     </div>
+
+    <script>
+        $(document).ready(function() {
+            // Handle form submission
+            $("#registerForm").on("submit", function(e) {
+                e.preventDefault();  // Prevent default form submission
+
+                var formData = new FormData(this);
+
+                $.ajax({
+                    url: "userregister.php",  // URL to PHP script
+                    type: "POST",
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function(response) {
+                        var res = JSON.parse(response);
+                        if (res.status === "success") {
+                            $("#message").html('<div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4">' +
+                                                '<strong class="font-bold">Success!</strong>' + 
+                                                '<span class="block sm:inline">' + res.message + '</span>' +
+                                                '</div>');
+                        } else {
+                            $("#message").html('<div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">' +
+                                                '<strong class="font-bold">Error!</strong>' + 
+                                                '<span class="block sm:inline">' + res.message + '</span>' +
+                                                '</div>');
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.log(error);
+                        $("#message").html('<div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">' +
+                                            '<strong class="font-bold">Error!</strong>' + 
+                                            '<span class="block sm:inline">An error occurred while submitting the form.</span>' +
+                                            '</div>');
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 </html>
