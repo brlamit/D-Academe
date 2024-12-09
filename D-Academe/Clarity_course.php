@@ -103,7 +103,7 @@ $nextCourse = $currentIndex !== null && $currentIndex < count($pages) - 1 ? $pag
             color: #4a5568;
         }
         .content pre {
-            background-color: #1a202c;
+            background-color: #4a5568;
             color: #a0aec0;
             padding: 1em;
             border-radius: 0.5em;

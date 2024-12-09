@@ -105,12 +105,12 @@ $nextCourse = $currentIndex !== null && $currentIndex < count($pages) - 1 ? $pag
         <div class="w-3/4 p-8 bg-white overflow-y-auto">
             <div class="max-w-5xl mx-auto">
                 <!-- Course Title -->
-                <h1 class="text-4xl font-bold mb-4 text-gray-800 border-b-2 border-gray-200 pb-4">
+                <!-- <h1 class="text-4xl font-bold mb-4 text-gray-800 border-b-2 border-gray-200 pb-4">
                     <?= htmlspecialchars($course === $defaultPage ? "Solidity_Course" : $course) ?>
-                </h1>
+                </h1> -->
 
                 <!-- Content Section -->
-                <div class="prose prose-lg prose-green max-w-none leading-relaxed">
+                <div class="prose prose-lg prose-green max-w-none leading-relaxed text-1xl">
                     <?= $htmlContent ?>
                 </div>
 
