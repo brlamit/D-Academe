@@ -253,6 +253,26 @@ $sessionTokenBalance = isset($_SESSION['tokenBalance']) ? $_SESSION['tokenBalanc
     }
 
     restoreWalletState();
+    
+    let lastScrollTop = 0;  // To store the last scroll position
+const header = document.querySelector('header');  // The header element
+
+// Add scroll event listener
+window.addEventListener('scroll', function() {
+    let currentScroll = window.pageYOffset || document.documentElement.scrollTop;
+
+    // Check if the user is scrolling down or up
+    if (currentScroll > lastScrollTop) {
+        // Scroll Down: Hide the header
+        header.classList.add('hidden');
+    } else {
+        // Scroll Up: Show the header
+        header.classList.remove('hidden');
+    }
+
+    // Update last scroll position
+    lastScrollTop = currentScroll <= 0 ? 0 : currentScroll; // Prevent negative values
+});
 </script>
 
 </body>

@@ -132,10 +132,10 @@ $nextCourse = $currentIndex !== null && $currentIndex < count($pages) - 1 ? $pag
 <body class="bg-gray-100 font-sans">
 
     <!-- Main Container -->
-    <div class="flex min-h-screen pt-16 mt-10">
+    <div class="flex min-h-screen">
 
         <!-- Sidebar -->
-        <div class="w-1/5 bg-gray-800 text-white p-6 h-full overflow-y-auto">
+        <div class="w-1/5 bg-gray-800 text-white p-6 pt-32 h-full overflow-y-auto">
             <img src="Free-Course-Contents/Clarity/assets/logo.svg" alt="Clarity-Logo" class="w-60 h-auto object-contain hover:scale-105 transition-transform duration-300 opacity-80 hover:opacity-100">
             <?= $sidebarItems ?>
         </div>
@@ -147,7 +147,7 @@ $nextCourse = $currentIndex !== null && $currentIndex < count($pages) - 1 ? $pag
                 <!-- <h1 class="text-4xl font-bold mb-4 text-gray-800 border-b-2 border-gray-200 pb-4"><?= htmlspecialchars($course === $defaultPage ? "Clarity of Mind" : $course) ?></h1> -->
 
                 <!-- Content Section -->
-                <div class="prose prose-lg prose-green max-w-none leading-relaxed text-2xl">
+                <div class="prose prose-lg prose-green pt-16 max-w-none leading-relaxed text-2xl">
                     <?= $htmlContent ?>
                 </div>
 
