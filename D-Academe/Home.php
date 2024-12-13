@@ -71,42 +71,7 @@
     </div>
 </section>
   <!-- Courses Section -->
-<section class="py-16 bg" id="courses">
-    <div class="container mx-auto text-center">
-        <h2 class="text-5xl font-semibold text-gray-900 mb-16" data-aos="fade-up" data-aos-delay="200">Our Popular Courses</h2>
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-12">
-            <!-- Course Card 1 -->
-            <div class="bg-green-200  rounded-xl shadow-2xl transform transition duration-500 hover:scale-105 hover:shadow-lg p-6" data-aos="fade-up" data-aos-delay="300">
-                <img src="assets/img.webp" alt="Course Image" class="w-full h-56 object-cover rounded-lg mb-6">
-                <h3 class="text-2xl font-semibold text-gray-800 hover:text-green-500 transition-colors duration-300">Solidity Development</h3>
-                <p class="text-lg text-gray-600 mt-2">Instructor: Suyan Thapa</p>
-                <p class="text-lg text-gray-600">12hrs 30min</p>
-                <p class="text-xl font-bold text-green-600 mt-4">Tkn 65</p>
-                <a href="index.php?page=Solidity-Disc" class="bg-green-600 hover:bg-green-700 text-white py-3 px-8 rounded-full text-lg mt-6 inline-block transition duration-300 ease-in-out">View Course</a>
-            </div>
 
-            <!-- Course Card 2 -->
-            <div class="bg-green-200  rounded-xl shadow-2xl transform transition duration-500 hover:scale-105 hover:shadow-lg p-6" data-aos="fade-up" data-aos-delay="400">
-                <img src="assets/img.webp" alt="Course Image" class="w-full h-56 object-cover rounded-lg mb-6">
-                <h3 class="text-2xl font-semibold text-gray-800 hover:text-green-500 transition-colors duration-300">Blockchain Basics</h3>
-                <p class="text-lg text-gray-600 mt-2">Instructor: Anupama Karki</p>
-                <p class="text-lg text-gray-600">10hrs 20min</p>
-                <p class="text-xl font-bold text-green-600 mt-4">Tkn 50</p>
-                <a href="/course/2" class="bg-green-600 hover:bg-green-700 text-white py-3 px-8 rounded-full text-lg mt-6 inline-block transition duration-300 ease-in-out">View Course</a>
-            </div>
-
-            <!-- Course Card 3 -->
-            <div class="bg-green-200 rounded-xl shadow-2xl transform transition duration-500 hover:scale-105 hover:shadow-lg p-6" data-aos="fade-up" data-aos-delay="500">
-                <img src="assets/img.webp" alt="Course Image" class="w-full h-56 object-cover rounded-lg mb-6">
-                <h3 class="text-2xl font-semibold text-gray-800 hover:text-green-500 transition-colors duration-300">Advanced Smart Contracts</h3>
-                <p class="text-lg text-gray-600 mt-2">Instructor: Bikash Khadka</p>
-                <p class="text-lg text-gray-600">15hrs</p>
-                <p class="text-xl font-bold text-green-600 mt-4">Tkn 80</p>
-                <a href="/course/3" class="bg-green-600 hover:bg-green-700 text-white py-3 px-8 rounded-full text-lg mt-6 inline-block transition duration-300 ease-in-out">View Course</a>
-            </div>
-        </div>
-    </div>
-</section>
  <!-- Free Courses Section -->
  <section class="py-16 flex justify-center items-center" id="free-courses">
     <div class="container mx-auto text-center flex flex-col justify-center items-center">
@@ -121,7 +86,11 @@
                 <p class="text-xl font-bold text-green-600 mt-4">Free</p>
                 
                 <div class="mt-6">
-                    <a href="index.php?page=Clarity_course" class="bg-green-600 hover:bg-green-700 text-white py-3 px-8 rounded-full text-lg inline-block transition-all duration-300 ease-in-out">Enroll Now</a>
+                    <button 
+                        onclick="redirectToPage('index.php?page=Clarity_Course')" 
+                        class="bg-green-600 hover:bg-green-700 text-white py-3 px-8 rounded-full text-lg inline-block transition-all duration-300 ease-in-out">
+                        Enroll Now
+                    </button>
                 </div>
             </div>
 
@@ -132,7 +101,12 @@
                 <p class="text-xl font-bold text-green-600 mt-4">Free</p>
                 
                 <div class="mt-6">
-                    <a href="index.php?page=Solidity-Course" class="bg-green-600 hover:bg-green-700 text-white py-3 px-8 rounded-full text-lg inline-block transition-all duration-300 ease-in-out">Enroll Now</a>
+                    <!-- <a href="index.php?page=Solidity-Course" class="bg-green-600 hover:bg-green-700 text-white py-3 px-8 rounded-full text-lg inline-block transition-all duration-300 ease-in-out">Enroll Now</a> -->
+                    <button 
+                        onclick="redirectToPage('index.php?page=Solidity-Course')" 
+                        class="bg-green-600 hover:bg-green-700 text-white py-3 px-8 rounded-full text-lg inline-block transition-all duration-300 ease-in-out">
+                        Enroll Now
+                    </button>
                 </div>
             </div>
         </div>
@@ -184,6 +158,27 @@
             once: false,
         });
     </script>
+    <script>
+        // Check if the wallet is connected by verifying an account stored in localStorage
+        let isConnected = false;
+
+        function isWalletConnected() {
+            // Check if an account is stored in localStorage
+            const account = localStorage.getItem('account');
+            return !!account; // Returns true if account exists, otherwise false
+        }
+
+        // Function to handle redirection if the wallet is connected
+        function redirectToPage(url) {
+            if (isWalletConnected()) {
+                // Redirect to the specified URL
+                window.location.href = url;
+            } else {
+                // Notify user to connect their wallet
+                alert('Please connect your wallet to enroll in this course.');
+            }
+        }
+</script>
 
 </body>
 

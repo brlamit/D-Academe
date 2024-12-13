@@ -41,7 +41,7 @@
             
             <button
                 type="submit"
-                class="w-full bg-gradient-to-r from-green-500 to-teal-500 text-white font-bold py-3 rounded-lg hover:from-green-600 hover:to-teal-600 transition transform hover:scale-105">
+                class="w-full bg-gradient-to-r from-green-500 to-teal-500 text-white font-bold py-3 rounded-lg hover:from-green-600 hover:to-teal-600 transition transform hover:scale-105" onclick="toggleloader()">
                 Buy Tokens
             </button>
 
@@ -75,6 +75,13 @@
         <p class="font-bold text-3xl text-white"><strong id="availableTokenBalance">0</strong></p>
         <p id="walletAddress" class="text-green-400 text-sm mt-4"></p> <!-- Show wallet address here -->
     </div>
+
+    
+<!-- Loader (Spinner) -->
+<div id="loader" class="fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center hidden z-50">
+    <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-500 border-opacity-80"></div>
+</div>
+
 
     <script>
         let isConnected = false;
@@ -165,46 +172,52 @@
         }
 
         // Handle Token Purchase
-        async function handleTokenPurchase(event) {
-            event.preventDefault();
+async function handleTokenPurchase(event) {
+    event.preventDefault();
 
-            const account = localStorage.getItem('account');
-            if (!isConnected || !account) {
-                alert("Please connect your wallet first.");
-                return;
-            }
+    const account = localStorage.getItem('account');
+    if (!isConnected || !account) {
+        alert("Please connect your wallet first.");
+        return;
+    }
 
-            const tokensToBuy = document.querySelector('input[name="tokensToBuy"]').value;
-            if (!tokensToBuy || tokensToBuy <= 0) {
-                alert("Please enter a valid amount of tokens to buy.");
-                return;
-            }
+    const tokensToBuy = document.querySelector('input[name="tokensToBuy"]').value;
+    if (!tokensToBuy || tokensToBuy <= 0) {
+        alert("Please enter a valid amount of tokens to buy.");
+        return;
+    }
 
-            // Convert tokens to buy into ETH based on the rate
-            const ethToSend = (tokensToBuy * 1) / rate; // Adjust this formula as needed
+    // Convert tokens to buy into ETH based on the rate
+    const ethToSend = (tokensToBuy * 1) / rate; // Adjust this formula as needed
 
-            const buyButton = event.target.querySelector('button[type="submit"]');
-            buyButton.disabled = true;
+    const loader = document.getElementById('loader');
+    const buyButton = event.target.querySelector('button[type="submit"]');
+    buyButton.disabled = true;
 
-            try {
-                const web3 = new Web3(window.ethereum);
-                const tokenContract = new web3.eth.Contract(tokenABI, tokenContractAddress);
+    try {
+        // Show the loader
+        loader.classList.remove('hidden');
 
-                // Call the buyTokens function with the required ETH
-                const receipt = await tokenContract.methods
-                    .buyTokens()
-                    .send({ from: account, value: web3.utils.toWei(ethToSend.toString(), 'ether') });
+        const web3 = new Web3(window.ethereum);
+        const tokenContract = new web3.eth.Contract(tokenABI, tokenContractAddress);
 
-                console.log("Purchase receipt:", receipt);
-                alert(`Successfully purchased ${tokensToBuy} tokens!`);
-                await fetchBalances(account); // Refresh the balance
-            } catch (error) {
-                console.error("Error purchasing tokens:", error);
-                alert("Token purchase failed. Please check the transaction details and try again.");
-            } finally {
-                buyButton.disabled = false;
-            }
-        }
+        // Call the buyTokens function with the required ETH
+        const receipt = await tokenContract.methods
+            .buyTokens()
+            .send({ from: account, value: web3.utils.toWei(ethToSend.toString(), 'ether') });
+
+        console.log("Purchase receipt:", receipt);
+        alert(`Successfully purchased ${tokensToBuy} tokens!`);
+        await fetchBalances(account); // Refresh the balance
+    } catch (error) {
+        console.error("Error purchasing tokens:", error);
+        alert("Token purchase failed. Please check the transaction details and try again.");
+    } finally {
+        // Hide the loader and re-enable the button
+        loader.classList.add('hidden');
+        buyButton.disabled = false;
+    }
+}
 
          // Handle eSewa Payment
          async function handleESewaPayment(event) {

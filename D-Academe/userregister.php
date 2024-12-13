@@ -98,13 +98,13 @@ $conn->close();
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body class="bg-green-100 flex items-center justify-center min-h-screen">
-    <div class="bg-white items-center shadow-lg rounded-lg p-8 mt-32 max-w-md w-full">
-        <h2 class="text-3xl font-semibold text-center text-indigo-600 mb-6">Register Your Details</h2>
+    <div class="flex flex-col items-center py-12 px-6 mt-32 min-h-screen content-container">
+        <h2 class="text-3xl font-semibold text-center text-green-600 mb-6">Register Your Details</h2>
 
         <!-- Success or Error Messages -->
         <div id="message"></div>
 
-        <form id="registerForm" method="POST" enctype="multipart/form-data" class="space-y-6">
+        <form id="registerForm" method="POST" enctype="multipart/form-data" class="w-full max-w-xl bg-white p-8 rounded-lg shadow-lg">
             <!-- Name -->
             <div>
                 <label for="name" class="block text-sm font-medium text-gray-700">Full Name</label>
@@ -136,7 +136,7 @@ $conn->close();
             <!-- Submit -->
             <div class="flex justify-center">
                 <button type="submit"
-                        class="py-2 px-4 bg-indigo-600 text-white font-semibold rounded-md hover:bg-indigo-700 focus:outline-none">
+                        class="py-2 px-7 mt-5 rounded-lg bg-green-600 text-white font-semibold hover:bg-green-500 focus:outline-none">
                     Register
                 </button>
             </div>
