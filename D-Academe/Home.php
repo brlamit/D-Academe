@@ -13,7 +13,7 @@
     <style>
         .hero-bg {
             background: linear-gradient(to bottom, #0f2027, #203f43, #2c8364);
-            /* background-image: url('assets/hero-image.webp'); */
+            /* background-image: url('assets/hero2.webp'); */
             background-size: cover;
             background-position: center;
         }
