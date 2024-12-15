@@ -26,6 +26,8 @@
 <body class="bg-gray-50">
     
 <!-- Hero Section -->
+<!-- <section class="h-[492px] md:h-[600px] flex items-center overflow-hidden relative [mask-image:linear-gradient(to_bottom,transparent,black_10%,black_90%,transparent)]" style="background-image: url('assets/stars.0c47b3bb.png'); background-position: 456.393px -55.8484px; will-change: auto; "> -->
+ 
 <section class="relative w-full h-screen hero-bg ">
     <div class="absolute inset-0 hero-overlay"></div>
     <div class="relative z-10 flex flex-col justify-center items-center text-white text-center space-y-8 py-32 px-4">
@@ -59,7 +61,7 @@
             data-aos-delay="100"
         />
         <button
-            class="absolute right-3 top-2/2 transform -translate-y-1/2 bg-transparent text-red-400 py-1 px-8 rounded-full text-xl"
+            class="absolute right-8 top-2/2 transform -translate-y-1/2 bg-transparent text-red-400 py-1 px-8 rounded-full text-xl"
             data-aos="fade-up"
             data-aos-delay="100"
         >Search
@@ -87,7 +89,7 @@
                 
                 <div class="mt-6">
                     <button 
-                        onclick="redirectToPage('index.php?page=Clarity_Course')" 
+                        onclick="redirectToPage('index.php?page=Clarity_course')" 
                         class="bg-green-600 hover:bg-green-700 text-white py-3 px-8 rounded-full text-lg inline-block transition-all duration-300 ease-in-out">
                         Enroll Now
                     </button>

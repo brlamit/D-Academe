@@ -135,7 +135,7 @@ $nextCourse = $currentIndex !== null && $currentIndex < count($pages) - 1 ? $pag
     <div class="flex min-h-screen">
 
         <!-- Sidebar -->
-        <div class="w-1/5 bg-gray-800 text-white p-6 pt-32 h-full overflow-y-auto">
+        <div class="w-1/5 bg-white text-gray-800 p-6 pt-32 h-full overflow-y-auto">
             <img src="Free-Course-Contents/Clarity/assets/logo.svg" alt="Clarity-Logo" class="w-60 h-auto object-contain hover:scale-105 transition-transform duration-300 opacity-80 hover:opacity-100">
             <?= $sidebarItems ?>
         </div>

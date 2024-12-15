@@ -24,9 +24,8 @@ $sessionTokenBalance = isset($_SESSION['tokenBalance']) ? $_SESSION['tokenBalanc
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-900 text-white">
-
-<header class="w-full flex items-center justify-between py-2 px-6 fixed top-0 left-0 right-0 z-50 bg-gray-900 bg-opacity-80 backdrop-blur-lg text-white">
-    <!-- Logo -->
+<header class=" flex rounded-full items-center justify-between py-2 px-6 fixed top-3 left-6 right-4 z-50 bg-gray-900 bg-opacity-80 backdrop-blur-xl text-white">
+<!-- Logo -->
     <div class="flex items-center gap-4">
         <a href="?page=home" class="flex items-center gap-3">
             <img src="./assets/logo.png" alt="D-Academe Logo" class="w-32 h-auto object-contain hover:scale-105 transition-transform duration-300 opacity-80 hover:opacity-100">
@@ -41,6 +40,7 @@ $sessionTokenBalance = isset($_SESSION['tokenBalance']) ? $_SESSION['tokenBalanc
             <li><a href="?page=buy-course" class="text-lg font-medium hover:text-blue-300 transition-colors duration-200">Buy Course</a></li>
             <li><a href="?page=live-class" class="text-lg font-medium hover:text-blue-300 transition-colors duration-200">Live Class</a></li>
             <li><a href="?page=enrolled-course" class="text-lg font-medium hover:text-blue-300 transition-colors duration-200">Enrolled Course</a></li>
+            <li><a href="?page=cart" class="text-lg font-medium hover:text-blue-300 transition-colors duration-200">Cart</a></li>
             <li><a href="?page=about" class="text-lg font-medium hover:text-blue-300 transition-colors duration-200">About</a></li>
             <li><a href="?page=help" class="text-lg font-medium hover:text-blue-300 transition-colors duration-200">Help</a></li>
         </ul>
@@ -76,7 +76,7 @@ $sessionTokenBalance = isset($_SESSION['tokenBalance']) ? $_SESSION['tokenBalanc
 </header>
 
 <!-- Loader (Spinner) -->
-<div id="loader" class="fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center hidden z-50">
+<div id="loader" class="fixed inset-0 bg-black bg-opacity-60 flex  justify-center items-center hidden z-50">
     <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-500 border-opacity-80"></div>
 </div>
 
@@ -253,7 +253,7 @@ $sessionTokenBalance = isset($_SESSION['tokenBalance']) ? $_SESSION['tokenBalanc
     }
 
     restoreWalletState();
-    
+   
     let lastScrollTop = 0;  // To store the last scroll position
 const header = document.querySelector('header');  // The header element
 

@@ -41,14 +41,14 @@
             
             <button
                 type="submit"
-                class="w-full bg-gradient-to-r from-green-500 to-teal-500 text-white font-bold py-3 rounded-lg hover:from-green-600 hover:to-teal-600 transition transform hover:scale-105" onclick="toggleloader()">
+                class="w-full bg-gradient-to-r from-green-500 to-green-600 text-white font-bold py-3 rounded-lg hover:from-green-600 hover:to-teal-600 transition transform hover:scale-105" onclick="toggleloader()">
                 Buy Tokens
             </button>
 
             <!-- Button for Esewa Payment  -->
             <button
             id="eSewaPaymentButton"
-            class="w-full mt-4 bg-gradient-to-r from-green-500 to-teal-500 text-white font-bold py-3 rounded-lg hover:from-green-600 hover:to-teal-600 transition transform hover:scale-105">
+            class="w-full mt-4 bg-gradient-to-r from-green-500 to-green-600 text-white font-bold py-3 rounded-lg hover:from-green-600 hover:to-teal-600 transition transform hover:scale-105">
             Pay via eSewa
         </button>
 
@@ -57,6 +57,7 @@
             <h2 class="text-3xl font-bold text-blue-400 text-center mb-6">Token Price</h2>
             <div class="text-center">
                 <p class="text-lg">1000 Token = <span id="tokenPrice" class="font-bold text-green-400">1.00</span> ETH</p>
+                <p class="text-lg">1 Token = <span id="tokenPrice" class="font-bold text-green-400">50</span> NRS</p>
             </div>
         </div>
     </div>
@@ -159,7 +160,7 @@
         function updateWalletConnected(account) {
             console.log("Updating wallet connected state.");
             isConnected = true;
-            document.getElementById('walletAddress').textContent = `Connected Wallet: ${account}`;
+            // document.getElementById('walletAddress').textContent = `Connected Wallet: ${account}`;
         }
 
         // Update UI for Wallet Disconnected

@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>D-Academe</title>
+   
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
 <body class="flex flex-col min-h-screen bg-green-100">
@@ -15,7 +16,7 @@
         $page = $_GET['page'] ?? 'home';
         
         // Use a safe approach to include files to prevent potential security risks
-        $allowedPages = ['home','buy-token', 'live-class', 'about', 'courses' , 'help', 'Solidity-Disc', 'Solidity-Course','userregister','Clarity_course']; // Add allowed pages here
+        $allowedPages = ['home','buy-token', 'enrolled-course', 'buy-course', 'solidity-basic', 'live-class', 'cart', 'about', 'courses' , 'help', 'Solidity-Disc', 'Solidity-Course','userregister','Clarity_course']; // Add allowed pages here
         if (in_array($page, $allowedPages)) {
             include $page . '.php';
         } else {
