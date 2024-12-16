@@ -82,9 +82,9 @@
             <h2 class="text-5xl font-semibold text-gray-900 mx-auto">
                 Our Popular Courses
             </h2>
-            <a href="index.php?page=cart" class="absolute right-0 bg-green-600 hover:bg-green-700 text-white py-3 px-8 rounded-full text-lg inline-block transition-all duration-300 ease-in-out">
+            <!-- <a href="index.php?page=cart" class="absolute right-0 bg-green-600 hover:bg-green-700 text-white py-3 px-8 rounded-full text-lg inline-block transition-all duration-300 ease-in-out">
                 View Cart
-            </a>
+            </a> -->
         </div>
         <!-- Grid Layout with Responsive Design -->
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10">

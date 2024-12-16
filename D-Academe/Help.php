@@ -43,7 +43,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <body class="bg-gray-50 text-gray-900"> <!-- Use site-wide background and text colors -->
     <div class="flex flex-col items-center py-12 px-6 min-h-screen content-container">
         <h2 class="text-4xl font-extrabold text-gray-800 mb-8">Help & Support</h2>
-        <p class="text-lg text-gray-600 mb-8 text-center max-w-2xl">
+        <p class="text-lg text-white- mb-8 text-center max-w-2xl">
             If you have any questions or need assistance, please fill out the form below or contact us at
             <a href="mailto:dacamedeoffical@gmail.com" class="text-primary-600 hover:underline ml-1">dacamedeoffical@gmail.com</a>.
         </p>

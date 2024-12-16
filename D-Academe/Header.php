@@ -40,7 +40,7 @@ $sessionTokenBalance = isset($_SESSION['tokenBalance']) ? $_SESSION['tokenBalanc
             <li><a href="?page=buy-course" class="text-lg font-medium hover:text-blue-300 transition-colors duration-200">Buy Course</a></li>
             <li><a href="?page=live-class" class="text-lg font-medium hover:text-blue-300 transition-colors duration-200">Live Class</a></li>
             <li><a href="?page=enrolled-course" class="text-lg font-medium hover:text-blue-300 transition-colors duration-200">Enrolled Course</a></li>
-            <li><a href="?page=cart" class="text-lg font-medium hover:text-blue-300 transition-colors duration-200">Cart</a></li>
+            <!-- <li><a href="?page=cart" class="text-lg font-medium hover:text-blue-300 transition-colors duration-200">Cart</a></li> -->
             <li><a href="?page=about" class="text-lg font-medium hover:text-blue-300 transition-colors duration-200">About</a></li>
             <li><a href="?page=help" class="text-lg font-medium hover:text-blue-300 transition-colors duration-200">Help</a></li>
         </ul>

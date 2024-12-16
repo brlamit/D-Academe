@@ -8,7 +8,7 @@
 </head>
 <body class="w-full bg-gray-100">
 <section class="py-16 bg-gray-200">
-    <div class="container mx-auto text-center">
+    <div class="container mt-16 mx-auto text-center">
         <h2 class="text-5xl font-semibold text-gray-900 mb-10">Your Cart</h2>
         <div id="cartItems" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10"></div>
         <p id="emptyCartMessage" class="text-xl text-gray-500 mt-10 hidden">Your cart is empty.</p>

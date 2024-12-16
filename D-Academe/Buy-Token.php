@@ -71,7 +71,7 @@
     
 
     <!-- Wallet Info Section -->
-    <div id="walletInfo" class="bg-gray-800 p-8 mt-20 rounded-lg shadow-lg mx-auto max-w-md text-center">
+    <div id="walletInfo" class="bg-gray-800 p-8 mt-10 rounded-lg shadow-lg mx-auto max-w-md text-center">
         <h2 class="text-3xl font-bold text-green-400 text-center mb-6">Available Tokens</h2>
         <p class="font-bold text-3xl text-white"><strong id="availableTokenBalance">0</strong></p>
         <p id="walletAddress" class="text-green-400 text-sm mt-4"></p> <!-- Show wallet address here -->
