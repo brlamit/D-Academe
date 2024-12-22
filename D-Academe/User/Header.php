@@ -28,7 +28,7 @@ $sessionTokenBalance = isset($_SESSION['tokenBalance']) ? $_SESSION['tokenBalanc
 <!-- Logo -->
     <div class="flex items-center gap-4">
         <a href="?page=home" class="flex items-center gap-3">
-            <img src="./assets/logo.png" alt="D-Academe Logo" class="w-32 h-auto object-contain hover:scale-105 transition-transform duration-300 opacity-80 hover:opacity-100">
+            <img src="../assets/logo.png" alt="D-Academe Logo" class="w-32 h-auto object-contain hover:scale-105 transition-transform duration-300 opacity-80 hover:opacity-100">
         </a>
     </div>
 
@@ -95,7 +95,7 @@ $sessionTokenBalance = isset($_SESSION['tokenBalance']) ? $_SESSION['tokenBalanc
 
     async function loadABI() {
         try {
-            const response = await fetch('./constants/ABI-Token.json');
+            const response = await fetch('../constants/ABI-Token.json');
             if (!response.ok) {
                 throw new Error(`Failed to fetch ABI: ${response.statusText}`);
             }

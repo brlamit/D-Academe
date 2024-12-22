@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - D-Academe</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 flex items-center justify-center h-screen">
+    <div class="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
+        <img src="./logo.png" alt="D-Academe Logo" class="w-24 mx-auto bg-blue-950 rounded-full mb-6">
+        <h1 class="text-2xl font-bold text-gray-700 text-center mb-4">Sign Up for D-Academe</h1>
+        <form id="signupForm" onsubmit="performSignup(event)" class="space-y-4">
+            <!-- Username -->
+            <input id="username" type="text" placeholder="Username" required 
+                   class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400">
+
+            <!-- Email -->
+            <input id="email" type="email" placeholder="Email Address" required 
+                   class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400">
+
+            <!-- Phone Number -->
+            <input id="phone_number" type="text" placeholder="Phone Number" 
+                   class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400">
+
+            <!-- Password -->
+            <div class="relative">
+                <input id="password" type="password" placeholder="Password" required 
+                       class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400">
+                <button type="button" id="togglePassword" class="absolute right-4 top-3 text-gray-600">
+                    👁️
+                </button>
+            </div>
+
+            <!-- Confirm Password -->
+            <div class="relative">
+                <input id="confirm_password" type="password" placeholder="Confirm Password" required 
+                       class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400">
+                <button type="button" id="toggleConfirmPassword" class="absolute right-4 top-3 text-gray-600">
+                    👁️
+                </button>
+            </div>
+
+            <!-- Profile Picture -->
+            <input id="profile_picture" type="file" accept="image/*"
+                   class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400">
+
+            <button type="submit" 
+                    class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition">Sign Up</button>
+        </form>
+        <p class="text-gray-600 text-sm text-center mt-4">
+            Already have an account? <a href="login.html" class="text-blue-600 hover:underline">Login</a>
+        </p>
+        <p id="error-message" class="text-red-600 text-sm text-center mt-2 hidden">An error occurred during registration.</p>
+    </div>
+    <script>
+        // Toggle password visibility
+        document.getElementById('togglePassword').addEventListener('click', function () {
+            const passwordField = document.getElementById('password');
+            const type = passwordField.type === 'password' ? 'text' : 'password';
+            passwordField.type = type;
+        });
+
+        // Toggle confirm password visibility
+        document.getElementById('toggleConfirmPassword').addEventListener('click', function () {
+            const confirmPasswordField = document.getElementById('confirm_password');
+            const type = confirmPasswordField.type === 'password' ? 'text' : 'password';
+            confirmPasswordField.type = type;
+        });
+
+        async function performSignup(event) {
+            event.preventDefault();
+
+            const username = document.getElementById('username').value;
+            const email = document.getElementById('email').value;
+            const phone_number = document.getElementById('phone_number').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirm_password').value;
+            const profile_picture = document.getElementById('profile_picture').files[0];
+
+            // Check if passwords match
+            if (password !== confirmPassword) {
+                alert('Passwords do not match!');
+                return;
+            }
+
+            // Check if email and phone number match
+            if (email === phone_number) {
+                alert('Email and phone number should not be the same.');
+                return;
+            }
+
+            // Form data to send to backend
+            const formData = new FormData();
+            formData.append('username', username);
+            formData.append('email', email);
+            formData.append('phone_number', phone_number);
+            formData.append('password', password);
+            formData.append('profile_picture', profile_picture);
+
+            try {
+                const response = await fetch('signup.php', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+
+                if (result.status === 'success') {
+                    alert('Account created successfully! Redirecting to the main page...');
+                    window.location.href = 'index.php'; // Redirect to main page after successful signup
+                } else {
+                    document.getElementById('error-message').textContent = result.message;
+                    document.getElementById('error-message').classList.remove('hidden');
+                }
+            } catch (error) {
+                console.error('Error during signup:', error);
+                document.getElementById('error-message').textContent = 'An error occurred. Please try again later.';
+                document.getElementById('error-message').classList.remove('hidden');
+            }
+        }
+    </script>
+</body>
+</html>

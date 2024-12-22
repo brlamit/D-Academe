@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - D-Academe</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 flex items-center justify-center h-screen">
+    <div class="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
+        <img src="./assets/logo.png" alt="D-Academe Logo" class="w-24 mx-auto mb-6">
+        <h1 class="text-2xl font-bold text-gray-700 text-center mb-4">Login to D-Academe</h1>
+        <form id="loginForm" onsubmit="performLogin(event)" class="space-y-4">
+            <input id="email" type="email" placeholder="Email Address" required 
+                   class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400">
+            <input id="password" type="password" placeholder="Password" required 
+                   class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400">
+            <button type="submit" 
+                    class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition">Login</button>
+        </form>
+        <p class="text-gray-600 text-sm text-center mt-4">
+            Don’t have an account? <a href="signup.html" class="text-blue-600 hover:underline">Sign Up</a>
+        </p>
+        <!-- Forgot Password Link -->
+        <p class="text-gray-600 text-sm text-center mt-2">
+            <a href="forgot_password.html" class="text-blue-600 hover:underline">Forgot your password?</a>
+        </p>
+        <p id="error-message" class="text-red-600 text-sm text-center mt-2 hidden">Invalid login credentials.</p>
+    </div>
+    <script>
+        async function performLogin(event) {
+            event.preventDefault();
+
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            try {
+                const response = await fetch('login.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const result = await response.json();
+
+                if (result.status === 'success') {
+                    alert('Login successful! Redirecting...');
+                    window.location.href = '../index.php'; // Redirect to home page after login
+                } else {
+                    document.getElementById('error-message').textContent = result.message;
+                    document.getElementById('error-message').classList.remove('hidden');
+                }
+            } catch (error) {
+                console.error('Error during login:', error);
+                document.getElementById('error-message').textContent = 'An error occurred. Please try again later.';
+                document.getElementById('error-message').classList.remove('hidden');
+            }
+        }
+    </script>
+</body>
+</html>
