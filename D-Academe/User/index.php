@@ -23,7 +23,7 @@
         $page = $_GET['page'] ?? 'home';
         
         // Use a safe approach to include files to prevent potential security risks
-        $allowedPages = ['home','buy-token', 'myLearnings', 'buy-course', 'solidity-basic', 'live-class', 'cart', 'about', 'courses' , 'help', 'Solidity-Disc', 'Solidity-Course','userregister','Clarity_course']; // Add allowed pages here
+        $allowedPages = ['home','buy-token', 'myLearnings', 'buy-course', 'solidity-basic', 'live-class', 'cart','about', 'courses' , 'help', 'Solidity-Disc', 'Solidity-Course','userregister','Clarity_course','learnmore'];
         if (in_array($page, $allowedPages)) {
             include $page . '.php';
         } else {
