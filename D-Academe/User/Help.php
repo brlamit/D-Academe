@@ -1,30 +1,5 @@
-<?php
-// Check if the form was submitted
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Capture form data
-    $name = $_POST['name'];
-    $email = $_POST['email'];
-    $message = $_POST['message'];
 
-    // Validate inputs
-    if (!empty($name) && !empty($email) && !empty($message) && filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        // Set email parameters
-        $to = "dacademeoffical@gmail.com"; 
-        $subject = "Help & Support Inquiry from " . $name;
-        $body = "Name: $name\nEmail: $email\n\nMessage:\n$message";
-        $headers = "From: $email";
 
-        // Send email
-        if (mail($to, $subject, $body, $headers)) {
-            echo "<script>alert('Your message has been sent successfully!');</script>";
-        } else {
-            echo "<script>alert('There was an error sending your message. Please try again later.');</script>";
-        }
-    } else {
-        echo "<script>alert('Please fill out all fields correctly.');</script>";
-    }
-}
-?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -48,7 +23,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <a href="mailto:dacamedeoffical@gmail.com" class="text-primary-600 hover:underline ml-1">dacamedeoffical@gmail.com</a>.
         </p>
 
-        <form method="POST" action="" class="w-full max-w-xl bg-white p-8 rounded-lg shadow-lg">
+        <form  action="send_email.php" method="post" class="w-full max-w-xl bg-white p-8 rounded-lg shadow-lg">
             <div class="mb-6">
                 <label for="name" class="block text-gray-700 text-lg font-medium mb-2">Name</label>
                 <input type="text" id="name" name="name" class="w-full px-4 py-3 bg-gray-50 text-gray-900 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500" placeholder="Your Name" required>
