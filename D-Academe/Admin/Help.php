@@ -1,69 +1,47 @@
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contact Form</title>
-</head>
-<body>
-    <h1>Contact Us</h1>
-    <form action="send_email.php" method="post">
-        <label for="name">Name:</label>
-        <input type="text" id="name" name="name" required><br><br>
-        
-        <label for="email">Email:</label>
-        <input type="email" id="email" name="email" required><br><br>
-        
-        <label for="message">Message:</label><br>
-        <textarea id="message" name="message" rows="5" required></textarea><br><br>
-        
-        <button type="submit">Send Email</button>
-    </form>
-</body>
-</html><?php
-require 'utils/PHPMailer/src/PHPMailer.php';
-require 'utils/PHPMailer/src/SMTP.php';
-require 'utils/PHPMailer/src/Exception.php';
-
-use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\Exception;
-
-require 'constants.php';
-
-if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    $name = htmlspecialchars($_POST['name']);
-    $email = htmlspecialchars($_POST['email']);
-    $message = htmlspecialchars($_POST['message']);
-
-    $mail = new PHPMailer(true);
-
-    try {
-        $mail->isSMTP();
-        $mail->Host = SMTP_HOST;  // Use constants from config.php
-        $mail->SMTPAuth = true;
-        $mail->Username = SMTP_USERNAME;  // Use constants from config.php
-        $mail->Password = SMTP_PASSWORD;  // Use constants from config.php
-        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-        $mail->Port = 587;
-        $mail->setFrom('your-email@gmail.com', "$name");
-        $mail->addAddress('baralamit881@gmail.com'); 
-        $mail->Subject = 'New Contact Form Submission';
-        $mail->Body = "You have received a new message from the contact form.\n\n" .
-                      "Name: $name\n" .
-                      "Email: $email\n" .
-                      "Message:\n$message";
-        if ($mail->send()) {
-            echo "Email sent successfully!";
-        } else {
-            echo "Failed to send email.";
+    <title>Help & Support</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        /* Additional style to ensure header doesn't overlap with content */
+        .content-container {
+            margin-top: 5rem; /* This ensures the content does not overlap with the header */
         }
-    } catch (Exception $e) {
-        echo "Error: {$mail->ErrorInfo}";
-    }
-} else {
-    echo "Invalid request method.";
-    echo '<br><br>';
-    echo '<button onclick="window.location.href=\'index.php\'">Go Back</button>';
-}
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-900"> <!-- Use site-wide background and text colors -->
+    <div class="flex flex-col items-center py-12 px-6 min-h-screen content-container">
+        <h2 class="text-4xl font-extrabold text-gray-800 mb-8">Help & Support</h2>
+        <p class="text-lg text-white- mb-8 text-center max-w-2xl">
+            If you have any questions or need assistance, please fill out the form below or contact us at
+            <a href="mailto:dacamedeoffical@gmail.com" class="text-primary-600 hover:underline ml-1">dacamedeoffical@gmail.com</a>.
+        </p>
 
-?>
+        <form  action="send_email.php" method="post" class="w-full max-w-xl bg-white p-8 rounded-lg shadow-lg">
+            <div class="mb-6">
+                <label for="name" class="block text-gray-700 text-lg font-medium mb-2">Name</label>
+                <input type="text" id="name" name="name" class="w-full px-4 py-3 bg-gray-50 text-gray-900 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500" placeholder="Your Name" required>
+            </div>
+            <div class="mb-6">
+                <label for="email" class="block text-gray-700 text-lg font-medium mb-2">Email</label>
+                <input type="email" id="email" name="email" class="w-full px-4 py-3 bg-gray-50 text-gray-900 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500" placeholder="Your Email" required>
+            </div>
+            <div class="mb-6">
+                <label for="message" class="block text-gray-700 text-lg font-medium mb-2">Message</label>
+                <textarea id="message" name="message" class="w-full px-4 py-3 bg-gray-50 text-gray-900 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500" placeholder="Your Message or Inquiry" rows="5" required></textarea>
+            </div>
+            <div class="text-center">
+                <button type="submit" class="bg-green-600 text-white font-bold py-3 px-6 rounded-full hover:bg-green-700 transition-colors duration-300">
+                    Send Message
+                </button>
+            </div>
+        </form>
+    </div>
+</body>
+</html>
