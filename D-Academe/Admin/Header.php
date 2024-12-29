@@ -42,7 +42,7 @@ if (isset($_SESSION['email'], $_SESSION['name'], $_SESSION['profile_picture'])) 
         <ul class="flex gap-8">
             <li><a href="?page=home" class="text-lg font-medium hover:text-blue-300 transition-colors duration-200">Home</a></li>
             <li><a href="?page=live-class" class="text-lg font-medium hover:text-blue-300 transition-colors duration-200">Live Class</a></li>
-            <li><a href="./CourseUpload/my-courses.php" class="text-lg font-medium hover:text-blue-300 transition-colors duration-200">My Courses</a></li>
+            <li><a href="?page=courses" class="text-lg font-medium hover:text-blue-300 transition-colors duration-200">My Courses</a></li>
             <li><a href="?page=about" class="text-lg font-medium hover:text-blue-300 transition-colors duration-200">About</a></li>
             <li><a href="?page=help" class="text-lg font-medium hover:text-blue-300 transition-colors duration-200">Help</a></li>
         </ul>
