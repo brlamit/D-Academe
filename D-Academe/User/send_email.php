@@ -8,6 +8,7 @@ use PHPMailer\PHPMailer\Exception;
 
 require 'constants.php';
 
+$message = ""; // Initialize the message variable
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $name = htmlspecialchars($_POST['name']);
     $email = htmlspecialchars($_POST['email']);
@@ -31,17 +32,19 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                       "Email: $email\n" .
                       "Message:\n$message";
         if ($mail->send()) {
-            echo "Email sent successfully!";
+            $message = "Email sent successfully!";
         } else {
-            echo "Failed to send email.";
+            $message = "Failed to send email.";
         }
     } catch (Exception $e) {
-        echo "Error: {$mail->ErrorInfo}";
+        $message = "Error: {$mail->ErrorInfo}";
     }
+
+    // Use JavaScript to display the message in a popup
+    echo "$message";
 } else {
     echo "Invalid request method.";
     echo '<br><br>';
     echo '<button onclick="window.location.href=\'index.php\'">Go Back</button>';
 }
-
 ?>
