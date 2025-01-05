@@ -12,7 +12,7 @@
         <h2 class="text-4xl font-extrabold text-gray-800 mb-8">Help & Support</h2>
         <p class="text-lg text-gray-300 mb-8 text-center max-w-2xl">
             If you have any questions or need assistance, please fill out the form below or contact us at
-            <a href="mailto:dacamedeoffical@gmail.com" class="text-green-500 hover:underline ml-1">dacamedeoffical@gmail.com</a>.
+            <a href="mailto:dacademeoffical@gmail.com" class="text-green-500 hover:underline ml-1">dacademeoffical@gmail.com</a>.
         </p>
 
         <form id="contact-form" class="relative w-full max-w-xl bg-white p-8 rounded-lg shadow-lg">
