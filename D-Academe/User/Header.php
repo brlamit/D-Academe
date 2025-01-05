@@ -1,3 +1,25 @@
+<?php
+session_start();
+
+// Check if the user is logged in
+$isLoggedIn = isset($_SESSION['name'], $_SESSION['profile_picture']);
+if ($isLoggedIn) {
+    $name = $_SESSION['name'];
+    $profilePicture = $_SESSION['profile_picture'];
+
+    // Construct the full path
+    $profilePicturePath = $_SERVER['DOCUMENT_ROOT'] . '/practice/user/login/' . $profilePicture;
+
+    // Check if the file exists
+    if (file_exists($profilePicturePath)) {
+        $profilePictureUrl = '/practice/user/login/' . $profilePicture;
+    } else {
+        $profilePictureUrl = './assets/default-avatar.png'; // Fallback image
+    }
+} else {
+    $profilePictureUrl = './assets/default-avatar.png'; // Default avatar for non-logged-in users
+}
+?>
 <?php 
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
@@ -13,7 +35,6 @@ $sessionAccount = isset($_SESSION['account']) ? $_SESSION['account'] : '';
 $sessionEthBalance = isset($_SESSION['ethBalance']) ? $_SESSION['ethBalance'] : '0 ETH';
 $sessionTokenBalance = isset($_SESSION['tokenBalance']) ? $_SESSION['tokenBalance'] : '0';
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -24,11 +45,12 @@ $sessionTokenBalance = isset($_SESSION['tokenBalance']) ? $_SESSION['tokenBalanc
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-900 text-white">
-<header class=" flex rounded-full items-center justify-between py-2 px-6 fixed top-3 left-6 right-4 z-50 bg-gray-900 bg-opacity-80 backdrop-blur-xl text-white">
-<!-- Logo -->
+
+<header class=" rounded-lg shadow-lg w-full items-center justify-between py-2 flex px-6 fixed top-0 left-0 right-0 z-50 bg-gray-900 bg-opacity-80 backdrop-blur-xl text-white">
+     <!-- Logo -->
     <div class="flex items-center gap-4">
         <a href="?page=home" class="flex items-center gap-3">
-            <img src="../assets/logo.png" alt="D-Academe Logo" class="w-32 h-auto object-contain hover:scale-105 transition-transform duration-300 opacity-80 hover:opacity-100">
+            <img src="../assets/logo.png" alt="D-Academe Logo" class="w-24 h-auto object-contain hover:scale-105 transition-transform duration-300 opacity-80 hover:opacity-100">
         </a>
     </div>
 
@@ -39,11 +61,8 @@ $sessionTokenBalance = isset($_SESSION['tokenBalance']) ? $_SESSION['tokenBalanc
             <li><a href="?page=buy-token" class="text-lg font-medium hover:text-blue-300 transition-colors duration-200">Buy Token</a></li>
             <li><a href="?page=buy-course" class="text-lg font-medium hover:text-blue-300 transition-colors duration-200">Buy Course</a></li>
             <li><a href="?page=live-class" class="text-lg font-medium hover:text-blue-300 transition-colors duration-200">Live Class</a></li>
-            <li><a href="?page=myLearnings" class="text-lg font-medium hover:text-blue-300 transition-colors duration-200">My Learnings</a></li>
-            <!-- <li><a href="?page=cart" class="text-lg font-medium hover:text-blue-300 transition-colors duration-200">Cart</a></li> -->
-            <li><a href="?page=about" class="text-lg font-medium hover:text-blue-300 transition-colors duration-200">About</a></li>
-            <li><a href="?page=help" class="text-lg font-medium hover:text-blue-300 transition-colors duration-200">Help</a></li>
-        </ul>
+            <li><a href="?page=enrolled-course" class="text-lg font-medium hover:text-blue-300 transition-colors duration-200">Enrolled Course</a></li>
+              </ul>
     </nav>
 
     <!-- Mobile Menu Button (Hamburger icon) -->
@@ -55,28 +74,63 @@ $sessionTokenBalance = isset($_SESSION['tokenBalance']) ? $_SESSION['tokenBalanc
         </button>
     </div>
 
-    <div class="flex items-center gap-6">
-    <!-- Wallet Info -->
-    <div id="walletInfo" class="text-right hidden">
-        <p class="font-medium">Tokens: <strong id="tokenBalance">0</strong></p>
-        <p class="font-medium">Address: <strong id="account"></strong></p>
-        <p class="font-medium">Balance: <strong id="ethBalance">0 ETH</strong></p>
+    <!-- Wallet Info and Profile Section -->
+    <div class="flex items-center gap-7">
+        <!-- Wallet Info -->
+        <div id="walletInfo" class="text-right hidden">
+            <p class="font-medium">Tokens: <strong id="tokenBalance">0</strong></p>
+            <p class="font-medium">Address: <strong id="account"></strong></p>
+            <p class="font-medium">Balance: <strong id="ethBalance">0 ETH</strong></p>
+        </div>
+        
+        <?php if ($isLoggedIn): ?>
+        <!-- Wallet Button (Only for logged-in users) -->
+        <button id="walletButton" 
+                class="bg-green-600 text-white py-2  px-4 rounded-full hover:bg-green-700 transition-colors duration-200 shadow-md hover:shadow-lg" 
+                onclick="toggleWallet()">Connect Wallet
+        </button>
+        <?php endif; ?>
+    
+
+    <!-- Profile Section -->
+    <div class="flex items-center gap-4">
+        <?php if ($isLoggedIn): ?>
+            <!-- Logged-in user profile -->
+            <div id="profileSection" class="relative">
+                <button class="flex items-center gap-2" onclick="toggleDropdown()">
+                    <img src="<?php echo htmlspecialchars($profilePictureUrl); ?>" 
+                         alt="Profile" 
+                         class="w-10 h-10 rounded-full object-cover" 
+                         onerror="this.onerror=null; this.src='./assets/default-avatar.png';">
+                </button>
+
+                <!-- Dropdown Menu -->
+                <div id="dropdownMenu" class="absolute right-0 mt-2 w-48 bg-gray-800 text-white rounded-md shadow-lg hidden">
+                    <div class="flex items-center gap-2 px-4 py-2">
+                        <img src="<?php echo htmlspecialchars($profilePictureUrl); ?>" 
+                             alt="Profile" 
+                             class="w-10 h-10 rounded-full object-cover" 
+                             onerror="this.onerror=null; this.src='./assets/default-avatar.png';">
+                        <span class="text-sm"> <?php echo htmlspecialchars($name); ?> </span>
+                    </div>
+                    <ul>
+                        <li><a href="?page=view_profile" class="block px-4 py-2 hover:bg-gray-700 transition-colors duration-200">View Profile</a></li>
+                        <li><a href="./login/logout.php" class="block px-4 py-2 hover:bg-gray-700 transition-colors duration-200">Sign Out</a></li>
+                    </ul>
+                </div>
+            </div>
+        <?php else: ?>
+            <!-- Login button for non-logged-in users -->
+            <a href="/D-Academe/D-Academe/user/login/user_login.html" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition-colors duration-200">
+                Login
+            </a>
+        <?php endif; ?>
     </div>
-    <!-- Wallet Button -->
-    <button id="walletButton" 
-            class="bg-green-600 text-white py-2 px-4 rounded-full hover:bg-green-700 transition-colors duration-200 shadow-md hover:shadow-lg" 
-            onclick="toggleWallet()">Connect Wallet
-    </button>
-
-   
-</div>
-
-</div>
-
+    </div>
 </header>
 
 <!-- Loader (Spinner) -->
-<div id="loader" class="fixed inset-0 bg-black bg-opacity-60 flex  justify-center items-center hidden z-50">
+<div id="loader" class="fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center hidden z-50">
     <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-500 border-opacity-80"></div>
 </div>
 
@@ -86,6 +140,30 @@ $sessionTokenBalance = isset($_SESSION['tokenBalance']) ? $_SESSION['tokenBalanc
         const mobileMenu = document.getElementById('mobile-menu');
         mobileMenu.classList.toggle('hidden');
     });
+
+    // Toggle the dropdown menu visibility
+    function toggleDropdown() {
+        const dropdownMenu = document.getElementById('dropdownMenu');
+        dropdownMenu.classList.toggle('hidden');
+    }
+
+    // Handle Web3 wallet connection if needed
+    function toggleWallet() {
+        if (typeof window.ethereum !== 'undefined') {
+            window.ethereum.request({ method: 'eth_requestAccounts' })
+                .then(accounts => {
+                    const account = accounts[0];
+                    document.getElementById('account').textContent = account;
+                    document.getElementById('walletInfo').classList.remove('hidden');
+                    document.getElementById('walletButton').classList.add('hidden');
+                })
+                .catch(error => {
+                    console.error('Error connecting wallet:', error);
+                });
+        } else {
+            alert('Please install MetaMask or another Ethereum wallet!');
+        }
+    }
 </script>
 
 <script type="module">

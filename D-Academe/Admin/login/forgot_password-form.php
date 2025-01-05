@@ -67,6 +67,15 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     } else {
         $message = "No account found with that email.";
     }
+
+    // Redirect to the same page with a success or error message
+    header("Location: " . $_SERVER['PHP_SELF'] . "?message=" . urlencode($message));
+    exit();
+}
+
+// Handle messages passed through the query string
+if (isset($_GET['message'])) {
+    $message = htmlspecialchars($_GET['message']);
 }
 ?>
 
