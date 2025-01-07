@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Login - D-Academe</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        body {
+            background: linear-gradient(to bottom, #203f43, #2c8364);
+            background-size: cover;
+            background-position: center;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center h-screen">
+    <div class="bg-black p-8 rounded-lg shadow-xl w-full max-w-md">
+        <div class="text-center mb-6">
+            <img src="../../assets/logo.png" alt="D-Academe Logo" class="w-24 mx-auto">
+            <h1 class="text-3xl font-bold text-gray-400 mt-4">Welcome to D-Academe</h1>
+            <p class="text-gray-500">Please login to continue</p>
+        </div>
+        <form id="loginForm" onsubmit="performLogin(event)" class="space-y-6">
+            <div>
+                <input id="email" type="email" placeholder="Email Address" required 
+                       class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent">
+            </div>
+            <!-- Password -->
+            <div class="relative">
+                <input id="password" type="password" placeholder="Password" required 
+                       class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent">
+                <button type="button" id="togglePassword" class="absolute center right-4 top-3 text-gray-500">
+                    <i class="fas fa-eye-slash"></i> <!-- Initial icon (password hidden) -->
+                </button>
+            </div>
+            <button type="submit" 
+                    class="w-full bg-teal-600 text-white py-3 rounded-lg font-semibold hover:bg-teal-700 transition-all shadow-md">
+                Login
+            </button>
+        </form>
+        <div class="text-center mt-6">
+            <p class="text-gray-400 text-sm">
+                Don’t have an account? <a href="user_signup.html" class="text-teal-600 hover:underline">Sign Up</a>
+            </p>
+            <p class="text-gray-400 text-sm mt-2">
+                <a href="forgot_password-form.php" class="text-teal-600 hover:underline">Forgot your password?</a>
+            </p>
+        </div>
+        <p id="error-message" class="text-red-600 text-sm text-center mt-4 hidden"></p>
+    </div>
+    </div>
+    <script>
+         // Password visibility toggle for the 'Password' field
+         document.getElementById('togglePassword').addEventListener('click', function() {
+            const passwordField = document.getElementById('password');
+            const currentType = passwordField.type;
+            passwordField.type = currentType === 'password' ? 'text' : 'password';
+            const icon = this.querySelector('i');
+            icon.classList.toggle('fa-eye');  // Toggle to open eye
+            icon.classList.toggle('fa-eye-slash');  // Toggle to closed eye
+        });
+        async function performLogin(event) {
+            event.preventDefault(); // Prevent default form submission
+
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            try {
+                const response = await fetch('User_login.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const result = await response.json();
+
+                // Handle the response
+                if (result.status === 'success') {
+                    // Store user details in sessionStorage (excluding user id)
+                    sessionStorage.setItem('userName', result.name);
+                    sessionStorage.setItem('userEmail', result.email);
+                    sessionStorage.setItem('userDob', result.dob);
+                    sessionStorage.setItem('userGender', result.gender);
+                    sessionStorage.setItem('userAddress', result.address);
+                    sessionStorage.setItem('userPhoneNumber', result.phone_number);
+                    sessionStorage.setItem('userProfilePicture', result.profile_picture ?? '');
+                    sessionStorage.setItem('userRole', result.role);
+
+                    alert('Login successful! Redirecting...');
+                    window.location.href = '../index.php'; // Redirect to home page after login
+                } else {
+                    // Display error message for invalid credentials
+                    document.getElementById('error-message').textContent = result.message || 'Invalid login credentials.';
+                    document.getElementById('error-message').classList.remove('hidden');
+                }
+            } catch (error) {
+                console.error('Error during login:', error);
+                document.getElementById('error-message').textContent = 'An error occurred. Please try again later.';
+                document.getElementById('error-message').classList.remove('hidden');
+            }
+        }
+    </script>
+</body>
+</html>
