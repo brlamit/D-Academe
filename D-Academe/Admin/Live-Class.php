@@ -1,109 +1,170 @@
+<?php
+define("LIVEPEER_API_KEY", "5027e304-ad2d-4b3f-b61e-623de34af076");
+
+// Initialize variables
+$streamDetails = null;
+$error = null;
+
+// Handle form submission
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $streamName = trim($_POST['streamName'] ?? 'Live Class');
+
+    if (!empty($streamName)) {
+        $streamDetails = createLivepeerStream($streamName);
+
+        if (!$streamDetails || !isset($streamDetails['id'], $streamDetails['streamKey'])) {
+            $error = "Failed to create the stream. Please check your API key and try again.";
+        }
+    } else {
+        $error = "Stream name cannot be empty.";
+    }
+}
+
+// Function to create a new Livepeer stream
+function createLivepeerStream($streamName)
+{
+    $ch = curl_init();
+
+    curl_setopt($ch, CURLOPT_URL, "https://livepeer.com/api/stream");
+    curl_setopt($ch, CURLOPT_POST, 1);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode([
+        "name" => $streamName,
+        "profiles" => [
+            ["name" => "720p", "bitrate" => 2000000, "fps" => 30, "width" => 1280, "height" => 720],
+            ["name" => "480p", "bitrate" => 1000000, "fps" => 30, "width" => 854, "height" => 480],
+            ["name" => "360p", "bitrate" => 500000, "fps" => 30, "width" => 640, "height" => 360]
+        ]
+    ]));
+    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        "Authorization: Bearer " . LIVEPEER_API_KEY,
+        "Content-Type: application/json"
+    ]);
+
+    $response = curl_exec($ch);
+
+    // Handle errors in the cURL request
+    if (curl_errno($ch)) {
+        curl_close($ch);
+        return null;
+    }
+
+    curl_close($ch);
+
+    // Decode response and return
+    return json_decode($response, true);
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Live Class</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <meta name="viewport" content="centre , initial-scale=1.0">
+    <title>Create Live Class</title>
+    <style>
+              body {
+            margin-top: 100px;
+            justify-content: center;
+        }
+        header {
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            transition: background-color 0.3s ease;
+            z-index: 50;
+        }
+        .container {
+            margin-top: 120px;
+            margin-left: 500px;
+        }
+
+.container {
+    text-align: center;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 30px 20px;
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+    border-radius: 12px;
+    width: 90%; /* Adjust the width as needed */
+    max-width: 400px; /* Ensures the box doesn’t stretch too wide */
+}
+
+        .container {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 30px 20px;
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        input, button {
+            padding: 10px;
+            margin: 10px;
+            font-size: 16px;
+            width: 80%;
+            max-width: 300px;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            border-radius: 8px;
+        }
+        input {
+            border: 1px solid #ddd;
+            transition: border-color 0.3s;
+        }
+        input:focus {
+            border-color: #007BFF;
+            outline: none;
+            box-shadow: 0 0 8px rgba(0, 123, 255, 0.5);
+        }
+        button {
+            background: #007BFF;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.2s;
+        }
+        button:hover {
+            background: #0056b3;
+            transform: scale(1.05);
+        }
+        .details {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            background-color: #f9f9f9;
+            text-align: left;
+            display: inline-block;
+        }
+        .error {
+            color: red;
+            margin-top: 10px;
+        }
+    </style>
 </head>
-<body class="bg-gray-100">
-    <div class="max-w-2xl mx-auto my-20 p-6 bg-white shadow-lg rounded-lg">
-        <!-- Class Key Input Section -->
-        <div id="keySection" class="text-center">
-            <h2 class="text-2xl font-bold mb-4">Enter Class Key</h2>
-            <input type="text" id="classKey" class="w-full p-3 border rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Enter your class key...">
-            <button id="joinButton" onclick="validateKey()" class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none">
-                Join Class
-            </button>
-            <p id="errorMessage" class="text-red-500 hidden mt-2"></p>
-        </div>
+<body>
+    <div class="container">
+        <h1>Create a Live Class</h1>
+        <form method="POST" action="">
+            <input type="text" name="streamName" placeholder="Enter Stream Name" required />
+            <button type="submit">Create Stream</button>
+        </form>
 
-        <!-- Main Content Section -->
-        <div id="contentSection" class="">
-            <!-- Meeting Control Panel -->
-            <div class="flex justify-around items-center my-6">
-                <div class="flex flex-col items-center">
-                    <div class="bg-blue-500 p-3 rounded-full mb-2">
-                        <img src="https://img.icons8.com/ios-glyphs/30/ffffff/calendar.png" alt="Schedule Icon">
-                    </div>
-                    <button class="text-blue-500 font-semibold">Schedule</button>
-                </div>
-                <div class="flex flex-col items-center">
-                    <div class="bg-blue-500 p-3 rounded-full mb-2">
-                        <img src="https://img.icons8.com/ios-glyphs/30/ffffff/plus-math.png" alt="Join Icon">
-                    </div>
-                    <button class="text-blue-500 font-semibold">Join</button>
-                </div>
-                <div class="flex flex-col items-center">
-                    <div class="bg-orange-500 p-3 rounded-full mb-2">
-                        <img src="https://img.icons8.com/ios-glyphs/30/ffffff/video-conference.png" alt="Host Icon">
-                    </div>
-                    <button class="text-orange-500 font-semibold">Host</button>
-                </div>
-            </div>
-            <!-- Personal Meeting ID -->
-            <div class="text-center my-6">
-                <p class="text-lg font-bold">Personal Meeting ID</p>
-                <p class="text-2xl font-mono">953 712 2824</p>
-                <button onclick="copyToClipboard('953 712 2824')" class="mt-2 text-sm text-blue-600 hover:underline">Copy ID</button>
-            </div>
+        <?php if ($error): ?>
+            <div class="error"><?= htmlspecialchars($error) ?></div>
+        <?php endif; ?>
 
-            <!-- Live Stream Section -->
-            <div class="mb-6">
-                <video id="liveStream" controls autoplay class="w-full rounded-lg shadow-md"></video>
+        <?php if ($streamDetails): ?>
+            <div class="details">
+                <h2>Stream Created Successfully!</h2>
+                <p><strong>Stream Name:</strong> <?= htmlspecialchars($streamDetails['name']) ?></p>
+                <p><strong>Stream ID:</strong> <?= htmlspecialchars($streamDetails['id']) ?></p>
+                <p><strong>RTMP URL:</strong> rtmp://rtmp.livepeer.com/live</p>
+                <p><strong>Stream Key:</strong> <?= htmlspecialchars($streamDetails['streamKey']) ?></p>
             </div>
-        </div>
+        <?php endif; ?>
     </div>
-
-    <script>
-        async function validateKey() {
-            const classKey = document.getElementById('classKey').value.trim();
-            const joinButton = document.getElementById('joinButton');
-            const errorMessage = document.getElementById('errorMessage');
-
-            if (!classKey) {
-                errorMessage.innerText = "Please enter a valid class key.";
-                errorMessage.classList.remove("hidden");
-                return;
-            }
-
-            errorMessage.classList.add("hidden");
-            joinButton.disabled = true;
-            joinButton.innerText = "Validating...";
-
-            try {
-                // Fetch the stream URL from proxy.php
-                const response = await fetch(`/proxy.php?classKey=${classKey}`);
-                if (!response.ok) {
-                    throw new Error("Invalid class key or stream not found.");
-                }
-
-                const streamData = await response.json();
-
-                if (streamData.streamUrl) {
-                    // Hide class key input and show video stream section
-                    document.getElementById('keySection').classList.add('hidden');
-                    document.getElementById('contentSection').classList.remove('hidden');
-
-                    const video = document.getElementById('liveStream');
-                    video.src = streamData.streamUrl;  // Use streamUrl from proxy.php
-                } else {
-                    throw new Error("Stream is not currently active.");
-                }
-            } catch (error) {
-                errorMessage.innerText = error.message;
-                errorMessage.classList.remove("hidden");
-            } finally {
-                joinButton.disabled = false;
-                joinButton.innerText = "Join Class";
-            }
-        }
-
-        function copyToClipboard(text) {
-            navigator.clipboard.writeText(text).then(() => {
-                alert('Copied to clipboard!');
-            });
-        }
-    </script>
 </body>
 </html>
