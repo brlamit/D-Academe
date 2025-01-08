@@ -108,7 +108,7 @@
         const courseTags = courseCard.getAttribute('data-tags');
 
         // Redirect to addcourse.php with course details as URL parameters
-        window.location.href = `edit.php?course_id=${courseId}&name=${encodeURIComponent(courseName)}&description=${encodeURIComponent(courseDescription)}&token_price=${encodeURIComponent(courseTokenPrice)}&tags=${encodeURIComponent(courseTags)}`;
+        window.location.href = `edit-course.php?course_id=${courseId}&name=${encodeURIComponent(courseName)}&description=${encodeURIComponent(courseDescription)}&token_price=${encodeURIComponent(courseTokenPrice)}&tags=${encodeURIComponent(courseTags)}`;
     }
 // Call this function when a course is added
 function appendCourse(course) {
