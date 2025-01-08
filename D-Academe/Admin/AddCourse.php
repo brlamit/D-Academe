@@ -200,8 +200,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
             <div>
                 <label class="block text-lg font-semibold text-gray-400">Course Image</label>
-                <input type="file" name="image" required class="w-full mt-2 p-3 rounded-md border text-white border-gray-300 shadow-sm">
+                <input type="file" name="image" required  onchange="previewImage(event)" class="w-full mt-2 p-3 rounded-md border text-white border-gray-300 shadow-sm">
             </div>
+
+            <div id="preview-container" class="preview-container">
+        <p>No image selected</p>
+        <img id="preview" class="preview-image" style="display:none;">
+    </div>
             <div>
                 <label class="block text-lg font-semibold text-gray-400">Description</label>
                 <textarea name="description" rows="6" required class="w-full mt-2 p-3 rounded-md border border-gray-300 shadow-sm"></textarea>
@@ -277,6 +282,32 @@ function stayOnPage() {
     modal.classList.add('hidden');
 }
 
+</script>
+
+
+<script>
+    // Function to preview the image
+    function previewImage(event) {
+        const preview = document.getElementById('preview');
+        const previewContainer = document.getElementById('preview-container');
+        const file = event.target.files[0];
+
+        if (file) {
+            const reader = new FileReader();
+
+            reader.onload = function (e) {
+                preview.src = e.target.result;
+                preview.style.display = 'block';
+                previewContainer.querySelector('p').style.display = 'none';
+            };
+
+            reader.readAsDataURL(file);
+        } else {
+            preview.src = '';
+            preview.style.display = 'none';
+            previewContainer.querySelector('p').style.display = 'block';
+        }
+    }
 </script>
 </body>
 </html>
