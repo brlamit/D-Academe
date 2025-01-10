@@ -1,158 +1,212 @@
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Teacher Signup - D-Academe</title>
+    <title>Admin Signup - D-Academe</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background: linear-gradient(to bottom, #203f43, #2c8364);
+            background-size: cover;
+            background-position: center;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        input:focus, textarea:focus {
+            border-color: #4b9f8f;
+            box-shadow: 0 0 0 2px rgba(75, 159, 143, 0.5);
+        }
+    </style>
+     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 </head>
-<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+<body class="flex items-center justify-center min-h-screen">
     <!-- Signup Form Container -->
-    <div class="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
-        <!-- <img src="./logo.png" alt="D-Academe Logo" class="w-24 mx-auto bg-blue-950 rounded-full mb-6"> -->
-        <h1 class="text-2xl font-bold text-gray-700 text-center mb-4">Teacher Signup</h1>
+    <div class="bg-black p-8 rounded-xl shadow-2xl w-full max-w-4xl">
+        <div class="text-center mb-8">
+            <img src="../assets/logo.png" alt="D-Academe Logo" class="w-20 mx-auto">
+            <h1 class="text-4xl font-extrabold text-gray-400 mt-4">Admin Signup</h1>
+            <p class="text-gray-500 mt-2">Join us and start your journey</p>
+        </div>
 
-        <!-- Form -->
-        <form id="teacherSignupForm" onsubmit="submitTeacherSignup(event)" class="space-y-4">
-            <!-- Profile Picture Upload -->
-            <div class="text-center">
-                <label for="profile_picture" class="block text-gray-700 mb-2">Profile Picture</label>
-                <div class="relative w-24 h-24 mx-auto mb-2">
-                    <img id="profilePreview" 
-                         src="https://via.placeholder.com/96" 
-                         alt="Profile Preview" 
-                         class="w-full h-full rounded-full border border-gray-300 object-cover">
-                    <input id="profile_picture" type="file" accept="image/*" onchange="previewProfilePicture(event)"
-                           class="absolute inset-0 opacity-0 cursor-pointer">
+        <!-- Profile Picture -->
+        <div class="text-center mb-8">
+            <label for="profile_picture" class="block text-gray-700 mb-2 font-semibold">Profile Picture</label>
+            <div class="relative w-28 h-28 mx-auto mb-4">
+                <img id="profilePreview" 
+                     src="https://via.placeholder.com/96" 
+                     alt="Profile Preview" 
+                     class="w-full h-full rounded-full border border-gray-300 object-cover shadow-sm">
+                <input id="profile_picture" type="file" accept="image/*" onchange="previewProfilePicture(event)"
+                       class="absolute inset-0 opacity-0 cursor-pointer">
+            </div>
+        </div>
+
+        <!-- Form Structure -->
+        <form id="teacherSignupForm" onsubmit="submitTeacherSignup(event)" class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <!-- Left Column -->
+            <div class="space-y-6">
+                <!-- Name -->
+                <div>
+                    <label for="name" class="text-gray-200">Name:</label>
+                    <input id="name" type="text" placeholder="Full Name" required
+                           class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
                 </div>
-                <!-- <p class="text-sm text-gray-600">Upload a square image for best results.</p> -->
+
+                <!-- Phone -->
+                <div>
+                    <label for="phone_number" class="text-gray-200">Phone:</label>
+                    <input id="phone_number" type="text" pattern="^\+?[1-9]\d{1,14}$" placeholder="Phone Number" required
+                           class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+
+                <!-- Password -->
+                <div class="relative">
+                    <label for="password" class="text-gray-200">Password:</label>
+                    <input id="password" type="password" placeholder="Password" required 
+                           class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <button type="button" id="togglePassword" class="absolute right-4 top-9 text-gray-500">
+                        <i class="fas fa-eye-slash"></i> <!-- Eye-slash (hidden password) -->
+                    </button>
+                </div>
+
+                <!-- Confirm Password -->
+                <div class="relative">
+                    <label for="confirm_password" class="text-gray-200">Confirm Password:</label>
+                    <input id="confirm_password" type="password" placeholder="Confirm Password" required 
+                           class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <button type="button" id="toggleConfirmPassword" class="absolute right-4 top-9 text-gray-500">
+                        <i class="fas fa-eye-slash"></i> <!-- Eye-slash (hidden password) -->
+                    </button>
+                </div>
+
+                <p id="passwordMismatch" class="text-red-500 text-sm hidden">Passwords do not match</p>
             </div>
 
-            <!-- Name -->
-            <input id="name" type="text" placeholder="Full Name" required
-                   class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400">
+            <!-- Right Column -->
+            <div class="space-y-6">
+                <!-- Email -->
+                <div>
+                    <label for="email" class="text-gray-200">Email:</label>
+                    <input id="email" type="email" placeholder="Email Address" required
+                           class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
 
-            <!-- Email -->
-            <input id="email" type="email" placeholder="Email Address" required
-                   class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400">
+                <!-- Teacher License/Certificate Upload -->
+                <div>
+                    <label for="license" class="block text-gray-200 mb-2 font-semibold">Upload License/Certificate</label>
+                    <input id="license" type="file" accept=".pdf, .jpg, .jpeg, .png" required
+                           class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <small class="text-gray-500">Accepted formats: .pdf, .jpg, .jpeg, .png</small>
+                </div>
 
-            <!-- Phone -->
-            <input id="phone_number" type="text" placeholder="Phone Number" required
-                   class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400">
-
-            <!-- Password -->
-            <div class="relative">
-                <input id="password" type="password" placeholder="Password" required 
-                       class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400">
-                <button type="button" id="togglePassword" class="absolute right-4 top-3 text-gray-600">
-                    👁️
-                </button>
+                <!-- Submit Button -->
+                <div>
+                    <button type="submit" 
+                            class="w-full bg-teal-600 text-white py-3 rounded-lg font-semibold hover:bg-teal-700 transition-all shadow-md">
+                        Sign Up
+                    </button>
+                </div>
             </div>
-
-            <!-- Confirm Password -->
-            <div class="relative">
-                <input id="confirm_password" type="password" placeholder="Confirm Password" required 
-                       class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400">
-                <button type="button" id="toggleConfirmPassword" class="absolute right-4 top-3 text-gray-600">
-                    👁️
-                </button>
-            </div>
-
-            <!-- Teacher License/Certificate Upload -->
-            <div>
-                <label for="license" class="text-gray-700 block mb-1">Upload License/Certificate</label>
-                <input id="license" type="file" accept=".pdf, .jpg, .jpeg, .png" required
-                       class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400">
-            </div>
-
-            <!-- Submit Button -->
-            <button type="submit" 
-                    class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition">
-                Sign Up
-            </button>
         </form>
 
         <!-- Already have an account -->
-        <p class="text-gray-600 text-sm text-center mt-4">
-            Already have an account? <a href="admin_login.html" class="text-blue-600 hover:underline">Login</a>
-        </p>
-        
+        <div class="text-center mt-6">
+            <p class="text-gray-500 text-sm">
+                Already have an account? <a href="admin_login.html" class="text-teal-600 hover:underline font-semibold">Login</a>
+            </p>
+        </div>
+
         <!-- Error/Success Message -->
-        <p id="error-message" class="text-red-600 text-sm text-center mt-2 hidden">Error occurred.</p>
+        <p id="error-message" class="text-red-600 text-sm text-center mt-4 hidden"></p>
     </div>
 
     <!-- Script -->
     <script>
+        // Password visibility toggle for the 'Password' field
+        document.getElementById('togglePassword').addEventListener('click', function() {
+            togglePasswordVisibility('togglePassword', 'password');
+        });
+
+        // Password visibility toggle for the 'Confirm Password' field
+        document.getElementById('toggleConfirmPassword').addEventListener('click', function() {
+            togglePasswordVisibility('toggleConfirmPassword', 'confirm_password');
+        });
+
+        function togglePasswordVisibility(toggleButtonId, inputFieldId) {
+            const inputField = document.getElementById(inputFieldId);
+            const toggleButton = document.getElementById(toggleButtonId);
+            const currentType = inputField.type;
+            inputField.type = currentType === 'password' ? 'text' : 'password';
+            toggleButton.querySelector('i').classList.toggle('fa-eye');
+            toggleButton.querySelector('i').classList.toggle('fa-eye-slash');
+        }
+
         function previewProfilePicture(event) {
             const file = event.target.files[0];
-            if (file) {
+            if (file && file.type.startsWith('image/')) {
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     document.getElementById('profilePreview').src = e.target.result;
                 };
                 reader.readAsDataURL(file);
+            } else {
+                alert('Please upload a valid image file');
             }
         }
 
         async function submitTeacherSignup(event) {
-    event.preventDefault();
+            event.preventDefault();
 
-    // Fetch values
-    const name = document.getElementById('name').value;
-    const email = document.getElementById('email').value;
-    const phone_number = document.getElementById('phone_number').value;
-    const password = document.getElementById('password').value;
-    const confirmPassword = document.getElementById('confirm_password').value;
-    const license = document.getElementById('license').files[0];
-    const profilePicture = document.getElementById('profile_picture').files[0];
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const phone_number = document.getElementById('phone_number').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirm_password').value;
+            const license = document.getElementById('license').files[0];
+            const profilePicture = document.getElementById('profile_picture').files[0];
 
-    // Validate file upload
-    if (!license || !profilePicture) {
-        alert("Please upload all required files.");
-        return;
-    }
+            if (!license || !profilePicture) {
+                alert("Please upload all required files.");
+                return;
+            }
 
-    // Check if passwords match
-    if (password !== confirmPassword) {
-        alert("Password and Confirm Password do not match.");
-        return;
-    }
+            if (password !== confirmPassword) {
+                document.getElementById('passwordMismatch').classList.remove('hidden');
+                return;
+            } else {
+                document.getElementById('passwordMismatch').classList.add('hidden');
+            }
 
-    // Prepare form data
-    const formData = new FormData();
-    formData.append('name', name);
-    formData.append('email', email);
-    formData.append('phone_number', phone_number);
-    formData.append('password', password);
-    formData.append('license', license);
-    formData.append('profile_picture', profilePicture);
+            const formData = new FormData();
+            formData.append('name', name);
+            formData.append('email', email);
+            formData.append('phone_number', phone_number);
+            formData.append('password', password);
+            formData.append('license', license);
+            formData.append('profile_picture', profilePicture);
 
-    try {
-        // Send request to backend
-        const response = await fetch('admin_signup.php', {
-            method: 'POST',
-            body: formData
-        });
+            try {
+                const response = await fetch('admin_signup.php', {
+                    method: 'POST',
+                    body: formData
+                });
 
-        const result = await response.json();
+                const result = await response.json();
 
-        // Handle response
-        if (result.status === 'success') {
-            alert('Signup successful! Redirecting to login page.');
-            window.location.href = 'admin_login.html';
-        } else {
-            document.getElementById('error-message').textContent = result.message || 'Signup failed.';
-            document.getElementById('error-message').classList.remove('hidden');
+                if (result.status === 'success') {
+                    alert('Signup successful! Redirecting to login page.');
+                    window.location.href = 'admin_login.html';
+                } else {
+                    document.getElementById('error-message').textContent = result.message || 'Signup failed.';
+                    document.getElementById('error-message').classList.remove('hidden');
+                }
+            } catch (error) {
+                console.error('Error during signup:', error);
+                document.getElementById('error-message').textContent = 'An unexpected error occurred.';
+                document.getElementById('error-message').classList.remove('hidden');
+            }
         }
-    } catch (error) {
-        console.error('Error during signup:', error);
-        document.getElementById('error-message').textContent = 'An unexpected error occurred.';
-        document.getElementById('error-message').classList.remove('hidden');
-    }
-}
-
     </script>
 </body>
 </html>
