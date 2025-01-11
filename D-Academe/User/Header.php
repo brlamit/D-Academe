@@ -8,7 +8,7 @@ if ($isLoggedIn) {
     $profilePicture = $_SESSION['profile_picture'];
 
     // Construct the full path
-    $profilePicturePath = $_SERVER['DOCUMENT_ROOT'] . '/D-Academe/D-Academe/user/login/' . $profilePicture;
+    $profilePicturePath = $_SERVER['DOCUMENT_ROOT'] . '/D-Academe/D-Academe/user/login/uploads' . $profilePicture;
 
     // Check if the file exists
     if (file_exists($profilePicturePath)) {

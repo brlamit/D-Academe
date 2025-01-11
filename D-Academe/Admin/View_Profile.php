@@ -1,5 +1,5 @@
 <?php
-session_start();  // Make sure session is started
+// session_start();  // Start the session
 
 // Enable error reporting for debugging
 ini_set('display_errors', 1);
@@ -21,7 +21,7 @@ if ($conn->connect_error) {
 
 if (!isset($_SESSION['email'])) {
     // Redirect to login page if user is not logged in
-    header("Location: admin_login.html");
+    header("Location: ./login/admin_login.html");
     exit();
 }
 
@@ -41,12 +41,12 @@ $stmt->close();
 $profile_picture = $profile_picture ?? './assets/default-avatar.png';
 $license = $license ?? './assets/default-license.png';
 // Construct the full path for license picture
-$licensePicturePath = $_SERVER['DOCUMENT_ROOT'] . '/practice/admin/login/' . $license;
+$licensePicturePath = $_SERVER['DOCUMENT_ROOT'] . '/D-Academe/D-Academe/admin/login/' . $license;
 
 // Check if the license image file exists
 if (file_exists($licensePicturePath)) {
     // Use the database path directly
-    $licensePictureUrl = '/practice/admin/login/' . $license;
+    $licensePictureUrl = '/D-Academe/D-Academe/admin/login/' . $license;
 } else {
     // Fallback to default license image if file doesn't exist
     $licensePictureUrl = './assets/default-license.png';
@@ -103,9 +103,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     $update_stmt->close();
 }
-
 $conn->close();
-?><!DOCTYPE html>
+?>
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -117,16 +118,17 @@ $conn->close();
             var fileInput = document.getElementById(inputId);
             fileInput.click();
         }
+        
+       
     </script>
 </head>
 <body class="bg-gray-100 flex items-center justify-center min-h-screen">
 
-    <div class="bg-white p-8 mt-10 rounded-lg shadow-lg w-full  text-center">
+    <div class="bg-white p-8 mt-10 rounded-lg shadow-lg w-full text-center">
         <h1 class="text-3xl font-semibold text-gray-800 mb-8">Profile Details</h1>
 
         <!-- Profile Image -->
         <div class="profile-image mb-6">
-            <!-- Profile picture -->
             <img src="<?php echo htmlspecialchars($profilePictureUrl); ?>" 
                  alt="Profile" 
                  class="w-32 h-32 rounded-lg object-cover mx-auto cursor-pointer"
@@ -134,7 +136,7 @@ $conn->close();
                  onerror="this.onerror=null; this.src='./assets/default-avatar.png';">
             <input type="file" id="profile_picture_input" name="profile_picture" class="mt-1 p-2 border rounded w-full hidden" onchange="this.form.submit()">
         </div>
-        
+
         <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="POST" enctype="multipart/form-data" class="profile-details space-y-4 text-left">
             <p class="text-gray-700">
                 <strong>Name:</strong>
@@ -153,7 +155,6 @@ $conn->close();
 
             <p class="text-gray-700">
                 <strong>License Image:</strong>
-                <!-- License Image -->
                 <img src="<?php echo htmlspecialchars($licensePictureUrl); ?>" 
                      alt="License" 
                      class="w-32 h-32 object-cover mx-auto cursor-pointer" 
@@ -162,19 +163,46 @@ $conn->close();
                 <input type="file" id="license_input" name="license" class="mt-1 p-2 border rounded w-full hidden" onchange="this.form.submit()">
             </p>
 
-            <p class="text-gray-700"><strong>Role:</strong> 
-                <input type="text" name="role" placeholder="ADMIN" class="mt-1 p-2 border rounded w-full" disabled>  
-            </p>
-
             <button type="submit" class="mt-4 px-6 py-2 bg-blue-600 text-white rounded-full">Update Profile</button>
-            
-            <!-- Forgot Password Button -->
+
             <p class="text-gray-700">
                 <a href="./login/forgot_password-form.php" class="mt-4 px-6 py-2 bg-red-600 text-white rounded-full inline-block">
                     Change Password?
                 </a>
             </p>
+</form>
+          <p class="text-gray-700">
+    <button type="button" onclick="showDeleteModal()" class="mt-4 px-6 py-2 bg-red-600 text-white rounded-full">
+        Delete Account?
+    </button>
+</p>
+
+<!-- Modal for Confirming Deletion -->
+<div id="deleteModal" class="hidden fixed inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center z-50">
+    <div class="bg-white p-6 rounded-lg text-center">
+        <h2 class="text-xl font-semibold text-gray-800 mb-4">Are you sure you want to delete your account?</h2>
+        <!-- Deletion Form, it will submit to deleteuser.php to delete the current logged-in user's account -->
+        <form action="deleteuser.php" method="POST">
+            <!-- Hidden email input to pass the logged-in user's email -->
+            <input type="hidden" name="email" value="<?php echo htmlspecialchars($email); ?>">
+            <!-- Yes, Delete Account button -->
+            <button type="submit" class="mt-4 px-6 py-2 bg-red-600 text-white rounded-full">Yes, Delete Account</button>
+            <!-- Cancel button -->
+            <button type="button" class="px-6 py-2 bg-gray-600 text-white rounded-full" onclick="hideDeleteModal()">Cancel</button>
         </form>
+    </div>
+</div>
+
+<script>
+    function showDeleteModal() {
+        document.getElementById('deleteModal').classList.remove('hidden');
+    }
+
+    function hideDeleteModal() {
+        document.getElementById('deleteModal').classList.add('hidden');
+    }
+</script>
+
 
     </div>
 
