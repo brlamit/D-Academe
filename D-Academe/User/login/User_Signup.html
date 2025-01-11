@@ -17,7 +17,12 @@
 </head>
 <body class="flex items-center justify-center min-h-screen">
     <!-- Signup Form Container -->
-    <div class="bg-black p-8 rounded-xl shadow-2xl w-full max-w-4xl">
+    <div class="bg-black p-8 rounded-xl shadow-2xl w-full max-w-4xl relative">
+         <!-- Go Back Button (Positioned outside form but inside container) -->
+         <button type="button" onclick="goBack()"
+         class="absolute top-4 left-4 bg-transparent underline text-white py-2 px-4 text-sm rounded-lg font-semibold hover:text-teal-800 transition-all shadow-md">
+         Go Back
+     </button>
         <div class="text-center mb-8">
             <img src="../../assets/logo.png" alt="D-Academe Logo" class="w-20 mx-auto">
             <h1 class="text-4xl font-extrabold text-gray-400 mt-4">User Signup</h1>
@@ -224,6 +229,12 @@
             this.querySelector('i').classList.toggle('fa-eye');  // Toggle to open eye
             this.querySelector('i').classList.toggle('fa-eye-slash');  // Toggle to closed eye
         });
+
+        
+       // Function to go back to the previous page
+       function goBack() {
+            window.history.back();
+        }
     </script>
 </body>
 </html>

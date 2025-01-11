@@ -16,7 +16,12 @@
 </head>
 <body class="flex items-center justify-center min-h-screen">
     <!-- Login Form Container -->
-    <div class="bg-black p-8 rounded-lg shadow-xl w-full max-w-md">
+    <div class="bg-black p-8 rounded-xl shadow-2xl w-full max-w-md relative">
+         <!-- Go Back Button (Positioned outside form but inside container) -->
+         <button type="button" onclick="goBack()"
+         class="absolute top-4 left-4 bg-transparent underline text-white py-2 px-4 text-sm rounded-lg font-semibold hover:text-teal-800 transition-all shadow-md">
+         Go Back
+     </button>
         <div class="text-center mb-6">
             <img src="../assets/logo.png" alt="D-Academe Logo" class="w-24 mx-auto">
             <h1 class="text-3xl font-bold text-gray-400 mt-4">Welcome to D-Academe</h1>
@@ -91,6 +96,11 @@
                 document.getElementById('error-message').textContent = 'An error occurred. Please try again later.';
                 document.getElementById('error-message').classList.remove('hidden');
             }
+        }
+        
+        // Function to go back to the previous page
+        function goBack() {
+            window.history.back();
         }
     </script>
 </body>
