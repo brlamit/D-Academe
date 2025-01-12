@@ -24,9 +24,8 @@
         
         // Use a safe approach to include files to prevent potential security risks
 
-        $allowedPages = ['home','buy-token', 'myLearnings', 'buy-course', 'solidity-basic', 'view_profile', 'live-class','about', 'courses' , 'help', 'Solidity-Disc', 'Solidity-Course','userregister','Clarity_course','learnmore'];
-        $allowedPages = ['home','buy-token', 'myLearnings', 'buy-course', 'solidity-basic', 'live-class','about', 'courses' , 'help', 'Solidity-Disc', 'Solidity-Course','userregister-form','Clarity_course','learnmore','privacypolicy'];
-
+        $allowedPages = ['home','buy-token', 'myLearnings', 'buy-course', 'solidity-basic', 'view_profile', 'live-class','about', 'courses' , 'help', 'Solidity-Disc', 'Solidity-Course','userregister-form','Clarity_course','learnmore','privacypolicy'];
+       
         if (in_array($page, $allowedPages)) {
             include $page . '.php';
         } else {
