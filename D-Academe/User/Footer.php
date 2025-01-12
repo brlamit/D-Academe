@@ -13,7 +13,7 @@
         <!-- Navigation Links -->
         <nav>
             <ul class="flex gap-6">
-                <li><a href="?page=Privacy-Policy" class="text-sm font-medium hover:text-blue-300 transition-colors duration-200">Privacy Policy</a></li>
+                <li><a href="?page=privacypolicy" class="text-sm font-medium hover:text-blue-300 transition-colors duration-200">Privacy Policy</a></li>
                 <li><a href="?page=tos" class="text-sm font-medium hover:text-blue-300 transition-colors duration-200">Terms of Service</a></li>
                 <li><a href="?page=help" class="text-sm font-medium hover:text-blue-300 transition-colors duration-200">Contact Us</a></li>
                 <li><a href="?page=about" class="text-sm font-medium hover:text-blue-300 transition-colors duration-200">About</a></li>

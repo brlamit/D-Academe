@@ -43,7 +43,7 @@
         </p>
         <!-- Call-to-Action Buttons -->
         <div class="flex gap-6">
-            <a href="?page=userregister" class="bg-green-600 hover:bg-green-700 text-white py-3 px-10 rounded-full text-lg  shadow-lg shadow-green-500/50 transform hover:scale-110 transition duration-300 ease-in-out animate-bounce" data-aos="fade-up" data-aos-delay="500">
+            <a href="?page=userregister-form" class="bg-green-600 hover:bg-green-700 text-white py-3 px-10 rounded-full text-lg  shadow-lg shadow-green-500/50 transform hover:scale-110 transition duration-300 ease-in-out animate-bounce" data-aos="fade-up" data-aos-delay="500">
                 Get Started
             </a>
             <a  href="?page=learnmore" class="text-white border-2 border-white py-3 px-10 rounded-full text-lg shadow-lg hover:shadow-pink-500/50 transition duration-300 ease-in-out hover:bg-white hover:text-gray-900" data-aos="fade-up" data-aos-delay="600">
