@@ -56,7 +56,7 @@ if ($isLoggedIn) {
         <!-- Logged-in user profile -->
         <div id="profileSection" class="relative">
             <button class="flex items-center gap-2" onclick="toggleDropdown()">
-                <img src="<?php echo htmlspecialchars($profilePictureUrl); ?>" 
+                <img src="<?php echo htmlspecialchars($profilePicture); ?>" 
                      alt="Profile" 
                      class="w-10 h-10 rounded-full object-cover" 
                      onerror="this.onerror=null; this.src='./assets/default-avatar.png';">
@@ -65,7 +65,7 @@ if ($isLoggedIn) {
             <!-- Dropdown Menu -->
             <div id="dropdownMenu" class="absolute right-0 mt-2 w-48 bg-gray-800 text-white rounded-md shadow-lg hidden">
                 <div class="flex items-center gap-2 px-4 py-2">
-                    <img src="<?php echo htmlspecialchars($profilePictureUrl); ?>" 
+                    <img src="<?php echo htmlspecialchars($profilePicture); ?>" 
                          alt="Profile" 
                          class="w-10 h-10 rounded-full object-cover" 
                          onerror="this.onerror=null; this.src='./assets/default-avatar.png';">

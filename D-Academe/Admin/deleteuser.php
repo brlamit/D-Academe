@@ -1,54 +1,42 @@
 <?php
-require_once 'dbconnection.php'; // Include the database connection
-
-// Start the session to access the logged-in user's data
 session_start();
+include('dbconnection.php');  // Assuming this file contains your database connection code
 
-// Check if the user is logged in by checking the session email
-if (!isset($_SESSION['email']) || empty($_SESSION['email'])) {
-    // If no session email, redirect the user to login page
-    header("Location: admin_login.html");
-    exit;
+// Check if the user is logged in
+if (!isset($_SESSION['email'])) {
+    // Redirect to login page if user is not logged in
+    header("Location: ./login/admin_login.html");
+    exit();
 }
 
-$email = $_SESSION['email']; // Get the logged-in user's email
+// Get the email from the POST request
+if (isset($_POST['email'])) {
+    $email = $_POST['email'];
 
-// Debugging: Log the email being used for deletion
-error_log("Attempting to delete user with email: " . $email);
-
-try {
-    // Prepare the DELETE SQL statement using PDO
-    $stmt = $pdo->prepare("DELETE FROM admin_login WHERE email = :email");
-
-    // Bind the email parameter using PDO
-    $stmt->bindParam(':email', $email, PDO::PARAM_STR);
-
-    // Execute the query
-    if ($stmt->execute()) {
-        // Commit the transaction
-        $pdo->commit();
-        // Destroy the session to log the user out
-        session_destroy();
-
-        // Redirect to the login page with a success message
-        header("Location: index.php?message=deleted");
-        exit;
-    } else {
-        // If query fails, rollback transaction
-        $pdo->rollBack();
-        error_log("Failed to execute delete query for email: " . $email);
-
-        // Redirect with an error message
-        header("Location: index.php?message=error");
-        exit;
+    // Ensure that the email matches the session email (extra security)
+    if ($email !== $_SESSION['email']) {
+        echo "Unauthorized request!";
+        exit();
     }
-} catch (PDOException $e) {
-    // Rollback the transaction if an exception occurs
-    $pdo->rollBack();
-    error_log("Error deleting user: " . $e->getMessage());
 
-    // Redirect to index with an exception error message
-    header("Location: index.php?message=exception");
-    exit;
+    // SQL query to delete the user from the database
+    $sql = "DELETE FROM admin_login WHERE email = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param('s', $email);
+
+    if ($stmt->execute()) {
+        // Destroy the session and redirect to the login page
+        session_destroy();
+        header("Location: ./login/admin_login.html");
+        exit();
+    } else {
+        echo "Error deleting account: " . $conn->error;
+    }
+
+    $stmt->close();
+} else {
+    echo "Email not provided.";
 }
+
+$conn->close();
 ?>
