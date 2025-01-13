@@ -5,24 +5,18 @@ session_start();  // Start the session
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
-// Database connection
-$host = 'localhost'; // Change this to your database host
-$db = 'dacademe'; // Your database name
-$user = 'root'; // Your database user
-$pass = ''; // Your database password
+include('dbconnection.php');  // Assuming this file contains your database connection code
 
-// Create connection
-$conn = new mysqli($host, $user, $pass, $db);
-
-// Check connection
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
 
 if (!isset($_SESSION['email'])) {
     // Redirect to login page if user is not logged in
     header("Location: ./login/user_login.html");
     exit();
+}
+$message = '';
+if (isset($_SESSION['message'])) {
+    $message = $_SESSION['message'];
+    unset($_SESSION['message']); // Clear the message after displaying it once
 }
 
 // Get user details from session
@@ -40,44 +34,6 @@ $stmt->close();
 // Fallback to default images if not set
 $profile_picture = $profile_picture ?? './assets/default-avatar.png';
 
-// Handle form submission for updating profile details
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    // Get new values from the form
-    $new_phone_number = $_POST['phone_number'];
-    $new_profile_picture = $_FILES['profile_picture']['name'];
-
-    // Initialize variables for profile picture
-    $profile_picture_path = $profile_picture;
-
-    // Check if new profile picture was uploaded
-    if ($new_profile_picture) {
-        $profile_picture_path = 'uploads/' . basename($new_profile_picture);
-        if (move_uploaded_file($_FILES['profile_picture']['tmp_name'], $profile_picture_path)) {
-            echo "Profile picture uploaded successfully.";
-        } else {
-            echo "Error uploading profile picture.";
-        }
-    }
-
-    // Update user details in the database (only phone number and profile picture)
-    $update_sql = "UPDATE user_login SET phone_number = ?, profile_picture = ? WHERE email = ?";
-    $update_stmt = $conn->prepare($update_sql);
-    $update_stmt->bind_param('sss', $new_phone_number, $profile_picture_path, $user_email);
-
-    if ($update_stmt->execute()) {
-        // Update session with new values
-        $_SESSION['phone_number'] = $new_phone_number;
-        $_SESSION['profile_picture'] = $profile_picture_path;
-
-        // Redirect to the same page to reflect changes
-        header("Location: " . $_SERVER['PHP_SELF']);
-        exit();
-    } else {
-        echo "Error updating profile: " . $conn->error;
-    }
-
-    $update_stmt->close();
-}
 $conn->close();
 ?>
 
@@ -89,9 +45,22 @@ $conn->close();
     <script src="https://cdn.tailwindcss.com"></script>
     <title>User Profile</title>
     <script>
+        // Function to trigger file input click
         function toggleFileInput(inputId) {
             var fileInput = document.getElementById(inputId);
             fileInput.click();
+        }
+
+        // Function to preview the selected image
+        function previewImage(input) {
+            var file = input.files[0];
+            if (file) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    document.getElementById('profileImage').src = e.target.result;
+                }
+                reader.readAsDataURL(file); // Convert the file to a data URL for preview
+            }
         }
     </script>
 </head>
@@ -100,17 +69,18 @@ $conn->close();
     <div class="bg-white p-8 mt-10 rounded-lg shadow-lg w-full text-center">
         <h1 class="text-3xl font-semibold text-gray-800 mb-8">Profile Details</h1>
 
+
+        <form action="updateprofile.php" method="POST" enctype="multipart/form-data" class="profile-details space-y-4 text-left">
+            
         <!-- Profile Image -->
         <div class="profile-image mb-6">
-        <img src="<?php echo htmlspecialchars($profilePictureUrl); ?>" 
+            <img id="profileImage" src="<?php echo htmlspecialchars($profile_picture);  ?>" 
                  alt="Profile" 
                  class="w-32 h-32 rounded-lg object-cover mx-auto cursor-pointer"
                  onclick="toggleFileInput('profile_picture_input')" 
                  onerror="this.onerror=null; this.src='./assets/default-avatar.png';">
-            <input type="file" id="profile_picture_input" name="profile_picture" class="mt-1 p-2 border rounded w-full hidden" onchange="this.form.submit()">
+            <input type="file" id="profile_picture_input" name="profile_picture" class="mt-1 p-2 border rounded w-full hidden" onchange="previewImage(this)">
         </div>
-
-        <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="POST" enctype="multipart/form-data" class="profile-details space-y-4 text-left">
             <p class="text-gray-700">
                 <strong>Name:</strong>
                 <input type="text" name="name" value="<?php echo htmlspecialchars($name); ?>" class="mt-1 p-2 border rounded w-full" disabled>
@@ -128,7 +98,7 @@ $conn->close();
 
             <p class="text-gray-700">
                 <strong>Date of Birth:</strong>
-                <input type="date" name="dob" value="<?php echo htmlspecialchars($dob); ?>" class="mt-1 p-2 border rounded w-full" disabled>
+                <input type="date" name="dob" value="<?php echo htmlspecialchars($dob); ?>" class="mt-1 p-2 border rounded w-full" required>
             </p>
 
             <p class="text-gray-700">
@@ -138,7 +108,7 @@ $conn->close();
 
             <p class="text-gray-700">
                 <strong>Address:</strong>
-                <textarea name="address" class="mt-1 p-2 border rounded w-full" disabled><?php echo htmlspecialchars($address); ?></textarea>
+                <textarea name="address" class="mt-1 p-2 border rounded w-full" required><?php echo htmlspecialchars($address); ?></textarea>
             </p>
 
             <button type="submit" class="mt-4 px-6 py-2 bg-blue-600 text-white rounded-full">Update Profile</button>
@@ -167,6 +137,21 @@ $conn->close();
                 </form>
             </div>
         </div>
+        <!-- Message Modal -->
+<?php if (!empty($message)): ?>
+    <div id="messageModal" class="fixed inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center z-50">
+        <div class="bg-white p-6 rounded-lg text-center">
+            <h2 class="text-xl font-semibold text-gray-800 mb-4"><?php echo $message; ?></h2>
+            <button onclick="closeMessageModal()" class="mt-4 px-6 py-2 bg-blue-600 text-white rounded-full">OK</button>
+        </div>
+    </div>
+<?php endif; ?>
+
+<script>
+    function closeMessageModal() {
+        document.getElementById('messageModal').style.display = 'none';
+    }
+</script>
 
         <script>
             function showDeleteModal() {
