@@ -21,6 +21,45 @@ function createCourseTable($conn) {
         echo "Error creating table: " . $conn->error;
     }
 }
+// Function to create the free_courses table (if it doesn't exist already)
+function createFreeCourseTable($conn) {
+    $sql = "CREATE TABLE IF NOT EXISTS free_courses (
+        id INT(11) AUTO_INCREMENT PRIMARY KEY,
+        name VARCHAR(255) NOT NULL,
+        image TEXT NOT NULL,
+        description TEXT NOT NULL,
+        course_content LONGTEXT NOT NULL,
+        date_of_upload TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )";
+
+    if ($conn->query($sql) !== TRUE) {
+        echo "Error creating table: " . $conn->error;
+    }
+}
+
+// Function to add a new free course
+function addFreeCourse($conn, $name, $image, $description, $course_content_url) {
+    $stmt = $conn->prepare("INSERT INTO free_courses (name, image, description, course_content) VALUES (?, ?, ?, ?)");
+
+    if (!$stmt) {
+        error_log("Prepare statement failed: " . $conn->error);
+        return false;
+    }
+
+    // Bind parameters and check for errors
+    $stmt->bind_param("ssss", $name, $image, $description, $course_content_url);
+
+    if (!$stmt->execute()) {
+        error_log("Database insertion error: " . $stmt->error);
+        $stmt->close();
+        return false;
+    }
+
+    $stmt->close();
+    return true;
+}
+
+
 
 // Function to add a new course
 function addCourse($conn, $name, $image, $description, $token_price, $course_content_url) {
@@ -72,11 +111,11 @@ createCourseTable($conn);
 
 $message = '';
 $messageType = '';
-
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $name = htmlspecialchars(trim($_POST['name']));
     $description = htmlspecialchars(trim($_POST['description']));
-    $token_price = filter_var($_POST['token_price'], FILTER_VALIDATE_FLOAT);
+    $course_type = $_POST['course_type']; // Get the selected course type
+    $token_price = $course_type === 'paid' ? filter_var($_POST['token_price'], FILTER_VALIDATE_FLOAT) : null;
 
     $imageUrl = $course_content_url = null;
 
@@ -117,20 +156,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($messageType === '') {
         if ($imageUrl && $course_content_url) {
-            if (addCourse($conn, $name, $imageUrl, $description, $token_price, $course_content_url)) {
-                $message = 'Course added successfully.';
-                $messageType = 'success';
-                echo json_encode(['message' => $message, 'course_url' => $course_content_url]);
-                exit;
-            } else {
-                $message = 'Failed to add course.';
-                $messageType = 'error';
-                echo json_encode(['message' => $message]);
-                exit;
+            if ($course_type === 'paid') {
+                // Insert into the paid courses table
+                if (addCourse($conn, $name, $imageUrl, $description, $token_price, $course_content_url)) {
+                    $message = 'Paid course added successfully.';
+                    $messageType = 'success';
+                    echo json_encode(['message' => $message, 'course_url' => $course_content_url]);
+                    exit;
+                } else {
+                    $message = 'Failed to add paid course.';
+                    $messageType = 'error';
+                    echo json_encode(['message' => $message]);
+                    exit;
+                }
+            } elseif ($course_type === 'free') {
+                // Insert into the free courses table
+                if (addFreeCourse($conn, $name, $imageUrl, $description, $course_content_url)) {
+                    $message = 'Free course added successfully.';
+                    $messageType = 'success';
+                    echo json_encode(['message' => $message, 'course_url' => $course_content_url]);
+                    exit;
+                } else {
+                    $message = 'Failed to add free course.';
+                    $messageType = 'error';
+                    echo json_encode(['message' => $message]);
+                    exit;
+                }
             }
         }
     }
 }
+
+
 ?>
 
 <!DOCTYPE html>
@@ -198,27 +255,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <label class="block text-lg font-semibold text-gray-400">Course Name</label>
                 <input type="text" name="name" required class="w-full mt-2 p-3 rounded-md border border-gray-300 shadow-sm focus:ring-teal-500">
             </div>
+            
             <div>
                 <label class="block text-lg font-semibold text-gray-400">Course Image</label>
-                <input type="file" name="image" required  onchange="previewImage(event)" class="w-full mt-2 p-3 rounded-md border text-white border-gray-300 shadow-sm">
+                <input type="file" name="image" required class="w-full mt-2 p-3 rounded-md border text-white border-gray-300 shadow-sm">
             </div>
-
-            <div id="preview-container" class="preview-container">
-        <p>No image selected</p>
-        <img id="preview" class="preview-image" style="display:none;">
-    </div>
             <div>
                 <label class="block text-lg font-semibold text-gray-400">Description</label>
                 <textarea name="description" rows="6" required class="w-full mt-2 p-3 rounded-md border border-gray-300 shadow-sm"></textarea>
             </div>
+
         </div>
 
         <!-- Right Column -->
         <div class="space-y-6">
-            <div>
-                <label class="block text-lg font-semibold text-gray-400">Token Price</label>
-                <input type="number" name="token_price" step="0.01" required class="w-full mt-2 p-3 rounded-md border border-gray-300 shadow-sm focus:ring-teal-500">
-            </div>
+        <div>
+            <label class="block text-lg font-semibold text-gray-400">Course Type</label>
+            <select name="course_type" id="course_type" class="w-full mt-2 p-3 rounded-md border border-gray-300 shadow-sm focus:ring-teal-500" onchange="togglePriceFields()">
+            <option value="free">Free</option>
+                <option value="paid">Paid</option>
+            </select>
+        </div>
+        <label for="token_price">Token Price:</label>
+            <input 
+                type="number" 
+                id="token_price" 
+                name="token_price" 
+                step="0.01" 
+                class="w-full mt-2 p-3 rounded-md border bg-white border-gray-300 shadow-sm focus:ring-teal-500"
+                disabled 
+            >
             <div>
                 <label class="block text-lg font-semibold text-gray-400">Course Content (PDF/Docx/MD/PPT/Zip)</label>
                 <input type="file" name="course_content" required class="w-full mt-2 p-3 rounded-md border text-white border-gray-300 shadow-sm">
@@ -235,6 +301,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </div>
 
 <script>
+    function togglePriceFields() {
+        const courseType = document.getElementById("course_type");
+        const tokenPrice = document.getElementById("token_price");
+
+        courseType.addEventListener("change", function () {
+            if (this.value === "paid") {
+                tokenPrice.disabled = false;
+                tokenPrice.setAttribute("required", "required");
+            } else {
+                tokenPrice.disabled = true;
+                tokenPrice.removeAttribute("required");
+                tokenPrice.value = ""; // Clear the value if not required
+            }
+        });
+    }
+
    const form = document.getElementById('courseForm');
 const loader = document.getElementById('loader');
 const formContent = document.getElementById('formContent');
@@ -282,32 +364,6 @@ function stayOnPage() {
     modal.classList.add('hidden');
 }
 
-</script>
-
-
-<script>
-    // Function to preview the image
-    function previewImage(event) {
-        const preview = document.getElementById('preview');
-        const previewContainer = document.getElementById('preview-container');
-        const file = event.target.files[0];
-
-        if (file) {
-            const reader = new FileReader();
-
-            reader.onload = function (e) {
-                preview.src = e.target.result;
-                preview.style.display = 'block';
-                previewContainer.querySelector('p').style.display = 'none';
-            };
-
-            reader.readAsDataURL(file);
-        } else {
-            preview.src = '';
-            preview.style.display = 'none';
-            previewContainer.querySelector('p').style.display = 'block';
-        }
-    }
 </script>
 </body>
 </html>
