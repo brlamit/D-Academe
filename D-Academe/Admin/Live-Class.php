@@ -60,111 +60,146 @@ function createLivepeerStream($streamName)
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="centre , initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create Live Class</title>
-    <style>
-              body {
-            margin-top: 100px;
-            justify-content: center;
-        }
-        header {
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(10px);
-            transition: background-color 0.3s ease;
-            z-index: 50;
-        }
-        .container {
-            margin-top: 120px;
-            margin-left: 500px;
-        }
-
-.container {
-    text-align: center;
-    background: rgba(255, 255, 255, 0.9);
-    padding: 30px 20px;
-    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
-    border-radius: 12px;
-    width: 90%; /* Adjust the width as needed */
-    max-width: 400px; /* Ensures the box doesn’t stretch too wide */
-}
-
-        .container {
-            text-align: center;   
-            background: rgba(255, 255, 255, 0.9);
-            padding: 30px 20px;
-            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
-            border-radius: 12px;
-        }
-        h1 {
-            color: #333;
-            margin-bottom: 20px;
-        }
-        input, button {
-            padding: 10px;
-            margin: 10px;
-            font-size: 16px;
-            width: 80%;
-            max-width: 300px;
-            display: block;
-            margin-left: auto;
-            margin-right: auto;
-            border-radius: 8px;
-        }
-        input {
-            border: 1px solid #ddd;
-            transition: border-color 0.3s;
-        }
-        input:focus {
-            border-color: #007BFF;
-            outline: none;
-            box-shadow: 0 0 8px rgba(0, 123, 255, 0.5);
-        }
-        button {
-            background: #007BFF;
-            color: #fff;
-            border: none;
-            cursor: pointer;
-            transition: background 0.3s, transform 0.2s;
-        }
-        button:hover {
-            background: #0056b3;
-            transform: scale(1.05);
-        }
-        .details {
-            margin-top: 20px;
-            padding: 15px;
-            border: 1px solid #ddd;
-            background-color: #f9f9f9;
-            text-align: left;
-            display: inline-block;
-        }
-        .error {
-            color: red;
-            margin-top: 10px;
-        }
-    </style>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
 </head>
-<body>
-    <div class="container">
-        <h1>Create a Live Class</h1>
-        <form method="POST" action="">
-            <input type="text" name="streamName" placeholder="Enter Stream Name" required />
-            <button type="submit">Create Stream</button>
-        </form>
-
-        <?php if ($error): ?>
-            <div class="error"><?= htmlspecialchars($error) ?></div>
-        <?php endif; ?>
-
-        <?php if ($streamDetails): ?>
-            <div class="details">
-                <h2>Stream Created Successfully!</h2>
-                <p><strong>Stream Name:</strong> <?= htmlspecialchars($streamDetails['name']) ?></p>
-                <p><strong>Stream ID:</strong> <?= htmlspecialchars($streamDetails['id']) ?></p>
-                <p><strong>RTMP URL:</strong> rtmp://rtmp.livepeer.com/live</p>
-                <p><strong>Stream Key:</strong> <?= htmlspecialchars($streamDetails['streamKey']) ?></p>
+<body class="bg-gray-100">
+    <div class="min-h-screen flex items-center justify-center p-6">
+        <div class="flex bg-white shadow-lg rounded-lg w-full max-w-4xl">
+            <!-- Left Section: Video Streamer -->
+            <div class="w-1/3 p-4 bg-gray-200 rounded-l-lg flex flex-col items-center justify-center">
+                <h2 class="text-xl font-semibold text-gray-800 mb-4">Live Stream</h2>
+                <!-- Video Element for Camera Stream -->
+                <div class="w-full h-64 bg-gray-400 rounded-lg mb-4 relative">
+                    <video id="videoElement" class="w-full h-full object-cover" autoplay muted></video>
+                    <!-- Camera Icon -->
+                    <div id="cameraIcon" class="absolute top-4 left-4 text-white text-3xl cursor-pointer">
+                        <i class="fas fa-video-slash"></i> <!-- Disabled video icon initially -->
+                    </div>
+                    <!-- Microphone Icon -->
+                    <div id="micIcon" class="absolute bottom-4 left-4 text-white text-3xl cursor-pointer">
+                        <i class="fas fa-microphone-slash"></i> <!-- Disabled mic icon initially -->
+                    </div>
+                </div>
+                <!-- <p class="text-sm text-gray-600">This is a live stream view. Your camera and microphone will appear here.</p> -->
             </div>
-        <?php endif; ?>
+
+            <!-- Right Section: Form & Details -->
+            <div class="w-2/3 p-6">
+                <h1 class="text-3xl font-semibold text-gray-800 mb-6 text-center">Create a Live Class</h1>
+
+                <!-- Form -->
+                <form method="POST" action="" class="space-y-4">
+                    <input type="text" name="streamName" placeholder="Enter Stream Name" 
+                        class="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" required />
+                    <button type="submit" class="w-full bg-blue-500 text-white p-3 rounded-md hover:bg-blue-600 transition duration-300 ease-in-out transform hover:scale-105">
+                        Create Stream
+                    </button>
+                </form>
+
+                <!-- Error Message -->
+                <?php if ($error): ?>
+                    <div class="mt-4 text-red-600 text-center"><?= htmlspecialchars($error) ?></div>
+                <?php endif; ?>
+
+                <!-- Stream Details -->
+                <?php if ($streamDetails): ?>
+                    <div class="mt-6 bg-gray-50 p-4 rounded-md border border-gray-300 text-left">
+                        <h2 class="text-xl font-semibold text-gray-800 mb-4">Stream Created Successfully!</h2>
+                        <p><strong>Stream Name:</strong> <?= htmlspecialchars($streamDetails['name']) ?></p>
+                        <p><strong>Stream ID:</strong> <?= htmlspecialchars($streamDetails['id']) ?></p>
+                        <p><strong>RTMP URL:</strong> rtmp://rtmp.livepeer.com/live</p>
+                        <p><strong>Stream Key:</strong> <?= htmlspecialchars($streamDetails['streamKey']) ?></p>
+                    </div>
+                <?php endif; ?>
+            </div>
+        </div>
     </div>
+
+    <script>
+       let currentStream = null;
+let videoTrack = null;
+let audioTrack = null;
+
+// Get references to the video element and icons
+const videoElement = document.getElementById('videoElement');
+const cameraIcon = document.getElementById('cameraIcon');
+const micIcon = document.getElementById('micIcon');
+
+// Variables to track the camera and microphone status
+let isCameraOn = false;
+let isMicOn = false;
+let mediaStream = null;
+
+// Function to toggle the camera
+cameraIcon.addEventListener('click', function() {
+    if (isCameraOn) {
+        // Turn off the camera (stop the track)
+        if (videoTrack) {
+            videoTrack.stop();
+            videoElement.srcObject = null; // Stop displaying the video
+        }
+        cameraIcon.innerHTML = '<i class="fas fa-video-slash"></i>';  // Change icon
+        isCameraOn = false;
+    } else {
+        // Turn on the camera (request a new stream)
+        navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+            .then(function(stream) {
+                mediaStream = stream;
+                videoTrack = stream.getVideoTracks()[0]; // Get the video track
+                audioTrack = stream.getAudioTracks()[0]; // Get the audio track
+
+                videoElement.srcObject = stream; // Display video feed
+                cameraIcon.innerHTML = '<i class="fas fa-video"></i>';  // Change icon
+                isCameraOn = true;
+                isMicOn = true;
+                micIcon.innerHTML = '<i class="fas fa-microphone"></i>';  // Ensure mic is on
+            })
+            .catch(function(error) {
+                console.error("Error accessing webcam and microphone: ", error);
+                alert("Could not access webcam and microphone. Please ensure they are available and try again.");
+            });
+    }
+});
+
+// Function to toggle the microphone
+micIcon.addEventListener('click', function() {
+    if (isMicOn) {
+        // Turn off the microphone
+        if (audioTrack) {
+            audioTrack.enabled = false;
+        }
+        micIcon.innerHTML = '<i class="fas fa-microphone-slash"></i>';  // Change icon
+        isMicOn = false;
+    } else {
+        // Turn on the microphone
+        if (audioTrack) {
+            audioTrack.enabled = true;
+        }
+        micIcon.innerHTML = '<i class="fas fa-microphone"></i>';  // Change icon
+        isMicOn = true;
+    }
+});
+
+// Request access to the webcam and microphone when the page loads
+navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+    .then(function(stream) {
+        mediaStream = stream;
+        videoTrack = stream.getVideoTracks()[0]; // Get the video track
+        audioTrack = stream.getAudioTracks()[0]; // Get the audio track
+
+        videoElement.srcObject = stream; // Display video feed
+        cameraIcon.innerHTML = '<i class="fas fa-video"></i>';  // Camera on by default
+        micIcon.innerHTML = '<i class="fas fa-microphone"></i>';  // Mic on by default
+        isCameraOn = true;
+        isMicOn = true;
+    })
+    .catch(function(error) {
+        console.error("Error accessing webcam and microphone: ", error);
+        alert("Could not access webcam and microphone. Please ensure they are available and try again.");
+    });
+</script>
 </body>
 </html>
