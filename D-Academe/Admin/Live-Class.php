@@ -43,7 +43,6 @@ function createLivepeerStream($streamName)
 
     $response = curl_exec($ch);
 
-    // Handle errors in the cURL request
     if (curl_errno($ch)) {
         curl_close($ch);
         return null;
@@ -51,109 +50,61 @@ function createLivepeerStream($streamName)
 
     curl_close($ch);
 
-    // Decode response and return
     return json_decode($response, true);
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="centre , initial-scale=1.0">
-    <title>Create Live Class</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Class Streaming</title>
     <style>
-              body {
+        body {
             margin-top: 100px;
             justify-content: center;
         }
-        header {
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(10px);
-            transition: background-color 0.3s ease;
-            z-index: 50;
-        }
         .container {
-            margin-top: 120px;
-            margin-left: 500px;
-        }
-
-.container {
-    text-align: center;
-    background: rgba(255, 255, 255, 0.9);
-    padding: 30px 20px;
-    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
-    border-radius: 12px;
-    width: 90%; /* Adjust the width as needed */
-    max-width: 400px; /* Ensures the box doesn’t stretch too wide */
-}
-
-        .container {
-            text-align: center;   
-            background: rgba(255, 255, 255, 0.9);
-            padding: 30px 20px;
-            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
-            border-radius: 12px;
+            text-align: center;
+            margin: 0 auto;
+            max-width: 500px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            background-color: #f9f9f9;
+            border-radius: 8px;
         }
         h1 {
-            color: #333;
             margin-bottom: 20px;
         }
         input, button {
-            padding: 10px;
-            margin: 10px;
-            font-size: 16px;
-            width: 80%;
-            max-width: 300px;
             display: block;
-            margin-left: auto;
-            margin-right: auto;
-            border-radius: 8px;
-        }
-        input {
-            border: 1px solid #ddd;
-            transition: border-color 0.3s;
-        }
-        input:focus {
-            border-color: #007BFF;
-            outline: none;
-            box-shadow: 0 0 8px rgba(0, 123, 255, 0.5);
-        }
-        button {
-            background: #007BFF;
-            color: #fff;
-            border: none;
-            cursor: pointer;
-            transition: background 0.3s, transform 0.2s;
-        }
-        button:hover {
-            background: #0056b3;
-            transform: scale(1.05);
+            width: 80%;
+            margin: 10px auto;
+            padding: 10px;
+            font-size: 16px;
         }
         .details {
             margin-top: 20px;
             padding: 15px;
             border: 1px solid #ddd;
-            background-color: #f9f9f9;
             text-align: left;
-            display: inline-block;
         }
-        .error {
-            color: red;
-            margin-top: 10px;
+        .video-container {
+            margin-top: 20px;
+            text-align: center;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Create a Live Class</h1>
+        <h1>Create and Stream Live Class</h1>
         <form method="POST" action="">
             <input type="text" name="streamName" placeholder="Enter Stream Name" required />
             <button type="submit">Create Stream</button>
         </form>
 
         <?php if ($error): ?>
-            <div class="error"><?= htmlspecialchars($error) ?></div>
+            <div style="color: red;"><?= htmlspecialchars($error) ?></div>
         <?php endif; ?>
 
         <?php if ($streamDetails): ?>
@@ -163,6 +114,19 @@ function createLivepeerStream($streamName)
                 <p><strong>Stream ID:</strong> <?= htmlspecialchars($streamDetails['id']) ?></p>
                 <p><strong>RTMP URL:</strong> rtmp://rtmp.livepeer.com/live</p>
                 <p><strong>Stream Key:</strong> <?= htmlspecialchars($streamDetails['streamKey']) ?></p>
+                <p><strong>Playback URL:</strong> 
+                    <a href="watch.php?classKey=<?= htmlspecialchars($streamDetails['id']) ?>" target="_blank">
+                        Watch Stream
+                    </a>
+                </p>
+            </div>
+
+            <div class="video-container">
+                <h3>Your Live Stream</h3>
+                <video id="streamVideo" controls autoplay>
+                    <source src="https://livepeercdn.com/hls/<?= htmlspecialchars($streamDetails['playbackId']) ?>/index.m3u8" type="application/x-mpegURL">
+                    Your browser does not support HLS streaming.
+                </video>
             </div>
         <?php endif; ?>
     </div>
