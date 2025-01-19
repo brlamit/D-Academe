@@ -10,6 +10,8 @@
     <style>
         body {
             margin-top: 100px;
+            margin-left: 200px;
+            margin-right: 200px;
         }
         header {
             background: rgba(0, 0, 0, 0.8);

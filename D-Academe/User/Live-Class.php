@@ -50,7 +50,8 @@
 
             <!-- Live Stream Section -->
             <div class="mb-6">
-                <video id="liveStream" controls autoplay class="w-full rounded-lg shadow-md"></video>
+                <iframe src="https://lvpr.tv?v=d951p973ep25data" frameborder="0" allowfullscreen allow="autoplay; encrypted-media; picture-in-picture"
+                     sandbox="allow-same-origin allow-scripts" controls autoplay class="w-full rounded-lg shadow-md"></iframe>
             </div>
         </div>
     </div>
