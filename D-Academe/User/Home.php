@@ -51,23 +51,17 @@
             </a>
         </div>
         <!-- Search Bar -->
-<div class="w-full max-w-lg relative">
-    <div class="flex items-center">
+        <div class="w-full max-w-lg relative mx-auto mb-8">
+    <div class="flex items-center border border-gray-300 rounded-full bg-white shadow-lg focus-within:ring-2 focus-within:ring-green-600 relative">
         <input
             type="text"
             placeholder="Search Courses..."
-            class="w-full py-3 px-6 rounded-full text-gray-900 placeholder-gray-500 bg-white shadow-lg focus:outline-none focus:ring-2 focus:ring-green-600"
-            data-aos="fade-up"
-            data-aos-delay="100"
+            id="searchInput"
+            class="w-full py-3 px-6 rounded-full text-gray-900 placeholder-gray-500 bg-green-200 focus:outline-none"
+            
+            oninput="showSuggestions()"
         />
-        <button
-            class="absolute right-8 top-2/2 transform -translate-y-1/2 bg-transparent text-red-400 py-1 px-8 rounded-full text-xl"
-            data-aos="fade-up"
-            data-aos-delay="100"
-        >Search
-            <!-- Search Icon -->
-            <i class="fas fa-search text-xl"></i>
-        </button>
+        <div id="suggestions" class="absolute top-full left-0 w-full bg-white border border-gray-300 text-left rounded-lg max-h-48 overflow-y-auto shadow-lg mt-1 hidden z-10"></div>
     </div>
 </div>
     </div>
@@ -182,6 +176,111 @@
         }
 </script>
 
+<!-- Search JavaScript -->
+<script>
+    
+    function getTags() {
+        const courseCards = document.querySelectorAll('.course-card');
+        const tags = new Set();
+        courseCards.forEach(card => {
+            const cardTags = card.getAttribute('data-tags').split(',');
+            cardTags.forEach(tag => tags.add(tag.trim()));
+        });
+        return [...tags].sort();
+    }
+
+    function displaySuggestions(query) {
+        const tags = getTags();
+        const filteredTags = tags.filter(tag => tag.toLowerCase().includes(query.toLowerCase()));
+
+        const suggestionsContainer = document.getElementById('suggestions');
+        suggestionsContainer.innerHTML = '';
+        selectedIndex = -1; // Reset selection index
+
+        if (filteredTags.length > 0 && query !== '') {
+            filteredTags.forEach(tag => {
+                const suggestion = document.createElement('div');
+                suggestion.className = 'px-4 py-2 cursor-pointer hover:bg-gray-200 text-gray-900';
+                suggestion.textContent = tag;
+                suggestion.addEventListener('click', () => {
+                    document.getElementById('searchInput').value = tag;
+                    filterCourses(tag);
+                    suggestionsContainer.style.display = 'none';
+                });
+                suggestionsContainer.appendChild(suggestion);
+            });
+            suggestionsContainer.style.display = 'block';
+        } else {
+            suggestionsContainer.style.display = 'none';
+        }
+    }
+
+    function navigateSuggestions(event) {
+        const suggestionsContainer = document.getElementById('suggestions');
+        const suggestions = suggestionsContainer.querySelectorAll('div');
+
+        if (!suggestions.length) return;
+
+        if (event.key === 'ArrowDown') {
+            if (selectedIndex < suggestions.length - 1) {
+                selectedIndex++;
+                updateSelectedSuggestion(suggestions);
+            }
+        } else if (event.key === 'ArrowUp') {
+            if (selectedIndex > 0) {
+                selectedIndex--;
+                updateSelectedSuggestion(suggestions);
+            }
+        } else if (event.key === 'Enter') {
+            if (selectedIndex >= 0) {
+                const selectedSuggestion = suggestions[selectedIndex];
+                document.getElementById('searchInput').value = selectedSuggestion.textContent;
+                filterCourses(selectedSuggestion.textContent);
+                suggestionsContainer.style.display = 'none';
+            }
+        }
+    }
+
+    function updateSelectedSuggestion(suggestions) {
+        suggestions.forEach(suggestion => suggestion.classList.remove('active-suggestion'));
+        if (selectedIndex >= 0) {
+            suggestions[selectedIndex].classList.add('active-suggestion');
+            suggestions[selectedIndex].scrollIntoView({ block: 'nearest' });
+        }
+    }
+
+    function filterCourses(query) {
+        const courseCards = document.querySelectorAll('.course-card');
+        if (query === '') {
+            // Show all courses if the search input is empty
+            courseCards.forEach(card => {
+                card.style.display = '';
+            });
+        } else {
+            courseCards.forEach(card => {
+                const cardTags = card.getAttribute('data-tags').split(',');
+                card.style.display = cardTags.some(tag => tag.toLowerCase().includes(query.toLowerCase())) ? '' : 'none';
+            });
+        }
+    }
+
+    document.getElementById('searchInput').addEventListener('input', e => {
+        const query = e.target.value;
+        displaySuggestions(query);
+        filterCourses(query);
+    });
+
+    document.getElementById('searchInput').addEventListener('keydown', navigateSuggestions);
+
+    document.addEventListener('DOMContentLoaded', fetchCourses);
+
+    document.addEventListener('click', e => {
+        const suggestionsContainer = document.getElementById('suggestions');
+        if (!suggestionsContainer.contains(e.target) && e.target.id !== 'searchInput') {
+            suggestionsContainer.style.display = 'none';
+        }
+    });
+ </script>
 </body>
 
 </html>
