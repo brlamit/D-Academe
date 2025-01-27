@@ -1,24 +1,29 @@
 <?php
-include('header.php');
-// Include your database connection
-require_once 'dbconnection.php'; // Ensure this file correctly establishes a connection
+require __DIR__ . '/Parsedown.php'; // Include Parsedown for Markdown parsing
+$Parsedown = new Parsedown();
 
-// Initialize variables
-$courseId = $name = $description = $tokenPrice = $image = $courseContent = ''; // Added courseContent
+// Database connection (ensure `$conn` is defined in your project)
+require_once 'dbconnection.php'; // Replace with your database connection script
+include 'header.php'; // Include the header file
+// Default values
+$defaultMessage = "<p class='text-gray-500'>Select a course topic to begin.</p>";
+$htmlContent = $defaultMessage;
+$name = $description = $imageUrl = $courseContent = ''; // Initialize variables
+$message = null; // Error or success message
 
-// Check if course details are provided in the URL
+// Fetch course details based on course_id
 if (isset($_GET['course_id'])) {
-    $courseName = $_GET['course_id'];
+    $courseId = $_GET['course_id'];
     $sql = "SELECT * FROM courses WHERE id = ?";
     if ($stmt = $conn->prepare($sql)) {
-        $stmt->bind_param('s', $courseName);
+        $stmt->bind_param('s', $courseId);
         $stmt->execute();
         $result = $stmt->get_result();
         if ($row = $result->fetch_assoc()) {
-            $name = $row['name'];
-            $imageUrl = $row['image'];  // Fetch image URL
-            $description = $row['description'];
-            $courseContent = $row['course_content']; // Fetch course content URL or details
+            $name = htmlspecialchars($row['name']);
+            $imageUrl = htmlspecialchars($row['image']); // Fetch and sanitize image URL
+            $description = htmlspecialchars($row['description']);
+            $courseContent = htmlspecialchars($row['course_content']); // Fetch URL from the database
         } else {
             $message = "Course not found!";
         }
@@ -26,12 +31,82 @@ if (isset($_GET['course_id'])) {
     } else {
         $message = "Error fetching course details!";
     }
-} else {
-    $message = "No course ID provided!";
 }
 
-// Close the database connection
-$conn->close();
+// Ensure that we append /summary.md to the course content URL fetched from the database
+if ($courseContent) {
+    $courseContent = rtrim($courseContent, '/'); // Remove trailing slashes if any
+    $courseContentURL = $courseContent . '/SUMMARY.md'; // Append /summary.md
+} else {
+    $message = "No course content URL found in the database.";
+}
+
+// Fetch the content of the SUMMARY.md file
+$markdownContent = @file_get_contents($courseContentURL); // Suppress errors to handle them later
+
+// Topics array to store parsed topics from the markdown file
+$topics = [];
+
+// Handle the scenario where SUMMARY.md file is not found
+if ($markdownContent === false) {
+    // If the file is not found, display the courseContent URL directly
+    $message = "SUMMARY.md not found. You can view the course content <a href='$courseContent' class='text-blue-500 hover:underline' target='_blank'>here</a>.";
+} else {
+    // Parse the markdown file and extract topics if available
+    $lines = explode("\n", $markdownContent);
+    foreach ($lines as $line) {
+        // Extract topic links from the Markdown (assuming format: `- [Topic Name](URL)`)
+        if (preg_match('/\[(.+?)\]\((.+?)\)/', $line, $matches)) {
+            // Prepend courseContent URL to the topic URL
+            $fullUrl = $courseContent . '/' . ltrim($matches[2], '/'); // Ensure no double slashes
+            // Store the Pinata URL for each topic
+            $topics[] = ['name' => $matches[1], 'url' => $fullUrl];
+        }
+    }
+}
+
+// If a specific topic is selected, fetch its markdown content
+if (isset($_GET['topic_url'])) {
+    $topicUrl = $_GET['topic_url'];
+    
+    // If the topic URL is relative, prepend the courseContent URL
+    if (strpos($topicUrl, 'http') !== 0) {
+        $topicUrl = $courseContent . '/' . ltrim($topicUrl, '/');
+    }
+
+    $topicMarkdownContent = @file_get_contents($topicUrl);
+
+    if ($topicMarkdownContent !== false) {
+        // Parse the markdown content and convert it to HTML
+        $htmlContent = $Parsedown->text($topicMarkdownContent);
+    } else {
+        $htmlContent = "<p class='text-red-500'>Failed to load the selected topic content.</p>";
+    }
+}
+// Determine the index of the current topic in the $topics array
+$currentTopicIndex = null;
+if (isset($_GET['topic_url'])) {
+    foreach ($topics as $index => $topic) {
+        if ($topic['url'] === $_GET['topic_url']) {
+            $currentTopicIndex = $index;
+            break;
+        }
+    }
+}
+
+// Determine the previous and next topics
+$prevCourse = null;
+$nextCourse = null;
+
+if ($currentTopicIndex !== null) {
+    if ($currentTopicIndex > 0) {
+        $prevCourse = $topics[$currentTopicIndex - 1]['url'];
+    }
+    if ($currentTopicIndex < count($topics) - 1) {
+        $nextCourse = $topics[$currentTopicIndex + 1]['url'];
+    }
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -39,130 +114,110 @@ $conn->close();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>View Course</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <title><?= $name ? htmlspecialchars($name) : "Dynamic Course Content" ?></title>
+    <style>
+        html {
+            scroll-behavior: smooth;
+        }
+        .content h1, .content h2, .content h3 {
+            color: #2d3748; /* Matching Clarity book color */
+            font-weight: 700;
+            margin-top: 1.5em;
+        }
+        .content p {
+            margin-top: 1em;
+            line-height: 1.75;
+            font-size: 1.125rem;
+            color: #4a5568;
+        }
+        .content pre {
+            background-color: #4a5568;
+            /* color: #a0aec0; */
+            text-color: #a0aec0;
+            padding: 1em;
+            border-radius: 0.5em;
+            overflow-x: auto;
+        }
+        .content code {
+            /* color: #a0aec0; */
+            padding: 0.2em 0.4em;
+            border-radius: 0.25em;
+            /* color: #2d3748; */
+            font-size: 0.95em;
+        }
+        .content a {
+            color: #3182ce;
+            text-decoration: underline;
+        }
+        .content ul, .content ol {
+            margin-top: 1em;
+            padding-left: 1.5em;
+        }
+        .content li {
+            margin-top: 0.5em;
+        }
+    </style>
 </head>
-<body class="bg-gray-900 min-h-screen flex flex-col">
+<body class="bg-gray-100 font-sans">
 
-<!-- Course Details Layout -->
-<section class="bg-black p-8 rounded-xl shadow-2xl w-full mx-auto mt-16 flex-1">
-    <!-- Go Back Button -->
-    <button type="button" onclick="goBack()"
-        class="bg-transparent text-white py-2 px-4 text-sm rounded-lg font-semibold hover:text-teal-800 transition-all shadow-md">
-        Go Back
-    </button>
-    
-    <!-- Page Title -->
-    <h1 class="text-4xl font-extrabold text-gray-400 text-center mt-8">Course Details</h1>
+    <!-- Container for the entire page -->
+    <div class="flex min-h-screen  mt-24">
 
-    <!-- Display Message if Course Not Found -->
-    <?php if (isset($message)) { ?>
-        <div class="text-center text-red-500 mt-4">
-            <p><?php echo htmlspecialchars($message); ?></p>
-        </div>
-    <?php } else { ?>
-        <!-- Course Details -->
-        <div class="flex gap-8 mt-8">
-            <!-- Left Column for Course Image, Name, and Description -->
-            <div class="flex-1 max-w-xs">
-                <!-- Course Image -->
-                <?php if ($imageUrl): ?>
-                    <div class="mt-4">
-                        <h3 class="text-lg text-gray-400">Course Image</h3>
-                        <img src="<?php echo htmlspecialchars($imageUrl); ?>" alt="Course Image" class="mt-2 w-32 h-12 rounded-md shadow-sm">
-                    </div>
-                <?php endif; ?>
-
-                <!-- Course Name -->
-                <h2 class="text-3xl font-semibold text-white mt-4"><?php echo htmlspecialchars($name); ?></h2>
-
-                <!-- Course Description -->
-                <div class="mt-4">
-                    <h3 class="text-lg text-gray-400">Description</h3>
-                    <p class="text-gray-300"><?php echo nl2br(htmlspecialchars($description)); ?></p>
+        <!-- Sidebar (Left) -->
+        <div class="w-1/5 bg-white text-gray-800 h-full overflow-y-auto">
+           <!-- Display the image fetched from the database -->
+            <img src="<?= htmlspecialchars($imageUrl) ?>" alt="<?= htmlspecialchars($name) ?> Logo" class="w-60 h-auto object-contain hover:scale-105 transition-transform duration-300 opacity-80 hover:opacity-100">
+         
+            <!-- Course Topics -->
+                <div class="bg-white shadow-md mt-8 rounded-lg p-6">
+                    <!-- <h3 class="text-xl font-bold text-gray-700 mb-4">Course Topics</h3> -->
+                    <?php if (!empty($topics)): ?>
+                        <ul class="list-disc pl-5 space-y-2">
+                            <?php foreach ($topics as $topic): ?>
+                                <li>
+                                    <!-- Create a clickable link to the respective topic -->
+                                    <a href="?course_id=<?= htmlspecialchars($courseId) ?>&topic_url=<?= urlencode($topic['url']) ?>" class="text-gray-500 hover:underline">
+                                        <?= htmlspecialchars($topic['name']) ?>
+                                    </a>
+                                </li>
+                            <?php endforeach; ?>
+                        </ul>
+                    <?php else: ?>
+                        <p class="text-gray-500">No topics available for this course. You can view the course content <a href="<?= htmlspecialchars($courseContent) ?>" target="_blank" class="text-blue-500 hover:underline">here</a>.</p>
+                    <?php endif; ?>
                 </div>
-            </div>
-
-            <!-- Right Column for Course Content -->
-            <div class="flex-1 flex flex-col w-full h-full">
-                <h3 class="text-xl font-semibold text-white">Course Content</h3>
-                <div class="mt-4">
-    <?php if ($courseContent): ?>
-        <button onclick="toggleCourseContent()" class="text-teal-500 hover:underline">
-            Access Course Content
-        </button>
-        <div id="course-content" class="hidden mt-4 bg-gray-800 p-4 rounded-lg">
-            <div id="content-container" class="w-full"></div>
         </div>
-    <?php else: ?>
-        <p class="text-gray-300">No course content available.</p>
-    <?php endif; ?>
-</div>
 
+        <!-- Main Content (Right) -->
+        <div class="w-full p-8 bg-white overflow-y-auto">
+            <div class="max-w-1xl mx-auto content">   
+                <!-- Content Section -->
+                <div class="prose prose-lg prose-green pt-16 max-w-none mt-1 leading-relaxed text-2xl">
+                    <?= $htmlContent ?>
+                </div>
+
+                <!-- Navigation Links -->
+                <div class="mt-8 flex justify-between">
+                    <?php if ($prevCourse): ?>
+                        <a href="?course_id=<?= htmlspecialchars($courseId) ?>&topic_url=<?= htmlspecialchars($prevCourse) ?>" 
+                        class="text-blue-500 hover:text-blue-700">&larr; Previous</a>
+                    <?php else: ?>
+                        <span class="text-gray-400">&larr; Previous</span> <!-- Disabled -->
+                    <?php endif; ?>
+
+                    <?php if ($nextCourse): ?>
+                        <a href="?course_id=<?= htmlspecialchars($courseId) ?>&topic_url=<?= htmlspecialchars($nextCourse) ?>" 
+                        class="text-blue-500 hover:text-blue-700">Next &rarr;</a>
+                    <?php else: ?>
+                        <span class="text-gray-400">Next &rarr;</span> <!-- Disabled -->
+                    <?php endif; ?>
+                </div>
+
+            
             </div>
-
         </div>
-    <?php } ?>
-
-</section>
-
-<script>
-   // Function to toggle the visibility of course content
-function toggleCourseContent() {
-    const content = document.getElementById('course-content');
-    const contentContainer = document.getElementById('content-container');
-
-    if (content.style.display === 'none' || content.style.display === '') {
-        content.style.display = 'block';
-        loadContent(contentContainer);
-
-        // Scroll to the course content section
-        content.scrollIntoView({ behavior: 'smooth' });
-    } else {
-        content.style.display = 'none';
-    }
-}
-
-// Load content dynamically based on file type or URL
-function loadContent(container) {
-    const courseContentUrl = '<?php echo addslashes($courseContent); ?>'; // PHP variable into JS
-
-    const fileExtension = courseContentUrl.split('.').pop().toLowerCase();
-
-    if (isUrl(courseContentUrl)) {
-        // If it's a URL (external content), embed it
-        container.innerHTML = `<iframe src="${courseContentUrl}" class="w-full h-[600px]" frameborder="0"></iframe>`;
-    } else if (fileExtension === 'pdf') {
-        // For PDF files
-        container.innerHTML = `<iframe src="${courseContentUrl}" class="w-full h-[600px]" frameborder="0"></iframe>`;
-    } else if (fileExtension === 'md') {
-        // For markdown files
-        fetch(courseContentUrl)
-            .then(response => response.text())
-            .then(data => {
-                container.innerHTML = `<pre class="text-gray-300">${data}</pre>`;
-            })
-            .catch(error => {
-                container.innerHTML = '<p class="text-red-500">Error loading markdown file.</p>';
-            });
-    } else {
-        // Handle unsupported files
-        container.innerHTML = '<p class="text-red-500">Unsupported file or URL format.</p>';
-    }
-}
-
-// Function to check if the given string is a valid URL
-function isUrl(str) {
-    const pattern = /^(https?:\/\/|www\.)[a-zA-Z0-9\-._~:\/?#[\]@!$&'()*+,;=]+$/;
-    return pattern.test(str);
-}
-
-// Go back to the previous page
-function goBack() {
-    window.history.back();
-}
-
-</script>
-
+    </div>
+    <?php include 'footer.php'; // Include the footer file ?>
 </body>
 </html>
