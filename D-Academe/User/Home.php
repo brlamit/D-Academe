@@ -1,3 +1,27 @@
+<?php
+// start session
+// session_start();
+
+
+include('dbconnection.php');  // Assuming this file contains your database connection code
+
+
+if (!isset($_SESSION['email'])) {
+    // Redirect to login page if user is not logged in
+    header("Location: ./login/user_login.html");
+    exit();
+}
+$message = '';
+if (isset($_SESSION['message'])) {
+    $message = $_SESSION['message'];
+    unset($_SESSION['message']); // Clear the message after displaying it once
+}
+
+// Get user details from session
+$user_id = $_SESSION['id'];
+$user_email = $_SESSION['email'];
+$user_name = $_SESSION['name'];
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -265,7 +289,15 @@
                         </div>
                         <div class="mt-6 flex gap-4 justify-center">
                             <!-- View button -->
-                            <button onclick="viewCourse('${course.name}')" class="bg-blue-500 hover:bg-blue-600 text-white py-3 px-8 rounded-full text-lg">View</button>
+                           <!-- Enrollment button within the course card -->
+                                <button  
+                                    onClick="viewAndEnrollCourse({
+                                         id: '${course.id}',
+                                        name: '${course.name}',
+                                    }, user)" 
+                                    class="bg-blue-500 hover:bg-blue-600 text-white py-3 px-8 rounded-full text-lg">
+                                    Enroll Now
+                                </button>
                         </div>
                     </div>
                 `;
@@ -277,16 +309,66 @@
         }
     }
     // View course function
-    function viewCourse(courseName) {
-        // Redirect to viewcourse.php with the courseName as a URL parameter
-        window.location.href = `freeviewcourse.php?course_name=${encodeURIComponent(courseName)}`;
-    }
+    // function viewCourse(courseName) {
+    //     // Redirect to viewcourse.php with the courseName as a URL parameter
+    //     window.location.href = `freeviewcourse.php?course_name=${encodeURIComponent(courseName)}`;
+    // }
     // Call this function when the document is loaded
     document.addEventListener('DOMContentLoaded', function() {
         fetchFreeCourses();    // Fetch free courses
     });
 </script>
+<script>
+// Assuming `user_id` and `user_name` are coming from the PHP session
+const user = {
+    id: <?php echo json_encode($user_id); ?>,
+    name: <?php echo json_encode($user_name); ?>
+};
 
+// Function to perform two actions: view and enroll in the course
+const viewAndEnrollCourse = (course, user) => {
+    // 1. View the course (redirect to course view page)
+    viewCourse(course.name);
+
+    // 2. Enroll the user in the course
+    enrollInCourse(course.user);
+};
+
+// Function to view the course
+const viewCourse = (courseName) => {
+    window.location.href = `freeviewcourse.php?course_name=${encodeURIComponent(courseName)}`;
+};
+// Function to enroll in the course
+const enrollInCourse = async (course, user) => {
+    try {
+        const response = await fetch("enroll.php", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                userId: user.id,
+                courseId: course.id,  // Ensure you are sending the correct courseId
+            }),
+        });
+
+        const data = await response.json();
+        console.log("Response:", data);  // Log response for debugging
+
+        if (response.ok && data.status === "success") {
+            alert("Successfully enrolled in the course!");
+        } else {
+            alert(`Error: ${data.message}`);
+        }
+    } catch (error) {
+        console.error("Error enrolling in course:", error);
+        alert("Failed to enroll in the course.");
+    }
+};
+
+
+
+</script>
 </body>
 
 </html>
