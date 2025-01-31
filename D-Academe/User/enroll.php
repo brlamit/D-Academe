@@ -1,21 +1,40 @@
 <?php
-
-include('dbconnection.php');  // Assuming this file contains your database connection code
+include('dbconnection.php');  
+session_start();  
 
 header("Content-Type: application/json");
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 
-// Get JSON data from request
-$data = json_decode(file_get_contents("php://input"));
-
-if ($data === null) {
-    echo json_encode(["message" => "Invalid JSON"]);
+// Check if the user is logged in
+if (!isset($_SESSION['email'])) {
+    echo json_encode(["error" => "User not logged in"]);
     exit();
 }
 
-// Ensure table exists
+$user_id = $_SESSION['id'];
+$user_name = $_SESSION['name'];
+
+// Read JSON input
+$data = json_decode(file_get_contents("php://input"));
+
+if (!$data) {
+    echo json_encode(["error" => "Invalid JSON received"]);
+    exit();
+}
+
+$courseId = intval($data->courseId ?? 0);
+
+if ($courseId <= 0) {
+    echo json_encode(["error" => "Invalid Course ID"]);
+    exit();
+}
+
+// Ensure enrollments table exists
 $createTableQuery = "CREATE TABLE IF NOT EXISTS course_enrollments (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    user_account VARCHAR(255) NOT NULL,
+    user_id INT NOT NULL,
+    user_name VARCHAR(255) NOT NULL,
     course_id INT NOT NULL,
     course_name VARCHAR(255) NOT NULL,
     course_price DECIMAL(10,2) NOT NULL,
@@ -26,52 +45,48 @@ $createTableQuery = "CREATE TABLE IF NOT EXISTS course_enrollments (
     enrolled_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 )";
 
-if (!$conn->query($createTableQuery)) {
-    die(json_encode(["success" => false, "error" => "Failed to create table"]));
+$conn->query($createTableQuery);
+
+// Fetch course details
+$query = "SELECT * FROM free_courses WHERE id = ?";
+$stmt = $conn->prepare($query);
+$stmt->bind_param("i", $courseId);
+$stmt->execute();
+$result = $stmt->get_result();
+
+if ($result->num_rows === 0) {
+    echo json_encode(["error" => "Course not found"]);
+    exit();
 }
 
-// Check if required data is received
-if (isset($data->userId) && isset($data->courseId)) {
-    $userId = mysqli_real_escape_string($conn, $data->userId);
-    $courseId = mysqli_real_escape_string($conn, $data->courseId);
+$course = $result->fetch_assoc();
+$courseName = $course['name'] ?? '';
+$coursePrice = $course['price'] ?? 0.0;
+$courseImage = $course['image'] ?? null;
+$courseDescription = $course['description'] ?? null;
+$courseContent = $course['course_content'] ?? null;
 
-    // Fetch course details based on courseId
-    $query = "SELECT * FROM free_courses WHERE id = '$courseId'";
-    $result = mysqli_query($conn, $query);
+// Check if user is already enrolled
+$checkEnrollment = "SELECT * FROM course_enrollments WHERE user_id = ? AND course_id = ?";
+$checkStmt = $conn->prepare($checkEnrollment);
+$checkStmt->bind_param("ii", $user_id, $courseId);
+$checkStmt->execute();
+$checkResult = $checkStmt->get_result();
 
-    if ($result && mysqli_num_rows($result) > 0) {
-        $course = mysqli_fetch_assoc($result);
+if ($checkResult->num_rows > 0) {
+    echo json_encode(["error" => "User is already enrolled in this course"]);
+    exit();
+}
 
-        // Extract course details
-        $courseName = $course['name'];
-        $courseDescription = $course['description'];
-        $courseContent = $course['course_content'];
+// Enroll the user
+$insertQuery = "INSERT INTO course_enrollments (user_id, user_name, course_id, course_name, course_price, image, description, content) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+$insertStmt = $conn->prepare($insertQuery);
+$insertStmt->bind_param("isisdsss", $user_id, $user_name, $courseId, $courseName, $coursePrice, $courseImage, $courseDescription, $courseContent);
 
-        // Fetch user details (if needed, assuming a users table exists)
-        $userQuery = "SELECT * FROM user_login WHERE id = '$userId'";
-        $userResult = mysqli_query($conn, $userQuery);
-
-        if ($userResult && mysqli_num_rows($userResult) > 0) {
-            $user = mysqli_fetch_assoc($userResult);
-            $userName = $user['name'];  // Assuming there's a 'name' field for the user
-
-            // Insert enrollment into course_enrollments table
-            $insertQuery = "INSERT INTO course_enrollments (user_id, user_name, course_id, course_name, course_description, course_content) 
-                            VALUES ('$userId', '$userName', '$courseId', '$courseName', '$courseDescription', '$courseContent')";
-
-            if (mysqli_query($conn, $insertQuery)) {
-                echo json_encode(["message" => "Enrollment successful"]);
-            } else {
-                echo json_encode(["message" => "Enrollment failed", "error" => mysqli_error($conn)]);
-            }
-        } else {
-            echo json_encode(["message" => "User not found"]);
-        }
-    } else {
-        echo json_encode(["message" => "Course not found"]);
-    }
+if ($insertStmt->execute()) {
+    echo json_encode(["success" => "Enrollment successful"]);
 } else {
-    echo json_encode(["message" => "Invalid request"]);
+    echo json_encode(["error" => "Enrollment failed", "mysql_error" => $insertStmt->error]);
 }
-
 ?>

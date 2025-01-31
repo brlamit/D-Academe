@@ -324,31 +324,29 @@ const user = {
     id: <?php echo json_encode($user_id); ?>,
     name: <?php echo json_encode($user_name); ?>
 };
-
 // Function to perform two actions: view and enroll in the course
 const viewAndEnrollCourse = (course, user) => {
     // 1. View the course (redirect to course view page)
     viewCourse(course.name);
 
     // 2. Enroll the user in the course
-    enrollInCourse(course.user);
+    enrollInCourse(course.id, user);
 };
 
 // Function to view the course
 const viewCourse = (courseName) => {
     window.location.href = `freeviewcourse.php?course_name=${encodeURIComponent(courseName)}`;
 };
+
 // Function to enroll in the course
-const enrollInCourse = async (course, user) => {
+const enrollInCourse = async (courseId, user) => {
     try {
         const response = await fetch("enroll.php", {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
             body: JSON.stringify({
-                userId: user.id,
-                courseId: course.id,  // Ensure you are sending the correct courseId
+                courseId: courseId,  // Send the correct courseId
+                userId: user.id,     // Include the user ID
+                userName: user.name, // Include the user Name
             }),
         });
 
@@ -358,11 +356,11 @@ const enrollInCourse = async (course, user) => {
         if (response.ok && data.status === "success") {
             alert("Successfully enrolled in the course!");
         } else {
-            alert(`Error: ${data.message}`);
+            alert(`User is already enrolled in this course`);
         }
     } catch (error) {
         console.error("Error enrolling in course:", error);
-        alert("Failed to enroll in the course.");
+         alert("Failed to enroll in the course.");
     }
 };
 
