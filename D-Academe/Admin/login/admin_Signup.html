@@ -22,7 +22,7 @@
 </head>
 <body class="flex items-center justify-center min-h-screen">
     <!-- Signup Form Container -->
-    <div class="bg-black p-8 rounded-xl shadow-2xl w-full max-w-4xl relative">
+    <div class="bg-green-1000 p-4 rounded-xl shadow-2xl w-full max-w-4xl relative">
         <!-- Go Back Button (Positioned outside form but inside container) -->
         <button type="button" onclick="goBack()"
             class="absolute top-4 left-4 bg-transparent underline text-white py-2 px-4 text-sm rounded-lg font-semibold hover:text-teal-800 transition-all shadow-md">
@@ -37,7 +37,7 @@
 
         <!-- Profile Picture -->
         <div class="text-center mb-8">
-            <label for="profile_picture" class="block text-gray-700 mb-2 font-semibold">Profile Picture</label>
+            <label for="profile_picture" class="block text-gray-200 mb-2 font-semibold">Profile Picture</label>
             <div class="relative w-28 h-28 mx-auto mb-4">
                 <img id="profilePreview" 
                      src="https://via.placeholder.com/96" 
@@ -102,8 +102,8 @@
                 <div>
                     <label for="license" class="block text-gray-200 mb-2 font-semibold">Upload License/Certificate</label>
                     <input id="license" type="file" accept=".pdf, .jpg, .jpeg, .png" required
-                           class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    <small class="text-gray-500">Accepted formats: .pdf, .jpg, .jpeg, .png</small>
+                           class="w-full px-4 py-3 border text-white border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <small class="text-gray-200">Accepted formats: .pdf, .jpg, .jpeg, .png</small>
                 </div>
 
                 <!-- Submit Button -->
@@ -118,8 +118,8 @@
 
         <!-- Already have an account -->
         <div class="text-center mt-6">
-            <p class="text-gray-500 text-sm">
-                Already have an account? <a href="admin_login.html" class="text-teal-600 hover:underline font-semibold">Login</a>
+            <p class="text-gray-200 text-sm">
+                Already have an account? <a href="admin_login.html" class="text-blue-800 hover:underline font-semibold">Login</a>
             </p>
         </div>
 
@@ -174,6 +174,22 @@
 
             if (!license || !profilePicture) {
                 alert("Please upload all required files.");
+                return;
+            }
+            if (!name || !email || !phone_number || !password || !confirmPassword) {
+                alert("Please fill all fields.");
+                return;
+            }
+            if (!email.includes('@') || !email.includes('.')) {
+                alert("Please enter a valid email address.");
+                return;
+            }
+            if (phone_number.length < 10 || phone_number.length > 15) {
+                alert("Please enter a valid phone number.");
+                return;
+            }
+            if (password.length < 8) {
+                alert("Password must be at least 8 characters long.");
                 return;
             }
 
