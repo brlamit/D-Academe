@@ -22,10 +22,10 @@
 </head>
 <body class="flex items-center justify-center min-h-screen">
     <!-- Signup Form Container -->
-    <div class="bg-green-1000 p-4 rounded-xl shadow-2xl w-full max-w-4xl relative">
+    <div class=" p-4 rounded-xl shadow-2xl w-full max-w-4xl relative">
         <!-- Go Back Button (Positioned outside form but inside container) -->
         <button type="button" onclick="goBack()"
-            class="absolute top-4 left-4 bg-transparent underline text-white py-2 px-4 text-sm rounded-lg font-semibold hover:text-teal-800 transition-all shadow-md">
+            class="absolute top-4 left-4 bg-transparent underline text-white py-2 px-4 text-sm rounded-lg font-semibold hover:text-teal-400 transition-all shadow-md">
             Go Back
         </button>
 
@@ -36,17 +36,18 @@
         </div>
 
         <!-- Profile Picture -->
-        <div class="text-center mb-8">
-            <label for="profile_picture" class="block text-gray-200 mb-2 font-semibold">Profile Picture</label>
-            <div class="relative w-28 h-28 mx-auto mb-4">
-                <img id="profilePreview" 
-                     src="https://via.placeholder.com/96" 
-                     alt="Profile Preview" 
-                     class="w-full h-full rounded-full border border-gray-300 object-cover shadow-sm">
-                <input id="profile_picture" type="file" accept="image/*" onchange="previewProfilePicture(event)"
-                       class="absolute inset-0 opacity-0 cursor-pointer">
-            </div>
+        <div class="relative w-28 h-28 mx-auto mb-4">
+           <!-- Image Preview (Hidden by default) -->
+         <img id="profilePreview" class="w-full h-full object-cover rounded-full border border-gray-300 ">
+
+        
+            <!-- Default User Icon (Only visible if image fails to load) -->
+            <i id="defaultIcon" class="fas fa-user text-white text-6xl absolute inset-0 flex items-center justify-center"></i>
+        
+            <input id="profile_picture" type="file" accept="image/*" onchange="previewProfilePicture(event)"
+                   class="absolute inset-0 opacity-0 cursor-pointer">
         </div>
+        
 
         <!-- Form Structure -->
         <form id="teacherSignupForm" onsubmit="submitTeacherSignup(event)" class="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -119,7 +120,7 @@
         <!-- Already have an account -->
         <div class="text-center mt-6">
             <p class="text-gray-200 text-sm">
-                Already have an account? <a href="admin_login.html" class="text-blue-800 hover:underline font-semibold">Login</a>
+                Already have an account? <a href="admin_login.html" class="text-teal-400 hover:underline font-semibold">Login</a>
             </p>
         </div>
 
@@ -149,17 +150,22 @@
         }
 
         function previewProfilePicture(event) {
-            const file = event.target.files[0];
-            if (file && file.type.startsWith('image/')) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    document.getElementById('profilePreview').src = e.target.result;
-                };
-                reader.readAsDataURL(file);
-            } else {
-                alert('Please upload a valid image file');
-            }
+        const file = event.target.files[0];
+        const profilePreview = document.getElementById("profilePreview");
+        const defaultIcon = document.getElementById("defaultIcon");
+
+        if (file && file.type.startsWith("image/")) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                profilePreview.src = e.target.result;
+                defaultIcon.style.display = "none"; // Hide default icon when image is selected
+            };
+            reader.readAsDataURL(file);
+        } else {
+            profilePreview.src = ""; // Remove the uploaded image
+            defaultIcon.style.display = "flex"; // Show default icon
         }
+    }
 
         async function submitTeacherSignup(event) {
             event.preventDefault();
