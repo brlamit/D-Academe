@@ -12,13 +12,13 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <style>
         .hero-bg {
-            background: linear-gradient(to bottom, #0f2027, #203f43, #2c8364);
+            /* background: linear-gradient(to bottom, #0f2027, #203f43, #2c8364); */
             /* background-image: url('assets/hero2.webp'); */
             background-size: cover;
             background-position: center;
         }
         .hero-overlay {
-            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5));
+            /* background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)); */
         }
         .container {
             margin-top: 120px;
@@ -32,37 +32,48 @@
 <section class="relative w-full h-screen hero-bg ">
     <div class="absolute inset-0 hero-overlay"></div>
     <div class="relative z-10 flex flex-col justify-center items-center text-white text-center space-y-8 py-32 px-4">
-        <!-- Gradient Animated Heading -->
-        <h1 
-            class="text-5xl sm:text-6xl font-extrabold leading-tight max-w-3xl mx-auto bg-clip-text text-transparent bg-gradient-to-r from-green-400 via-red-500 to-blue-500  animate-gradientX" data-aos="fade-up" data-aos-delay="200">
-            Master Blockchain Development and Boost Your Career
-        </h1>
-        <!-- Paragraph with Subtle Fade-In Animation -->
-        <p 
-            class="text-xl sm:text-2xl max-w-2xl mx-auto opacity-90 hover:opacity-100 transition duration-300 ease-in-outanimate-fadeInUp animate-delay-300" data-aos="fade-up" data-aos-delay="300">
-            Join a world-class blockchain course and get hands-on experience in building decentralized apps and smart contracts.
-        </p>
-        <!-- Call-to-Action Buttons -->
-        <div class="flex gap-6">
-            <a href="?page=userregister" class="bg-green-600 hover:bg-green-700 text-white py-3 px-10 rounded-full text-lg  shadow-lg shadow-green-500/50 transform hover:scale-110 transition duration-300 ease-in-out animate-bounce" data-aos="fade-up" data-aos-delay="500">
-                Get Started
-            </a>
-            <a  href="/learn-more" class="text-white border-2 border-white py-3 px-10 rounded-full text-lg shadow-lg hover:shadow-pink-500/50 transition duration-300 ease-in-out hover:bg-white hover:text-gray-900" data-aos="fade-up" data-aos-delay="600">
-                Learn More
-            </a>
-        </div>
+            <div class="flex flex-col md:flex-row items-center justify-center space-y-8 md:space-y-0 md:space-x-8">
+                <!-- Left Column -->
+                <div class="text-center md:text-left space-y-8 md:w-1/2">
+                    <!-- Gradient Animated Heading -->
+                    <h1 
+                        class="text-5xl sm:text-6xl font-extrabold leading-tight max-w-3xl mx-auto bg-clip-text text-transparent bg-gradient-to-r from-green-400 via-red-500 to-blue-500 animate-gradientX" data-aos="fade-up" data-aos-delay="200">
+                        Master Blockchain Development and Boost Your Career
+                    </h1>
+                    <!-- Paragraph with Subtle Fade-In Animation -->
+                    <p 
+                        class="text-xl sm:text-2xl max-w-2xl mx-auto opacity-90 hover:opacity-100 transition duration-300 ease-in-out animate-fadeInUp animate-delay-300" data-aos="fade-up" data-aos-delay="300">
+                        Join a world-class blockchain course and get hands-on experience in building decentralized apps and smart contracts.
+                    </p>
+                    <!-- Call-to-Action Buttons -->
+                    <div class="flex flex-col sm:flex-row sm:space-x-4 space-y-4 sm:space-y-0">
+                        <a href="?page=userregister" class="bg-green-600 hover:bg-green-700 text-white py-3 px-10 rounded-full text-lg shadow-lg shadow-green-500/50 transform hover:scale-110 transition duration-300 ease-in-out animate-bounce" data-aos="fade-up" data-aos-delay="500">
+                            Get Started
+                        </a>
+                        <a href="/learn-more" class="text-white border-2 border-white py-3 px-10 rounded-full text-lg shadow-lg hover:shadow-pink-500/50 transition duration-300 ease-in-out hover:bg-white hover:text-gray-900" data-aos="fade-up" data-aos-delay="600">
+                            Learn More
+                        </a>
+                    </div>
+                </div>
+                <!-- Right Column -->
+                <div class="flex flex-col space-y-4 md:w-1/2">
+                    <img src="assets/img.webp" alt="Blockchain Course" class="w-full h-96 object-cover rounded-lg shadow-lg animate-fadeIn animate-delay-400" data-aos="fade-up" data-aos-delay="400">
+                </div>
+            </div>
+        
         <!-- Search Bar -->
         <div class="w-full max-w-lg relative mx-auto mb-8">
-    <div class="flex items-center border border-gray-300 rounded-full bg-white shadow-lg focus-within:ring-2 focus-within:ring-green-600 relative">
-        <input
-            type="text"
-            placeholder="Search Courses..."
-            id="searchInput"
-            class="w-full py-3 px-6 rounded-full text-gray-900 placeholder-gray-500 bg-green-200 focus:outline-none"
-            
-            oninput="showSuggestions()"
-        />
+        <div class="flex items-center border border-gray-300 rounded-full bg-white shadow-lg focus-within:ring-2 focus-within:ring-green-600 relative">
+            <input
+                type="text"
+                placeholder="Search Courses..."
+                id="searchInput"
+                class="w-full py-3 px-6 rounded-full text-gray-900 placeholder-gray-500 bg-green-200 focus:outline-none"
+                
+                oninput="showSuggestions()"
+            />
         <div id="suggestions" class="absolute top-full left-0 w-full bg-white border border-gray-300 text-left rounded-lg max-h-48 overflow-y-auto shadow-lg mt-1 hidden z-10"></div>
+        </div>
     </div>
 </div>
 
