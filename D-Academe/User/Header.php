@@ -44,7 +44,7 @@ $sessionTokenBalance = isset($_SESSION['tokenBalance']) ? $_SESSION['tokenBalanc
     <script src="https://cdn.jsdelivr.net/npm/web3/dist/web3.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-900 text-white">
+<!-- <body class="bg-gray-900 text-white"> -->
 
 <header class=" rounded-lg shadow-lg w-full items-center justify-between py-2 flex px-6 fixed top-0 left-0 right-0 z-50 bg-gray-900 bg-opacity-80 backdrop-blur-xl text-white">
      <!-- Logo -->

@@ -17,7 +17,7 @@
 </head>
 <body class="flex items-center justify-center min-h-screen">
     <!-- Signup Form Container -->
-    <div class="bg-black p-8 rounded-xl shadow-2xl w-full max-w-4xl">
+    <div class=" p-8 rounded-xl shadow-2xl w-full max-w-4xl">
         <div class="text-center mb-8">
             <img src="../../assets/logo.png" alt="D-Academe Logo" class="w-20 mx-auto">
             <h1 class="text-4xl font-extrabold text-gray-400 mt-4">User Register</h1>

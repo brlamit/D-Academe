@@ -55,9 +55,9 @@
                         </a>
                     </div>
                 </div>
-                <!-- Right Column -->
-                <div class="flex flex-col space-y-4 md:w-1/2">
-                    <img src="assets/img.webp" alt="Blockchain Course" class="w-full h-96 object-cover rounded-lg shadow-lg animate-fadeIn animate-delay-400" data-aos="fade-up" data-aos-delay="400">
+                 <!-- Right Column -->
+                 <div class="flex flex-col hover:scale-105 space-y-4 md:w-1/2">
+                    <img src="./assets/img.webp" alt="Blockchain Course" class="w-full h-96 object-cover rounded-lg shadow-lg transform transition-all duration-300 hover:scale-105 hover:opacity-75" data-aos="fade-up" data-aos-delay="400">
                 </div>
             </div>
         
