@@ -1,7 +1,7 @@
 <?php
 // Include your database connection
 require_once 'dbconnection.php'; // Ensure this file correctly establishes a connection
-
+include_once 'Header.php';
 // Initialize variables
 $courseId = $name = $description = $tokenPrice = $imagePath = '';
 $message = '';
@@ -11,7 +11,7 @@ $pinataApiKey = '60b9a1c65abf31d573fc';
 $pinataApiSecret = 'b01057876bf74b515db95ff30e91fd9da8a57f6989010b5ca148d83c793e82f1';
 
 // Start session to pass message
-session_start();
+// session_start();
 
 // Check if course details are provided in the URL
 if (isset($_GET['course_id'])) {
@@ -175,7 +175,12 @@ function uploadToPinata($filePath, $fileName, $pinata_api_key, $pinata_secret_ap
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Course</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <style>
+    <style>body {
+            background: linear-gradient(to bottom, #203f43, #2c8364);
+            background-size: cover;
+            background-position: center;
+            font-family: 'Inter', sans-serif;
+        }
         input:focus, textarea:focus {
             border-color: #4b9f8f;
             box-shadow: 0 0 0 2px rgba(75, 159, 143, 0.5);
@@ -227,10 +232,10 @@ function uploadToPinata($filePath, $fileName, $pinata_api_key, $pinata_secret_ap
         }
     </style>
 </head>
-<body class="flex items-center justify-center min-h-screen bg-gray-900">
+<body class="flex flex-col items-center justify-center min-h-screen bg-gray-900">
 
 <!-- Form Layout -->
-<div class="bg-black p-8 rounded-xl shadow-2xl w-full max-w-4xl relative">
+<div class=" p-8 rounded-xl shadow-2xl w-full max-w-4xl mt-32 relative">
     <button type="button" onclick="goBack()" class="absolute top-4 left-4 bg-transparent underline text-white py-2 px-4 text-sm rounded-lg font-semibold hover:text-teal-800 transition-all shadow-md">
         Go Back
     </button>
@@ -246,14 +251,14 @@ function uploadToPinata($filePath, $fileName, $pinata_api_key, $pinata_secret_ap
                 <label class="block text-lg font-semibold text-gray-400">Current Course Image</label>
                 <?php if ($imagePath): ?>
                     <img src="<?php echo htmlspecialchars($imagePath); ?>" alt="Current Image" class="w-85 h-auto mt-0 " id="currentImage">
-                    <p class="text-sm text-gray-500 mt-2">You can upload a new image to replace the current one.</p>
+                    <p class="text-sm text-gray-400 mt-2">You can upload a new image to replace the current one.</p>
                 <?php else: ?>
                     <p class="text-gray-500 mt-2">No image uploaded yet.</p>
                 <?php endif; ?>
 
                 <!-- File input for new image -->
                 <input type="file" name="course_image" class="w-full mt-2 p-3 rounded-md border border-gray-300 shadow-sm text-white" onchange="previewImage(event)">
-                <p class="text-sm text-gray-500 mt-2">Max file size: 2MB, Supported formats: JPG, PNG</p>
+                <p class="text-sm text-gray-400 mt-2">Max file size: 2MB, Supported formats: JPG, PNG</p>
             </div>
         </div>
 
@@ -323,6 +328,6 @@ function uploadToPinata($filePath, $fileName, $pinata_api_key, $pinata_secret_ap
         }
     }
 </script>
-
+<?php include_once 'Footer.php'; ?>
 </body>
 </html>
