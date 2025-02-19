@@ -89,7 +89,7 @@
     <script>
         let isConnected = false;
         let tokenABI = [];
-        const tokenContractAddress = "0xD7De1bCcD32b38907851821535308057F718eb32";
+        const tokenContractAddress = "0x7A2450f1bF6BB66AD0FA75716752Ad903C8482C9";
         const rate = 1000; // Rate from the smart contract
 
         // Load ABI

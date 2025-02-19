@@ -282,7 +282,7 @@ function getCoursePrice(courseId) {
                         </div>
                         <div class="mt-6 flex gap-4 justify-center">
                            <button onclick="window.location.href='viewcourse.php?course_id=' + ${course.id}" class="bg-blue-500 hover:bg-blue-600 text-white py-3 px-8 rounded-full text-lg">View</button>
-                            <button onclick="buyCourse(${course.id})" class="bg-green-500 hover:bg-green-600 text-white py-3 px-8 rounded-full text-lg">
+                            <button onclick="buy('${course.id}')" class="bg-green-500 hover:bg-green-600 text-white py-3 px-8 rounded-full text-lg">
                                 Buy Course
                             </button>
                           </div>
@@ -295,15 +295,20 @@ function getCoursePrice(courseId) {
             console.error('Error fetching courses:', error);
         }
     }
-
-    function editCourse(courseId) {
+    function redirectToPage(page) {
+        window.location.href = page;
+    }
+    function buy(courseId) {
         // Fetch the course details based on the courseId
         const courseCard = document.querySelector(`.course-card[data-course-id="${courseId}"]`);
         const courseName = courseCard.querySelector('h3').textContent;
         const courseDescription = courseCard.querySelector('.course-description p').textContent;
         const courseTokenPrice = courseCard.querySelector('p.text-xl').textContent.split(' ')[1]; // Assuming "Tkn 10" format
         const courseTags = courseCard.getAttribute('data-tags');
-   }
+
+        // Redirect to addcourse.php with course details as URL parameters
+        window.location.href = `buy.php?course_id=${courseId}&name=${encodeURIComponent(courseName)}&description=${encodeURIComponent(courseDescription)}&token_price=${encodeURIComponent(courseTokenPrice)}&tags=${encodeURIComponent(courseTags)}`;
+    }
 // Call this function when a course is added
 function appendCourse(course) {
     const courseContainer = document.querySelector('#courseContainer');
@@ -318,7 +323,7 @@ function appendCourse(course) {
             </div>
             <div class="mt-6 flex gap-4 justify-center">
                 <button onclick="viewCourse('${course.id}')" class="bg-blue-500 hover:bg-blue-600 text-white py-3 px-8 rounded-full text-lg">View </button>
-           <button onclick="buyCourse(${course.id})" class="bg-green-500 hover:bg-green-600 text-white py-3 px-8 rounded-full text-lg">
+           <button onclick="buy('${course.id}')" class="bg-green-500 hover:bg-green-600 text-white py-3 px-8 rounded-full text-lg">
     Buy Course
 </button>
   </div>
