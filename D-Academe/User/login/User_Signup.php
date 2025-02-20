@@ -73,11 +73,11 @@ try {
         if (isset($_FILES['profile_picture']) && $_FILES['profile_picture']['error'] === UPLOAD_ERR_OK) {
             $fileTmpPath = $_FILES['profile_picture']['tmp_name'];
             $fileName = time() . '_' . $_FILES['profile_picture']['name']; // Unique file name
-            $fileDestPath = 'uploads/profile_pictures/' . $fileName;
+            $fileDestPath = 'login/uploads/profile_pictures/' . $fileName;
 
             // Ensure the directory exists
-            if (!is_dir('uploads/profile_pictures/')) {
-                mkdir('uploads/profile_pictures/', 0777, true);
+            if (!is_dir('login/uploads/profile_pictures/')) {
+                mkdir('login/uploads/profile_pictures/', 0777, true);
             }
 
             // Move the uploaded file

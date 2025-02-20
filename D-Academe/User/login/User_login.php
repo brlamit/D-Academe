@@ -41,7 +41,7 @@ try {
             session_regenerate_id();
 
             // Store all relevant user information in session
-           
+            $_SESSION['id'] = $user['id'];
             $_SESSION['name'] = $user['name'];
             $_SESSION['email'] = $user['email'];
             $_SESSION['dob'] = $user['dob'];
@@ -54,7 +54,7 @@ try {
             // Return success response with the user details
             echo json_encode([
                 'status' => 'success',
-               
+                'id' => $user['id'],
                 'name' => $user['name'],
                 'email' => $user['email'],
                 'dob' => $user['dob'],

@@ -95,6 +95,57 @@
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6" id="courseContainer"></div>
 </section>
 
+<!-- Free course section -->
+<section id="freeCourses" class="max-w-full mx-auto py-[24px] sm:py-14 bg-gray-700">
+    <h2 class="text-center text-3xl font-bold text-white mb-6">Free Courses</h2>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6" id="freeCourseContainer"></div>
+</section>
+<script>
+    async function fetchFreeCourses() {
+        try {
+            const response = await fetch('getfreecourses.php');
+            const freeCourses = await response.json();
+
+            const freeCourseContainer = document.querySelector('#freeCourseContainer');
+            freeCourseContainer.innerHTML = ''; // Clear existing free courses
+
+            freeCourses.forEach(course => {
+                const courseCard = `
+                    <div class="course-card bg-white rounded-xl shadow-xl hover:shadow-2lg transition-all duration-300 transform hover:scale-105 p-4 border border-gray-200 hover:border-green-400 relative max-w-xs mx-auto mb-4" data-course-id="${course.id}" data-tags="${course.tags}">
+                        <img src="${course.image}" alt="Course Image" class="w-full h-36 object-cover rounded-lg mb-6 transition-transform duration-300 hover:scale-105">
+                        <h3 class="text-2xl font-semibold text-gray-800 hover:text-green-500 transition-colors duration-300">${course.name}</h3>
+                        <p class="text-xl font-bold text-green-600 mt-4">Tkn ${course.token_price}</p>
+                        <div class="course-description mt-4">
+                            <p class="text-gray-600">${course.description}</p>
+                        </div>
+                        <div class="mt-6 flex gap-4 justify-center">
+                            <!-- View button -->
+                            <button onclick="viewCourse('${course.name}')" class="bg-blue-500 hover:bg-blue-600 text-white py-3 px-8 rounded-full text-lg">View</button>
+                            <!-- Edit button -->
+                            <button onclick="freeeditCourse('${course.id}')" class="bg-green-500 hover:bg-green-600 text-white py-3 px-8 rounded-full text-lg">Edit Course</button>
+                        </div>
+                    </div>
+                `;
+
+                freeCourseContainer.insertAdjacentHTML('beforeend', courseCard);
+            });
+        } catch (error) {
+            console.error('Error fetching free courses:', error);
+        }
+    }
+
+    // View course function
+    function viewCourse(courseName) {
+        // Redirect to viewcourse.php with the courseName as a URL parameter
+        window.location.href = `freeviewcourse.php?course_name=${encodeURIComponent(courseName)}`;
+    }
+
+    // Call this function when the document is loaded
+    document.addEventListener('DOMContentLoaded', function() {
+        fetchCourses();        // Fetch paid courses (assuming you have this function)
+        fetchFreeCourses();    // Fetch free courses
+    });
+</script>
  <!-- Free Courses Section -->
  <section class="py-16 flex justify-center items-center" id="free-courses">
     <div class="container mx-auto text-center flex flex-col justify-center items-center">
@@ -230,7 +281,7 @@ function getCoursePrice(courseId) {
                             <p class="text-gray-600">${course.description}</p>
                         </div>
                         <div class="mt-6 flex gap-4 justify-center">
-                           <button onclick="window.location.href='viewCourse.php?course_id=' + ${course.id}" class="bg-blue-500 hover:bg-blue-600 text-white py-3 px-8 rounded-full text-lg">View</button>
+                           <button onclick="window.location.href='viewcourse.php?course_id=' + ${course.id}" class="bg-blue-500 hover:bg-blue-600 text-white py-3 px-8 rounded-full text-lg">View</button>
  <button onclick="buyCourse(${course.id})" class="bg-green-500 hover:bg-green-600 text-white py-3 px-8 rounded-full text-lg">
     Buy Course
 </button>

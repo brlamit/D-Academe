@@ -37,15 +37,6 @@
         </div>
     </div>
 
-    <!-- Newsletter Signup Section -->
-    <div class="mt-10 text-center">
-        <h3 class="text-xl font-semibold mb-4">Stay Updated</h3>
-        <p class="text-sm mb-4">Subscribe to our newsletter for the latest updates and offers.</p>
-        <form class="flex justify-center gap-4">
-            <input type="email" placeholder="Enter your email" class="p-2 rounded-md text-black w-64">
-            <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-6 rounded-md">Subscribe</button>
-        </form>
-    </div>
 
     <!-- Footer Bottom Section -->
     <div class="mt-10 border-t border-white pt-6 text-center text-sm">

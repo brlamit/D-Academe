@@ -56,13 +56,14 @@ $sessionTokenBalance = isset($_SESSION['tokenBalance']) ? $_SESSION['tokenBalanc
     
     <!-- Navigation -->
     <nav id="mobile-menu" class="hidden md:flex flex-1 justify-center">
-        <ul class="flex gap-8">
-            <li><a href="?page=home" class="text-lg font-medium hover:text-blue-300 transition-colors duration-200">Home</a></li>
-            <li><a href="?page=live-class" class="text-lg font-medium hover:text-blue-300 transition-colors duration-200">Live Class</a></li>
-            <li><a href="?page=courses" class="text-lg font-medium hover:text-blue-300 transition-colors duration-200">Courses</a></li>
-            <li><a href="?page=about" class="text-lg font-medium hover:text-blue-300 transition-colors duration-200">About</a></li>
-            <li><a href="?page=help" class="text-lg font-medium hover:text-blue-300 transition-colors duration-200">Help</a></li>
-        </ul>
+    <ul class="flex gap-8">
+    <li><a href="index.php?page=home" class="text-lg font-medium hover:text-blue-300 transition-colors duration-200">Home</a></li>
+    <li><a href="index.php?page=live-class" class="text-lg font-medium hover:text-blue-300 transition-colors duration-200">Live Class</a></li>
+    <li><a href="index.php?page=courses" class="text-lg font-medium hover:text-blue-300 transition-colors duration-200">Courses</a></li>
+    <li><a href="index.php?page=about" class="text-lg font-medium hover:text-blue-300 transition-colors duration-200">About</a></li>
+    <li><a href="index.php?page=help" class="text-lg font-medium hover:text-blue-300 transition-colors duration-200">Help</a></li>
+</ul>
+
     </nav>
     
     <!-- Mobile Menu Button (Hamburger icon) -->
