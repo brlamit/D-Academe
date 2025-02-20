@@ -63,6 +63,7 @@ function createLivepeerStream($streamName)
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create Live Class</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
 </head>
 <body class="bg-gray-100">
@@ -106,14 +107,17 @@ function createLivepeerStream($streamName)
 
                 <!-- Stream Details -->
                 <?php if ($streamDetails): ?>
-                    <div class="mt-6 bg-gray-50 p-4 rounded-md border border-gray-300 text-left">
-                        <h2 class="text-xl font-semibold text-gray-800 mb-4">Stream Created Successfully!</h2>
-                        <p><strong>Stream Name:</strong> <?= htmlspecialchars($streamDetails['name']) ?></p>
-                        <p><strong>Stream ID:</strong> <?= htmlspecialchars($streamDetails['id']) ?></p>
-                        <p><strong>RTMP URL:</strong> rtmp://rtmp.livepeer.com/live</p>
-                        <p><strong>Stream Key:</strong> <?= htmlspecialchars($streamDetails['streamKey']) ?></p>
-                    </div>
-                <?php endif; ?>
+    <div class="mt-6 bg-gray-50 p-4 rounded-md border border-gray-300 text-left">
+        <h2 class="text-xl font-semibold text-gray-800 mb-4">Stream Created Successfully!</h2>
+        <p><strong>Stream Name:</strong> <?= htmlspecialchars($streamDetails['name']) ?></p>
+        <p><strong>Stream ID:</strong> <?= htmlspecialchars($streamDetails['id']) ?></p>
+        <p><strong>RTMP URL:</strong> rtmp://rtmp.livepeer.com/live</p>
+        <p><strong>Stream Key:</strong> <?= htmlspecialchars($streamDetails['streamKey']) ?></p>
+        <p><strong>Shareable URL:</strong> <a href="https://lvpr.tv/broadcast/<?= htmlspecialchars($streamDetails['playbackId']) ?>" target="_blank" class="text-blue-500 underline">https://lvpr.tv/broadcast/<?= htmlspecialchars($streamDetails['playbackId']) ?></a></p>
+    </div>
+<?php endif; ?>
+
+
             </div>
         </div>
     </div>
@@ -132,6 +136,32 @@ const micIcon = document.getElementById('micIcon');
 let isCameraOn = false;
 let isMicOn = false;
 let mediaStream = null;
+// Function to set the Livepeer stream URL to the video player
+function setLivepeerStream(playbackId) {
+    if (playbackId) {
+        const videoElement = document.getElementById('videoElement');
+        const streamUrl = `https://livepeercdn.com/hls/${playbackId}/index.m3u8`;
+
+        // Use HLS.js if the browser does not support HLS natively
+        if (Hls.isSupported()) {
+            const hls = new Hls();
+            hls.loadSource(streamUrl);
+            hls.attachMedia(videoElement);
+        } else if (videoElement.canPlayType('application/vnd.apple.mpegurl')) {
+            videoElement.src = streamUrl;
+        } else {
+            console.error("HLS is not supported in this browser.");
+        }
+    }
+}
+
+// Get the playbackId from the hidden input field
+document.addEventListener('DOMContentLoaded', function () {
+    const playbackId = document.getElementById('playbackId')?.value;
+    if (playbackId) {
+        setLivepeerStream(playbackId);
+    }
+});
 
 // Function to toggle the camera
 cameraIcon.addEventListener('click', function() {
