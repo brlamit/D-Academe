@@ -8,23 +8,11 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/web3/dist/web3.min.js"></script>
     <style>
-        body {
-            margin-top: 100px;
-            margin-left: 200px;
-            margin-right: 200px;
-        }
-        header {
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(10px);
-            transition: background-color 0.3s ease;
-            z-index: 50;
-        }
-        .container {
-            margin-top: 120px;
-        }
+       
     </style>
 </head>
 <body class="bg-gray-900 text-white flex items-center justify-center min-h-screen">
+<section class="py-16 ">
     <!-- Token Purchase Section -->
     <div class="bg-gray-800 p-8 mt-20 rounded-lg shadow-lg mx-auto max-w-md">
         <h2 class="text-3xl font-bold text-green-400 text-center mb-6">Buy Tokens</h2>
@@ -49,21 +37,27 @@
 
             <!-- Button for Esewa Payment  -->
             <button
-            id="eSewaPaymentButton"
-            class="w-full mt-4 bg-gradient-to-r from-green-500 to-green-600 text-white font-bold py-3 rounded-lg hover:from-green-600 hover:to-teal-600 transition transform hover:scale-105">
-            Pay via eSewa
-        </button>
+                id="eSewaPaymentButton"
+                class="w-full mt-4 bg-gradient-to-r from-green-500 to-green-600 text-white font-bold py-3 rounded-lg hover:from-green-600 hover:to-teal-600 transition transform hover:scale-105">
+                Pay via eSewa
+            </button>
 
              <!-- Token Price Section -->
-        <div class="bg-green-800 p-8 mt-20 rounded-lg shadow-lg mx-auto max-w-md">
-            <h2 class="text-3xl font-bold text-blue-400 text-center mb-6">Token Price</h2>
-            <div class="text-center">
-                <p class="text-lg">1000 Token = <span id="tokenPrice" class="font-bold text-green-400">1.00</span> ETH</p>
-                <p class="text-lg">1 Token = <span id="tokenPrice" class="font-bold text-green-400">50</span> NRS</p>
+            <div class="bg-green-800 p-8 mt-20 rounded-lg shadow-lg mx-auto max-w-md">
+                <h2 class="text-3xl font-bold text-blue-400 text-center mb-6">Token Price</h2>
+                <div class="text-center">
+                    <p class="text-lg">1000 Token = <span id="tokenPrice" class="font-bold text-green-400">1.00</span> ETH</p>
+                    <p class="text-lg">1 Token = <span id="tokenPrice" class="font-bold text-green-400">50</span> NRS</p>
+                </div>
             </div>
-        </div>
-    </div>
         </form>
+        
+    <!-- Wallet Info Section -->
+    <div id="walletInfo" class="bg-gray-800 p-8 mt-10 rounded-lg shadow-lg mx-auto max-w-md text-center">
+        <h2 class="text-3xl font-bold text-green-400 text-center mb-6">Available Tokens</h2>
+        <p class="font-bold text-3xl text-white"><strong id="availableTokenBalance">0</strong></p>
+        <p id="walletAddress" class="text-green-400 text-sm mt-4"></p> <!-- Show wallet address here -->
+    </div>
     </div>
 
     <div id="loader" class="hidden fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center z-50">
@@ -72,19 +66,13 @@
 
     
 
-    <!-- Wallet Info Section -->
-    <div id="walletInfo" class="bg-gray-800 p-8 mt-10 rounded-lg shadow-lg mx-auto max-w-md text-center">
-        <h2 class="text-3xl font-bold text-green-400 text-center mb-6">Available Tokens</h2>
-        <p class="font-bold text-3xl text-white"><strong id="availableTokenBalance">0</strong></p>
-        <p id="walletAddress" class="text-green-400 text-sm mt-4"></p> <!-- Show wallet address here -->
-    </div>
 
     
 <!-- Loader (Spinner) -->
 <div id="loader" class="fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center hidden z-50">
     <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-500 border-opacity-80"></div>
 </div>
-
+</section>
 
     <script>
         let isConnected = false;
@@ -284,5 +272,9 @@ async function handleTokenPurchase(event) {
             });
         };
     </script>
+    
 </body>
 </html>
+<?php
+    include 'footer.php';
+?>

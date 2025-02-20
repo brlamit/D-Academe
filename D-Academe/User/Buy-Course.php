@@ -441,6 +441,8 @@ function handleCourseAddition(course) {
         }
     });
 </script>
-
+<?php
+    include 'footer.php';
+?>
 </body>
 </html>

@@ -34,28 +34,7 @@
         ?>
     </main>
 
-    
-
     <!-- Footer -->
     <?php include_once 'footer.php'; ?>
 </body>
 </html>
-
-
-   
-
-    <!-- <script src="https://cdn.jsdelivr.net/npm/web3/dist/web3.min.js"></script>
-    <script>
-        async function connectWallet() {
-            if (window.ethereum) {
-                const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
-                const account = accounts[0];
-                document.cookie = `account=${account}`;
-                location.reload();
-            } else {
-                alert('Please install MetaMask.');
-            }
-        }
-    </script> -->
-<!-- </body>
-</html> -->
