@@ -67,7 +67,7 @@ $course_details = [
                                    '<?php echo $user_email; ?>', 
                                    '<?php echo $user_wallet_address; ?>', 
                                    '<?php echo $course_details['id']; ?>')"
-                class="mt-4 w-full py-3 mt-4 bg-teal-500 text-white rounded-lg hover:bg-teal-600 transition-all shadow-lg">
+                class="mt-4 w-full py-3 bg-teal-500 text-white rounded-lg hover:bg-teal-600 transition-all shadow-lg">
                 Buy Course
             </button>
         </div>

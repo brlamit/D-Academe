@@ -40,7 +40,7 @@ $stmt->close();
 <body class="bg-gray-100 text-gray-800">
 
 <!-- Enrolled Courses Section -->
-<section class="py-16 bg-gray-200">
+<section class="py-16 ">
     <div class="container mx-auto text-center">
         <h2 class="text-4xl font-semibold text-gray-900 mb-8">Your Enrolled Courses</h2>
 
