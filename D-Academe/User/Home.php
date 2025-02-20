@@ -139,7 +139,7 @@ $user_name = $_SESSION['name'];
     <section class="py-16 bg-green-200 text-center" id="cta">
     <div class="container mx-auto">
         <h2 class="text-4xl font-bold text-gray-900 mb-8" data-aos="fade-up" data-aos-delay="200">Ready to Start Your Blockchain Journey?</h2>
-        <a href="/register" class="bg-green-600 hover:bg-green-700 text-white py-4 px-10 rounded-full text-lg transition duration-300 ease-in-out" data-aos="fade-up" data-aos-delay="400">Join Now</a>
+        <a href="userregister-form.php" class="bg-green-600 hover:bg-green-700 text-white py-4 px-10 rounded-full text-lg transition duration-300 ease-in-out" data-aos="fade-up" data-aos-delay="400">Join Now</a>
     </div>
 </section>
 

@@ -175,7 +175,8 @@ function uploadToPinata($filePath, $fileName, $pinata_api_key, $pinata_secret_ap
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Course</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <style>body {
+    <style>
+    body {
             background: linear-gradient(to bottom, #203f43, #2c8364);
             background-size: cover;
             background-position: center;

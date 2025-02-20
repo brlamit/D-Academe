@@ -15,11 +15,16 @@
         }
     </style>
 </head>
-<body class="flex items-center justify-center min-h-screen">
+<body class="flex flex-col items-center justify-center min-h-screen">
+<section class="w-full max-w-4xl py-16">
+    <?php include 'Header.php'; ?>
     <!-- Signup Form Container -->
-    <div class=" p-8 rounded-xl shadow-2xl w-full max-w-4xl">
-        <div class="text-center mb-8">
-            <img src="../../assets/logo.png" alt="D-Academe Logo" class="w-20 mx-auto">
+    <div class=" p-8 mt-20 rounded-lg shadow-lg mx-auto w-full"> 
+        <div class="text-center mb-8 relative">
+        <button type="button" onclick="goBack()" class="absolute top-4 left-4 bg-transparent underline text-white py-2 px-4 text-sm rounded-lg font-semibold hover:text-teal-800 transition-all shadow-md">
+               Go Back
+             </button>
+            <img src="./assets/logo.png" alt="D-Academe Logo" class="w-20 mx-auto">
             <h1 class="text-4xl font-extrabold text-gray-400 mt-4">User Register</h1>
             <p class="text-gray-500 mt-2">Join us and start your journey</p>
         </div>
@@ -38,7 +43,7 @@
         </div>
 
         <!-- Form Structure -->
-        <form id="userSignupForm" onsubmit="submitUserSignup(event)" class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <form id="userSignupForm" onsubmit="submitUserSignup(event)" class="grid grid-cols-1 lg:grid-cols-2 gap-8 relative">
             <!-- Left Column -->
             <div class="space-y-6">
                 <!-- Name -->
@@ -121,7 +126,7 @@
             </div>
         </form>
     </div>
-
+</section>
     <script>
         function previewProfilePicture(event) {
             const preview = document.getElementById('profilePreview');
@@ -135,11 +140,10 @@
             event.preventDefault();
             alert('Form Submitted!');
         }
-    </script>
-</body>
-</html>
 
-    <script>
+        function goBack() {
+            window.history.back();
+        }
         function previewProfilePicture(event) {
             const file = event.target.files[0];
             if (file) {
@@ -237,3 +241,4 @@
     </script>
 </body>
 </html>
+<?php include_once 'Footer.php'; ?>

@@ -12,7 +12,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <style>
         .hero-bg {
-            /* background: linear-gradient(to bottom, #0f2027, #203f43, #2c8364); */
+             background: linear-gradient(to bottom, #0f2027, #203f43, #2c8364); 
             /* background-image: url('assets/hero2.webp'); */
             background-size: cover;
             background-position: center;
@@ -20,19 +20,17 @@
         .hero-overlay {
             /* background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)); */
         }
-        .container {
-            margin-top: 120px;
-        }
+       
     </style>
 </head>
 
-<body class="bg-gray-500 text-white flex items-center justify-center min-h-screen">
+<body class="bg-gray-500 ">
     
 <!-- Hero Section -->
 <section class="relative w-full h-screen hero-bg ">
     <div class="absolute inset-0 hero-overlay"></div>
     <div class="relative z-10 flex flex-col justify-center items-center text-white text-center space-y-8 py-32 px-4">
-            <div class="flex flex-col md:flex-row items-center justify-center space-y-8 md:space-y-0 md:space-x-8">
+    <div class="flex flex-col md:flex-row items-center justify-center space-y-8 md:space-y-0 md:space-x-8">
                 <!-- Left Column -->
                 <div class="text-center md:text-left space-y-8 md:w-1/2">
                     <!-- Gradient Animated Heading -->
@@ -47,7 +45,7 @@
                     </p>
                     <!-- Call-to-Action Buttons -->
                     <div class="flex flex-col sm:flex-row sm:space-x-4 space-y-4 sm:space-y-0">
-                        <a href="?page=userregister" class="bg-green-600 hover:bg-green-700 text-white py-3 px-10 rounded-full text-lg shadow-lg shadow-green-500/50 transform hover:scale-110 transition duration-300 ease-in-out animate-bounce" data-aos="fade-up" data-aos-delay="500">
+                        <a href="userregister-form.php" class="bg-green-600 hover:bg-green-700 text-white py-3 px-10 rounded-full text-lg shadow-lg shadow-green-500/50 transform hover:scale-110 transition duration-300 ease-in-out animate-bounce" data-aos="fade-up" data-aos-delay="500">
                             Get Started
                         </a>
                         <a href="/learn-more" class="text-white border-2 border-white py-3 px-10 rounded-full text-lg shadow-lg hover:shadow-pink-500/50 transition duration-300 ease-in-out hover:bg-white hover:text-gray-900" data-aos="fade-up" data-aos-delay="600">
@@ -55,8 +53,8 @@
                         </a>
                     </div>
                 </div>
-                 <!-- Right Column -->
-                 <div class="flex flex-col hover:scale-105 space-y-4 md:w-1/2">
+                <!-- Right Column -->
+                <div class="flex flex-col hover:scale-105 space-y-4 md:w-1/2">
                     <img src="./assets/img.webp" alt="Blockchain Course" class="w-full h-96 object-cover rounded-lg shadow-lg transform transition-all duration-300 hover:scale-105 hover:opacity-75" data-aos="fade-up" data-aos-delay="400">
                 </div>
             </div>
