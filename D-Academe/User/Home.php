@@ -305,7 +305,7 @@ $user_name = $_SESSION['name'];
                                          id: '${course.id}',
                                         name: '${course.name}',
                                     }, user)" 
-                                    class="bg-blue-500 hover:bg-blue-600 text-white py-3 px-8 rounded-full text-lg">
+                                    class="bg-green-500 hover:bg-blue-600 text-white py-3 px-8 rounded-full text-lg">
                                     Enroll Now
                                 </button>
                         </div>
