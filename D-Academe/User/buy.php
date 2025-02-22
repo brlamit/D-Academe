@@ -45,6 +45,8 @@ $course_details = [
     </style>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.7.3/web3.min.js"></script>
+    <script src="https://khalti.com/static/khalti-checkout.js"></script>
+    <script src="https://khalti.s3.ap-south-1.amazonaws.com/KPG/dist/2020.12.17.0.0.0/khalti-checkout.iffe.js"></script>
 </head>
 <body class="">
     <div class="container flex  items-center justify-center mx-auto my-10 relative">
@@ -70,6 +72,12 @@ $course_details = [
                 class="mt-4 w-full py-3 bg-teal-500 text-white rounded-lg hover:bg-teal-600 transition-all shadow-lg">
                 Buy Course
             </button>
+            <!-- Khalti Payment Button -->
+                <button id="khaltiButton" 
+                onclick="payWithKhalti('<?php echo $course_details['id']; ?>', '<?php echo $course_details['name']; ?>')"
+                    class="mt-4 bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded w-full">
+                    Pay with Khalti
+                </button>
         </div>
     </div>
     
@@ -95,8 +103,10 @@ document.addEventListener("DOMContentLoaded", async () => {
 async function loadABI() {
     try {
         const response = await fetch('./constants/ABI-Token.json');
+        const courseResponse = await fetch('./constants/ABI-CourseBuy.json');
         if (!response.ok) throw new Error(`Failed to fetch ABI: ${response.statusText}`);
         tokenABI = await response.json();
+        courseABI = await courseResponse.json();
         console.log("ABI loaded successfully.");
     } catch (error) {
         console.error("Error loading ABI:", error);
@@ -140,7 +150,6 @@ async function fetchBalances(account) {
         alert("Failed to retrieve balances. Please try again.");
     }
 }
-
 async function buyCourse(priceInTokens, userName, userEmail, userWalletAddress, courseId) {
     if (!window.ethereum) {
         alert("MetaMask is not installed. Please install MetaMask.");
@@ -155,54 +164,54 @@ async function buyCourse(priceInTokens, userName, userEmail, userWalletAddress, 
     }
 
     try {
-        const tokenAmount = web3.utils.toBN(Math.floor(priceInTokens * 10 ** 18));
-
-        // Fetch contract ABIs
-        const [courseABI, tokenABI] = await Promise.all([
-            fetch('./constants/ABI-CourseBuy.json').then(res => res.json()),
-            fetch('./constants/ABI-Token.json').then(res => res.json())
-        ]);
-
-        // Initialize contracts
-        const courseContract = new web3.eth.Contract(courseABI, contractAddress);
         const tokenContract = new web3.eth.Contract(tokenABI, tokenContractAddress);
+        const courseContract = new web3.eth.Contract(courseABI, contractAddress);
 
-        // Ensure the user has enough tokens
-        const balance = await tokenContract.methods.balanceOf(userAccount).call();
-        if (web3.utils.toBN(balance).lt(tokenAmount)) {
+        // Convert price to correct token format
+        const tokenDecimals = await tokenContract.methods.decimals().call();
+        const tokenAmount = web3.utils.toBN(priceInTokens).mul(web3.utils.toBN(10).pow(web3.utils.toBN(tokenDecimals)));
+
+        // Fetch user balance
+        const rawBalance = await tokenContract.methods.balanceOf(userAccount).call();
+        const userBalance = web3.utils.toBN(rawBalance);
+
+        if (userBalance.lt(tokenAmount)) {
             alert("Insufficient token balance. Please buy more tokens.");
             return;
         }
 
+        // Check allowance
+        const rawAllowance = await tokenContract.methods.allowance(userAccount, contractAddress).call();
+        const allowance = web3.utils.toBN(rawAllowance);
+
+        if (allowance.lt(tokenAmount)) {
+            alert("Insufficient allowance. Approving now...");
+            await tokenContract.methods.approve(contractAddress, tokenAmount.toString()).send({ from: userAccount });
+            alert("Approval transaction sent. Please confirm and retry the purchase.");
+            return;
+        }
+
+        // Disable Buy Button while processing
         const buyButton = document.getElementById("buyButton");
         buyButton.disabled = true;
         buyButton.innerText = "Processing...";
         buyButton.classList.add("bg-gray-400", "cursor-not-allowed");
 
-        // Check if the user has given allowance to the contract
-        const allowance = await tokenContract.methods.allowance(userAccount, contractAddress).call();
-        if (web3.utils.toBN(allowance).lt(tokenAmount)) {
-            await tokenContract.methods.approve(contractAddress, tokenAmount.toString()).send({ from: userAccount });
-            alert("Approval transaction sent. Please confirm and retry the purchase.");
-            buyButton.disabled = false;
-            buyButton.innerText = "Buy Course";
-            buyButton.classList.remove("bg-gray-400", "cursor-not-allowed");
-            return;
-        }
-
-        // Call buyCourse function from the smart contract
+        // Call buyCourse function from contract
         const transaction = await courseContract.methods.buyCourse(
-            courseId, // Pass courseId
-            userName, // Student name
-            userWalletAddress, // User's wallet address
-            userEmail, // Email
-            "1234567890" // Placeholder contact info, replace with dynamic data if available
-        ).send({
-            from: userAccount
-        });
+            courseId,
+            userName,
+            userWalletAddress,
+            userEmail,
+            "1234567890"
+        ).send({ from: userAccount });
 
         alert("Course purchased successfully!");
         console.log("Transaction:", transaction);
+
+        // Update frontend balance
+        const newBalance = userBalance.sub(tokenAmount);
+        document.getElementById('tokenBalance').textContent = web3.utils.fromWei(newBalance.toString(), 'ether');
 
         buyButton.disabled = false;
         buyButton.innerText = "Buy Course";
@@ -224,6 +233,12 @@ window.onload = initializeWallet;
 
     </script>
 
+<script>
+    function payWithKhalti(courseId, courseName) {
+            // Khalti payment redirection
+            window.location.href = `request-pay.php?course_id=${courseId}&name=${encodeURIComponent(courseName)}`;
+        }
+</script>
 </body>
 </html>
 

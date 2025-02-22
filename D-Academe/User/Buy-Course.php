@@ -61,6 +61,39 @@ $user_name = $_SESSION['name'];
         .active-suggestion {
             background-color: #e2e8f0;
         }
+        <style>
+    .slider {
+        display: flex;
+        overflow: hidden;
+        margin-top: 2.5rem; /* mt-10 */
+    }
+
+    .slider-track {
+        display: flex;
+        gap: 4rem; /* gap-16 */
+        animation: slide 20s linear infinite;
+    }
+
+    .slider-track img {
+        height: 2.5rem; /* h-10 */
+        width: auto;
+    }
+
+    @keyframes slide {
+        0% {
+            transform: translateX(0);
+        }
+        100% {
+            transform: translateX(-100%);
+        }
+    }
+
+    /* Optional for smoother sliding */
+    .slider-track:hover {
+        animation-play-state: paused;
+    }
+</style>
+
     </style>
      <link rel="preload" as="image" href="/Free-Course-Contents/Clarity/assets/logo.svg"/>
      <link rel="preload" as="image" href="/Free-Course-Contents/Solidity/assets/sol.webp"/>
@@ -71,31 +104,26 @@ $user_name = $_SESSION['name'];
                 <h1 class="text-4xl text-center text-green-500">Top Course&#x27;s we offer.</h1>
                        
                     <!-- <div class="container mx-auto flex flex-col items-center"> -->
-                         <div class="flex overflow-hidden mt-10">
-                            <div class="flex gap-16 flex-none pr-16 -translate-x-1/2" style="will-change:transform;transform:translateX(-50%)">
-                               <!-- mg src="Free-Course-Contents/Solidity/assets/sol.webp" alt="logo" class="h-10 w-auto"/> -->
-                                <img src="Free-Course-Contents/Clarity/assets/logo.svg" alt="clar" class="h-10 w-auto"/>
-                                <img src="Free-Course-Contents/Solidity/assets/sol.webp" alt="logo" class="h-10 w-auto"/>
-                                <img src="Free-Course-Contents/Clarity/assets/logo.svg" alt="clar" class="h-10 w-auto"/>
-                                <img src="Free-Course-Contents/Solidity/assets/sol.webp" alt="logo" class="h-10 w-auto"/>
-                                <img src="Free-Course-Contents/Clarity/assets/logo.svg" alt="clar" class="h-10 w-auto"/>
-                                <img src="Free-Course-Contents/Solidity/assets/sol.webp" alt="logo" class="h-10 w-auto"/>
-                                <img src="Free-Course-Contents/Clarity/assets/logo.svg" alt="clar" class="h-10 w-auto"/>
-                                <img src="Free-Course-Contents/Solidity/assets/sol.webp" alt="logo" class="h-10 w-auto"/>
-                                <img src="Free-Course-Contents/Clarity/assets/logo.svg" alt="clar" class="h-10 w-auto"/>
-                                <img src="Free-Course-Contents/Solidity/assets/sol.webp" alt="logo" class="h-10 w-auto"/>
-                                <img src="Free-Course-Contents/Clarity/assets/logo.svg" alt="clar" class="h-10 w-auto"/>
-                                <img src="Free-Course-Contents/Solidity/assets/sol.webp" alt="logo" class="h-10 w-auto"/>
-                                <img src="Free-Course-Contents/Clarity/assets/logo.svg" alt="clar" class="h-10 w-auto"/>
-                                <img src="Free-Course-Contents/Solidity/assets/sol.webp" alt="logo" class="h-10 w-auto"/>
-                                <img src="Free-Course-Contents/Clarity/assets/logo.svg" alt="clar" class="h-10 w-auto"/>
-                                <img src="Free-Course-Contents/Solidity/assets/sol.webp" alt="logo" class="h-10 w-auto"/>
-                                <img src="Free-Course-Contents/Clarity/assets/logo.svg" alt="clar" class="h-10 w-auto"/>
-                                <img src="Free-Course-Contents/Solidity/assets/sol.webp" alt="logo" class="h-10 w-auto"/>
-                                <img src="Free-Course-Contents/Clarity/assets/logo.svg" alt="clar" class="h-10 w-auto"/>
-                               
-                            </div>
+                    <div class="slider">
+                        <div class="slider-track">
+                            <img src="assets/logo.svg" alt="clar" />
+                            <img src="assets/sol.webp" alt="logo" />
+                            <img src="assets/webtechnology.jpeg" alt="web" />
+                            <img src="assets/logo.svg" alt="clar" />
+                            <img src="assets/webtechnology.jpeg" alt="web" />
+                            <img src="assets/sol.webp" alt="logo" />
+                            <img src="assets/logo.svg" alt="clar" />
+                            <img src="assets/webtechnology.jpeg" alt="web" />
+                            <img src="assets/sol.webp" alt="logo" />
+                            <img src="assets/logo.svg" alt="clar" />
+                            <img src="assets/webtechnology.jpeg" alt="web" />
+                            <img src="assets/sol.webp" alt="logo" />
+                            <img src="assets/logo.svg" alt="clar" />
+                           
+                           
                         </div>
+                    </div>
+
                 </div>
                 <!-- Search Bar -->
             <div class="w-full max-w-lg relative mx-auto mb-8">
@@ -150,7 +178,7 @@ $user_name = $_SESSION['name'];
                                     }, user)" 
                                     class="bg-green-500 hover:bg-green-600 text-white py-3 px-8 rounded-full text-lg">
                                     Enroll Now
-                                </button>
+                            </button>
                       </div>
                     </div>
                 `;
@@ -358,7 +386,7 @@ function getCoursePrice(courseId) {
                             <p class="text-gray-600">${course.description}</p>
                         </div>
                         <div class="mt-6 flex gap-4 justify-center">
-                           <button onclick="window.location.href='viewcourse.php?course_id=' + ${course.id}" class="bg-blue-500 hover:bg-blue-600 text-white py-3 px-8 rounded-full text-lg">View</button>
+                         <button onclick="window.location.href='viewcourse.php?course_id=' + ${course.id}" class="bg-blue-500 hover:bg-blue-600 text-white py-3 px-8 rounded-full text-lg">View</button> 
                             <button onclick="buy('${course.id}')" class="bg-green-500 hover:bg-green-600 text-white py-3 px-8 rounded-full text-lg">
                                 Buy Course
                             </button>
