@@ -3,107 +3,83 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Live Class</title>
+    <title>Join Live Class</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 </head>
 <body class="bg-gray-100">
     <div class="max-w-2xl mx-auto my-20 p-6 bg-white shadow-lg rounded-lg">
-        <!-- Class Key Input Section -->
-        <div id="keySection" class="text-center">
-            <h2 class="text-2xl font-bold mb-4">Enter Class Key</h2>
-            <input type="text" id="classKey" class="w-full p-3 border rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Enter your class key...">
-            <button id="joinButton" onclick="validateKey()" class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none">
-                Join Class
+        <!-- Stream URL Input Section -->
+        <div id="urlSection" class="text-center">
+            <h2 class="text-2xl font-bold mb-4">Join Live Class</h2>
+            <input type="text" id="streamUrl" class="w-full p-3 border rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Enter the live stream URL...">
+            <button id="joinButton" onclick="joinStream()" class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none">
+                Join Stream
             </button>
             <p id="errorMessage" class="text-red-500 hidden mt-2"></p>
         </div>
 
-        <!-- Main Content Section -->
-        <div id="contentSection" class="">
-            <!-- Meeting Control Panel -->
-            <div class="flex justify-around items-center my-6">
-                <div class="flex flex-col items-center">
-                    <div class="bg-blue-500 p-3 rounded-full mb-2">
-                        <img src="https://img.icons8.com/ios-glyphs/30/ffffff/calendar.png" alt="Schedule Icon">
-                    </div>
-                    <button class="text-blue-500 font-semibold">Schedule</button>
-                </div>
-                <div class="flex flex-col items-center">
-                    <div class="bg-blue-500 p-3 rounded-full mb-2">
-                        <img src="https://img.icons8.com/ios-glyphs/30/ffffff/plus-math.png" alt="Join Icon">
-                    </div>
-                    <button class="text-blue-500 font-semibold">Join</button>
-                </div>
-                <div class="flex flex-col items-center">
-                    <div class="bg-orange-500 p-3 rounded-full mb-2">
-                        <img src="https://img.icons8.com/ios-glyphs/30/ffffff/video-conference.png" alt="Host Icon">
-                    </div>
-                    <button class="text-orange-500 font-semibold">Host</button>
-                </div>
-            </div>
-            <!-- Personal Meeting ID -->
-            <div class="text-center my-6">
-                <p class="text-lg font-bold">Personal Meeting ID</p>
-                <p class="text-2xl font-mono">953 712 2824</p>
-                <button onclick="copyToClipboard('953 712 2824')" class="mt-2 text-sm text-blue-600 hover:underline">Copy ID</button>
-            </div>
-
-            <!-- Live Stream Section -->
-            <div class="mb-6">
-                <iframe src="https://lvpr.tv?v=d951p973ep25data" frameborder="0" allowfullscreen allow="autoplay; encrypted-media; picture-in-picture"
-                     sandbox="allow-same-origin allow-scripts" controls autoplay class="w-full rounded-lg shadow-md"></iframe>
-            </div>
+        <!-- Live Stream Section -->
+        <div id="streamSection" class="hidden mt-6">
+            <h2 class="text-2xl font-bold mb-4">Live Stream</h2>
+            <video id="liveStream" controls autoplay class="w-full rounded-lg shadow-md"></video>
         </div>
     </div>
 
     <script>
-        async function validateKey() {
-            const classKey = document.getElementById('classKey').value.trim();
-            const joinButton = document.getElementById('joinButton');
+        // Function to join the live stream
+        function joinStream() {
+            const streamUrl = document.getElementById('streamUrl').value.trim();
             const errorMessage = document.getElementById('errorMessage');
+            const streamSection = document.getElementById('streamSection');
+            const liveStream = document.getElementById('liveStream');
 
-            if (!classKey) {
-                errorMessage.innerText = "Please enter a valid class key.";
+            if (!streamUrl) {
+                errorMessage.innerText = "Please enter a valid stream URL.";
                 errorMessage.classList.remove("hidden");
                 return;
             }
 
             errorMessage.classList.add("hidden");
-            joinButton.disabled = true;
-            joinButton.innerText = "Validating...";
 
-            try {
-                // Fetch the stream URL from proxy.php
-                const response = await fetch(`/proxy.php?classKey=${classKey}`);
-                if (!response.ok) {
-                    throw new Error("Invalid class key or stream not found.");
-                }
-
-                const streamData = await response.json();
-
-                if (streamData.streamUrl) {
-                    // Hide class key input and show video stream section
-                    document.getElementById('keySection').classList.add('hidden');
-                    document.getElementById('contentSection').classList.remove('hidden');
-
-                    const video = document.getElementById('liveStream');
-                    video.src = streamData.streamUrl;  // Use streamUrl from proxy.php
-                } else {
-                    throw new Error("Stream is not currently active.");
-                }
-            } catch (error) {
-                errorMessage.innerText = error.message;
+            // Check if the URL is valid
+            if (!isValidUrl(streamUrl)) {
+                errorMessage.innerText = "Invalid URL. Please enter a valid stream URL.";
                 errorMessage.classList.remove("hidden");
-            } finally {
-                joinButton.disabled = false;
-                joinButton.innerText = "Join Class";
+                return;
+            }
+
+            // Hide the URL input section and show the live stream
+            document.getElementById('urlSection').classList.add('hidden');
+            streamSection.classList.remove('hidden');
+
+            // Set the video source to the entered URL
+            if (Hls.isSupported()) {
+                const hls = new Hls();
+                hls.loadSource(streamUrl);
+                hls.attachMedia(liveStream);
+                hls.on(Hls.Events.MANIFEST_PARSED, function () {
+                    liveStream.play();
+                });
+            } else if (liveStream.canPlayType('application/vnd.apple.mpegurl')) {
+                liveStream.src = streamUrl;
+                liveStream.addEventListener('loadedmetadata', function () {
+                    liveStream.play();
+                });
+            } else {
+                errorMessage.innerText = "Your browser does not support this stream format.";
+                errorMessage.classList.remove("hidden");
             }
         }
 
-        function copyToClipboard(text) {
-            navigator.clipboard.writeText(text).then(() => {
-                alert('Copied to clipboard!');
-            });
+        // Function to validate the URL
+        function isValidUrl(url) {
+            try {
+                new URL(url);
+                return true;
+            } catch (error) {
+                return false;
+            }
         }
     </script>
 </body>
