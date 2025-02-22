@@ -1,6 +1,9 @@
 <?php
 // start session
 // session_start();
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
 
 
 include('dbconnection.php');  // Assuming this file contains your database connection code
@@ -8,8 +11,8 @@ include('dbconnection.php');  // Assuming this file contains your database conne
 
 if (!isset($_SESSION['email'])) {
     // Redirect to login page if user is not logged in
-    header("Location: ./login/user_login.html");
-    exit();
+    // header("Location: ./login/user_login.html");
+    // exit();
 }
 $message = '';
 if (isset($_SESSION['message'])) {
@@ -18,9 +21,9 @@ if (isset($_SESSION['message'])) {
 }
 
 // Get user details from session
-$user_id = $_SESSION['id'];
-$user_email = $_SESSION['email'];
-$user_name = $_SESSION['name'];
+$user_id = isset($_SESSION['id']) ? $_SESSION['id'] : null;
+$user_email = isset($_SESSION['email']) ? $_SESSION['email'] : null;
+$user_name = isset($_SESSION['name']) ? $_SESSION['name'] : null;
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -251,46 +254,7 @@ const enrollInCourse = async (courseId, user) => {
 
 
 </script>
- <!-- Free Courses Section -->
- <section class="py-16 flex justify-center items-center" id="free-courses">
-    <div class="container mx-auto text-center flex flex-col justify-center items-center">
-        <h2 class="text-5xl font-semibold text-gray-900 mb-16" data-aos="fade-up" data-aos-delay="200">Our Free Courses</h2>
-        
-        <!-- Free Courses Grid -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-12 justify-center items-center">
-            <!-- Free Course Card 1 -->
-            <div class="bg-green-200 rounded-xl shadow-md hover:shadow-lg transition-all duration-500 transform hover:scale-105 p-6 border border-gray-200" data-aos="fade-up" data-aos-delay="300">
-                <img src="Free-Course-Contents/Clarity/assets/logo.svg" alt="Free Course Image" class="w-full h-56 rounded-lg mb-6 transition-transform duration-500 hover:scale-105">
-                <h3 class="text-2xl font-semibold text-gray-800 hover:text-green-500 transition-colors duration-300">Clarity Basics</h3>
-                <p class="text-xl font-bold text-green-600 mt-4">Free</p>
-                
-                <div class="mt-6">
-                    <button 
-                        onclick="redirectToPage('index.php?page=Clarity_course')" 
-                        class="bg-green-600 hover:bg-green-700 text-white py-3 px-8 rounded-full text-lg inline-block transition-all duration-300 ease-in-out">
-                        Enroll Now
-                    </button>
-                </div>
-            </div>
 
-            <!-- Free Course Card 2 -->
-            <div class="bg-green-200  rounded-xl shadow-md hover:shadow-lg transition-all duration-500 transform hover:scale-105 p-6 border border-gray-200" data-aos="fade-up" data-aos-delay="400">
-                <img src="Free-Course-Contents/Solidity/assets/sol.webp" alt="Free Course Image" class="w-full h-56 rounded-lg mb-6 transition-transform duration-500 hover:scale-105">
-                <h3 class="text-2xl font-semibold text-gray-800 hover:text-green-500 transition-colors duration-300">Basics of Solidity</h3>
-                <p class="text-xl font-bold text-green-600 mt-4">Free</p>
-                
-                <div class="mt-6">
-                    <!-- <a href="index.php?page=Solidity-Course" class="bg-green-600 hover:bg-green-700 text-white py-3 px-8 rounded-full text-lg inline-block transition-all duration-300 ease-in-out">Enroll Now</a> -->
-                    <button 
-                        onclick="redirectToPage('index.php?page=Solidity-Course')" 
-                        class="bg-green-600 hover:bg-green-700 text-white py-3 px-8 rounded-full text-lg inline-block transition-all duration-300 ease-in-out">
-                        Enroll Now
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
 
 <script>
     function buyCourse(courseId) {

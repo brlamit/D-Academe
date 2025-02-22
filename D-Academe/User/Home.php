@@ -1,6 +1,9 @@
 <?php
 // start session
-// session_start();
+ session_start();
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
 
 
 include('dbconnection.php');  // Assuming this file contains your database connection code
@@ -8,8 +11,8 @@ include('dbconnection.php');  // Assuming this file contains your database conne
 
 if (!isset($_SESSION['email'])) {
     // Redirect to login page if user is not logged in
-    header("Location: ./login/user_login.html");
-    exit();
+    // header("Location: ./login/user_login.html");
+    // exit();
 }
 $message = '';
 if (isset($_SESSION['message'])) {
@@ -18,9 +21,9 @@ if (isset($_SESSION['message'])) {
 }
 
 // Get user details from session
-$user_id = $_SESSION['id'];
-$user_email = $_SESSION['email'];
-$user_name = $_SESSION['name'];
+$user_id = isset($_SESSION['id']) ? $_SESSION['id'] : null;
+$user_email = isset($_SESSION['email']) ? $_SESSION['email'] : null;
+$user_name = isset($_SESSION['name']) ? $_SESSION['name'] : null;
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -48,7 +51,7 @@ $user_name = $_SESSION['name'];
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3), #a0e9a1, #d4f7d1); /* Slight dark gradient for better text visibility */
+    background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3), #a0e9a1, ); /* Slight dark gradient for better text visibility */
     z-index: 1; /* Ensures the overlay is above the background */
 }
 
