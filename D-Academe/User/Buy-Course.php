@@ -1,6 +1,9 @@
 <?php
 // start session
 // session_start();
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
 
 
 include('dbconnection.php');  // Assuming this file contains your database connection code
@@ -8,8 +11,8 @@ include('dbconnection.php');  // Assuming this file contains your database conne
 
 if (!isset($_SESSION['email'])) {
     // Redirect to login page if user is not logged in
-    header("Location: ./login/user_login.html");
-    exit();
+    // header("Location: ./login/user_login.html");
+    // exit();
 }
 $message = '';
 if (isset($_SESSION['message'])) {
@@ -18,9 +21,9 @@ if (isset($_SESSION['message'])) {
 }
 
 // Get user details from session
-$user_id = $_SESSION['id'];
-$user_email = $_SESSION['email'];
-$user_name = $_SESSION['name'];
+$user_id = isset($_SESSION['id']) ? $_SESSION['id'] : null;
+$user_email = isset($_SESSION['email']) ? $_SESSION['email'] : null;
+$user_name = isset($_SESSION['name']) ? $_SESSION['name'] : null;
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -33,7 +36,8 @@ $user_name = $_SESSION['name'];
     <script src="https://cdn.jsdelivr.net/npm/web3/dist/web3.min.js"></script>
     <style>
         body {
-            margin-top: 100px;
+            background: linear-gradient(to bottom, #b2f7b5, #a0e9a1, #d4f7d1, #b2f7b5, #a0e9a1, #d4f7d1);
+            background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3), #a0e9a1, ); /* Slight dark gradient for better text visibility */
         }
         header {
             background: rgba(0, 0, 0, 0.8);
@@ -100,8 +104,9 @@ $user_name = $_SESSION['name'];
 </head>
 <body class="bg-gray-500 text-white flex items-center justify-center min-h-screen">
 <section class="max-w-full mx-auto py-[24px] sm:py-14 overflow-x-clip left-6 right-6 ">
-                <div class=" text-white py-[12px] sm:py-6 left-6 right-6">
-                <h1 class="text-4xl text-center text-green-500">Top Course&#x27;s we offer.</h1>
+                <div class=" text-white py-[12px] sm:py-6 left-6 right-6"><br>
+                <h1 class="text-4xl font-bold text-center text-green-500">We Offer</h1>
+                <br>
                        
                     <!-- <div class="container mx-auto flex flex-col items-center"> -->
                     <div class="slider">
@@ -143,13 +148,14 @@ $user_name = $_SESSION['name'];
 
 
             
-<section id="courses" class="max-w-full mx-auto py-[24px] sm:py-14 bg-gray-800">
+<section id="courses" class="max-w-full mx-auto py-[24px] sm:py-14 bg-green-300">
+<h2 class="text-center text-4xl font-bold text-white mb-6">Paid Courses</h2>
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6" id="courseContainer"></div>
 </section>
 
    <!-- Free course section -->
-   <section id="freeCourses" class="max-w-full mx-auto py-[24px] sm:py-14 bg-gray-700">
-            <h2 class="text-center text-3xl font-bold text-white mb-6">Free Courses</h2>
+   <section id="freeCourses" class="max-w-full mx-auto py-[24px] sm:py-14 bg-green-200">
+            <h2 class="text-center text-4xl font-bold text-green-700 mb-6">Free Courses</h2>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6" id="freeCourseContainer"></div>
     </section>
 <script>
@@ -251,46 +257,7 @@ const enrollInCourse = async (courseId, user) => {
 
 
 </script>
- <!-- Free Courses Section -->
- <section class="py-16 flex justify-center items-center" id="free-courses">
-    <div class="container mx-auto text-center flex flex-col justify-center items-center">
-        <h2 class="text-5xl font-semibold text-gray-900 mb-16" data-aos="fade-up" data-aos-delay="200">Our Free Courses</h2>
-        
-        <!-- Free Courses Grid -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-12 justify-center items-center">
-            <!-- Free Course Card 1 -->
-            <div class="bg-green-200 rounded-xl shadow-md hover:shadow-lg transition-all duration-500 transform hover:scale-105 p-6 border border-gray-200" data-aos="fade-up" data-aos-delay="300">
-                <img src="Free-Course-Contents/Clarity/assets/logo.svg" alt="Free Course Image" class="w-full h-56 rounded-lg mb-6 transition-transform duration-500 hover:scale-105">
-                <h3 class="text-2xl font-semibold text-gray-800 hover:text-green-500 transition-colors duration-300">Clarity Basics</h3>
-                <p class="text-xl font-bold text-green-600 mt-4">Free</p>
-                
-                <div class="mt-6">
-                    <button 
-                        onclick="redirectToPage('index.php?page=Clarity_course')" 
-                        class="bg-green-600 hover:bg-green-700 text-white py-3 px-8 rounded-full text-lg inline-block transition-all duration-300 ease-in-out">
-                        Enroll Now
-                    </button>
-                </div>
-            </div>
 
-            <!-- Free Course Card 2 -->
-            <div class="bg-green-200  rounded-xl shadow-md hover:shadow-lg transition-all duration-500 transform hover:scale-105 p-6 border border-gray-200" data-aos="fade-up" data-aos-delay="400">
-                <img src="Free-Course-Contents/Solidity/assets/sol.webp" alt="Free Course Image" class="w-full h-56 rounded-lg mb-6 transition-transform duration-500 hover:scale-105">
-                <h3 class="text-2xl font-semibold text-gray-800 hover:text-green-500 transition-colors duration-300">Basics of Solidity</h3>
-                <p class="text-xl font-bold text-green-600 mt-4">Free</p>
-                
-                <div class="mt-6">
-                    <!-- <a href="index.php?page=Solidity-Course" class="bg-green-600 hover:bg-green-700 text-white py-3 px-8 rounded-full text-lg inline-block transition-all duration-300 ease-in-out">Enroll Now</a> -->
-                    <button 
-                        onclick="redirectToPage('index.php?page=Solidity-Course')" 
-                        class="bg-green-600 hover:bg-green-700 text-white py-3 px-8 rounded-full text-lg inline-block transition-all duration-300 ease-in-out">
-                        Enroll Now
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
 
 <script>
     function buyCourse(courseId) {

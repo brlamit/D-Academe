@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body class="bg-gradient-to-br from-indigo-50 to-blue-50 min-h-screen">
+    <section class="py-16">
     <div class="container mx-auto px-4 py-12">
         <br>
         <br>
@@ -110,17 +111,9 @@
             </div>
         </div>
 
-        <!-- Footer -->
-        <div class="mt-8 text-center text-yellow-600 text-sm">
-            <p>Powered by <span class="text-red-600 font-semibold">LiveClass D-Academe</span></p>
-            <div class="mt-2 space-x-4">
-                <a href="#" class="hover:text-indigo-600"><i class="fab fa-twitter"></i></a>
-                <a href="#" class="hover:text-indigo-600"><i class="fab fa-facebook"></i></a>
-                <a href="#" class="hover:text-indigo-600"><i class="fab fa-linkedin"></i></a>
-            </div>
-        </div>
+       
     </div>
-
+    </section>
     <script>
         function joinStream() {
             const streamUrl = document.getElementById('streamUrl').value.trim();

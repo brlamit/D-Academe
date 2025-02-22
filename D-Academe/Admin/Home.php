@@ -11,15 +11,22 @@
     <link href="./dist/styles.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <style>
-        .hero-bg {
-             background: linear-gradient(to bottom, #0f2027, #203f43, #2c8364); 
-            /* background-image: url('assets/hero2.webp'); */
-            background-size: cover;
-            background-position: center;
-        }
-        .hero-overlay {
-            /* background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)); */
-        }
+       .hero-bg {
+    background: linear-gradient(to bottom, #b2f7b5, #a0e9a1, #d4f7d1, #b2f7b5, #a0e9a1, #d4f7d1);
+    background-size: cover;
+    background-position: center;
+    position: relative; /* Ensures the overlay is positioned correctly */
+}
+
+.hero-overlay {
+    position: absolute; /* Covers the entire hero section */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3), #a0e9a1, ); /* Slight dark gradient for better text visibility */
+    z-index: 1; /* Ensures the overlay is above the background */
+}
        
     </style>
 </head>
@@ -44,14 +51,14 @@
                         Join a world-class blockchain course and get hands-on experience in building decentralized apps and smart contracts.
                     </p>
                     <!-- Call-to-Action Buttons -->
-                    <div class="flex flex-col sm:flex-row sm:space-x-4 space-y-4 sm:space-y-0">
+                    <!-- <div class="flex flex-col sm:flex-row sm:space-x-4 space-y-4 sm:space-y-0">
                         <a href="userregister-form.php" class="bg-green-600 hover:bg-green-700 text-white py-3 px-10 rounded-full text-lg shadow-lg shadow-green-500/50 transform hover:scale-110 transition duration-300 ease-in-out animate-bounce" data-aos="fade-up" data-aos-delay="500">
                             Get Started
                         </a>
                         <a href="/learn-more" class="text-white border-2 border-white py-3 px-10 rounded-full text-lg shadow-lg hover:shadow-pink-500/50 transition duration-300 ease-in-out hover:bg-white hover:text-gray-900" data-aos="fade-up" data-aos-delay="600">
                             Learn More
                         </a>
-                    </div>
+                    </div> -->
                 </div>
                 <!-- Right Column -->
                 <div class="flex flex-col hover:scale-105 space-y-4 md:w-1/2">
@@ -78,8 +85,8 @@
             </div>
 </section>
         <!-- Free course section -->
-        <section id="freeCourses" class="max-w-full mx-auto py-[24px] sm:py-14 bg-gray-700">
-            <h2 class="text-center text-3xl font-bold text-white mb-6">Free Courses</h2>
+        <section id="freeCourses" class="max-w-full mx-auto py-[24px] sm:py-14 bg-green-200">
+            <h2 class="text-center text-3xl font-bold text-green-700 mb-6">Free Courses</h2>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6" id="freeCourseContainer"></div>
         </section>
 
@@ -140,7 +147,7 @@
                         </div>
                         <div class="mt-6 flex gap-4 justify-center">
                             <!-- View button -->
-                            <button onclick="viewCourse('${course.name}')" class="bg-blue-500 hover:bg-blue-600 text-white py-3 px-8 rounded-full text-lg">View</button>
+                            <button onclick="viewCourse('${course.name}')" class="bg-green-500 hover:bg-blue-600 text-white py-3 px-8 rounded-full text-lg">View</button>
                         </div>
                     </div>
                 `;
