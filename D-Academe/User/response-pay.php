@@ -42,19 +42,17 @@ if ($pidx && $user_id) {
     print_r($responseArray);
     echo "</pre>";
 
-    // Check if API response contains the required fields
     if (!isset($responseArray['status']) || !isset($responseArray['total_amount'])) {
         die('❌ No valid payment data received. Please try again.');
     }
 
-    // Extract data
     $amount = $responseArray['total_amount'] ?? 0;
     $status = $responseArray['status'] ?? 'Failed';
     $transaction_id = $responseArray['transaction_id'] ?? '';
     $fee = $responseArray['fee'] ?? 0;
     $refunded = $responseArray['refunded'] ?? false;
 
-    // Ensure enrollments table exists (Updated to include `transaction_id`)
+    // Ensure enrollments table exists
     $createTableQuery = "CREATE TABLE IF NOT EXISTS paid_course_enrollments (
         id INT AUTO_INCREMENT PRIMARY KEY,
         user_id INT NOT NULL,
@@ -69,12 +67,19 @@ if ($pidx && $user_id) {
         status ENUM('Enrolled', 'Completed') DEFAULT 'Enrolled',
         enrolled_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )";
-    if (!$conn->query($createTableQuery)) {
-        die("❌ Table creation failed: " . $conn->error);
-    }
+    $conn->query($createTableQuery);
 
-    // Check if payment is successful
     if ($status === 'Completed' && $course_id) {
+        // Fetch user details
+        $userQuery = "SELECT name FROM users WHERE id = ?";
+        $userStmt = $conn->prepare($userQuery);
+        $userStmt->bind_param("i", $user_id);
+        $userStmt->execute();
+        $userResult = $userStmt->get_result();
+        $userData = $userResult->fetch_assoc();
+        $user_name = $userData['name'] ?? 'Unknown';
+        $userStmt->close();
+
         // Fetch course details
         $query = "SELECT * FROM courses WHERE id = ?";
         $stmt = $conn->prepare($query);
@@ -88,19 +93,10 @@ if ($pidx && $user_id) {
 
         $course = $result->fetch_assoc();
         $courseName = $course['name'] ?? '';
-        $coursePrice = floatval($course['price'] ?? 0.0);
+        $coursePrice = $course['price'] ?? 0.0;
         $courseImage = $course['image'] ?? null;
         $courseDescription = $course['description'] ?? null;
         $courseContent = $course['course_content'] ?? null;
-
-        // Fetch user name
-        $userQuery = "SELECT name FROM users WHERE id = ?";
-        $userStmt = $conn->prepare($userQuery);
-        $userStmt->bind_param("i", $user_id);
-        $userStmt->execute();
-        $userResult = $userStmt->get_result();
-        $userData = $userResult->fetch_assoc();
-        $userName = $userData['name'] ?? 'Unknown';
 
         // Check if user is already enrolled
         $checkEnrollment = "SELECT * FROM paid_course_enrollments WHERE user_id = ? AND course_id = ?";
@@ -113,14 +109,11 @@ if ($pidx && $user_id) {
             die(json_encode(["error" => "❌ You are already enrolled in this course."]));
         }
 
-        // Enroll user in course (Fixed column order & ensured transaction_id is included)
-        $stmt = $conn->prepare("INSERT INTO paid_course_enrollments (user_id, user_name, course_id, course_name, course_price, image, description, content, transaction_id) 
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        // Enroll user in course
+        $stmt = $conn->prepare("INSERT INTO paid_course_enrollments (user_id, user_name, course_id, course_name, course_price, image, description, content, transaction_id, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'Enrolled')");
         if ($stmt) {
-            $stmt->bind_param("issdsssss", $user_id, $userName, $course_id, $courseName, $coursePrice, $courseImage, $courseDescription, $courseContent, $transaction_id);
-            $message = $stmt->execute() ? 
-                '✅ Payment successful! You are enrolled in the course.' :
-                '❌ Error enrolling in course: ' . $stmt->error;
+            $stmt->bind_param("issssssss", $user_id, $user_name, $course_id, $courseName, $coursePrice, $courseImage, $courseDescription, $courseContent, $transaction_id);
+            $message = $stmt->execute() ? '✅ Payment successful! You are enrolled in the course.' : '❌ Error enrolling in course: ' . $stmt->error;
             $stmt->close();
         } else {
             $message = '❌ Database error: ' . $conn->error;
