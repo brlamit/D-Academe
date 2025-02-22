@@ -33,7 +33,7 @@
                     <div class="mb-8">
                         <label class="block text-gray-700 text-sm font-semibold mb-4">
                             Enter Class URL
-                            <span class="text-indigo-500">*</span>
+                            <span class="text-green-500">*</span>
                         </label>
                         <div class="relative">
                             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
