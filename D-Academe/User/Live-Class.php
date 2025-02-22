@@ -18,7 +18,7 @@
         <!-- Main Card -->
         <div class="max-w-3xl mx-auto bg-white rounded-2xl shadow-xl overflow-hidden">
             <!-- Hero Section -->
-            <div class="bg-gradient-to-r from-indigo-600 to-blue-500 p-8 text-center">
+            <div class="bg-gradient-to-r from-green-600 to-blue-500 p-8 text-center">
                 <h1 class="text-4xl font-bold text-white mb-4">
                     <i class="fas fa-video mr-3"></i>Live Class
                 </h1>
@@ -32,7 +32,7 @@
                     <div class="mb-8">
                         <label class="block text-gray-700 text-sm font-semibold mb-4">
                             Enter Class URL
-                            <span class="text-indigo-500">*</span>
+                            <span class="text-green-500">*</span>
                         </label>
                         <div class="relative">
                             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -50,7 +50,7 @@
                     <button 
                         id="joinButton" 
                         onclick="joinStream()" 
-                        class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-300 transform hover:scale-[1.02] shadow-md hover:shadow-lg"
+                        class="w-full bg-green-600 hover:bg-indigo-700 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-300 transform hover:scale-[1.02] shadow-md hover:shadow-lg"
                     >
                         Join Class Now
                         <i class="fas fa-arrow-right ml-2"></i>
