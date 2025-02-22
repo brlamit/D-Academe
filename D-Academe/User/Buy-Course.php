@@ -114,18 +114,20 @@ $user_name = isset($_SESSION['name']) ? $_SESSION['name'] : null;
                             <img src="assets/logo.svg" alt="clar" />
                             <img src="assets/sol.webp" alt="logo" />
                             <img src="assets/webtechnology.jpeg" alt="web" />
+                            <img src="assets/plt.jpg" alt="plt" />
                             <img src="assets/logo.svg" alt="clar" />
                             <img src="assets/webtechnology.jpeg" alt="web" />
+                            <img src="assets/plt.jpg" alt="plt" />
+                            <img src="assets/sol.webp" alt="logo" />
+                            <img src="assets/logo.svg" alt="clar" />
+                            <img src="assets/webtechnology.jpeg" alt="web" />
+                            <img src="assets/plt.jpg" alt="plt" />
                             <img src="assets/sol.webp" alt="logo" />
                             <img src="assets/logo.svg" alt="clar" />
                             <img src="assets/webtechnology.jpeg" alt="web" />
                             <img src="assets/sol.webp" alt="logo" />
                             <img src="assets/logo.svg" alt="clar" />
-                            <img src="assets/webtechnology.jpeg" alt="web" />
-                            <img src="assets/sol.webp" alt="logo" />
-                            <img src="assets/logo.svg" alt="clar" />
-                           
-                           
+                            <img src="assets/plt.jpg" alt="plt" />
                         </div>
                     </div>
 
