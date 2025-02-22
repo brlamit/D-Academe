@@ -36,7 +36,8 @@ $user_name = isset($_SESSION['name']) ? $_SESSION['name'] : null;
     <script src="https://cdn.jsdelivr.net/npm/web3/dist/web3.min.js"></script>
     <style>
         body {
-            margin-top: 100px;
+            background: linear-gradient(to bottom, #b2f7b5, #a0e9a1, #d4f7d1, #b2f7b5, #a0e9a1, #d4f7d1);
+            background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3), #a0e9a1, ); /* Slight dark gradient for better text visibility */
         }
         header {
             background: rgba(0, 0, 0, 0.8);
@@ -103,8 +104,9 @@ $user_name = isset($_SESSION['name']) ? $_SESSION['name'] : null;
 </head>
 <body class="bg-gray-500 text-white flex items-center justify-center min-h-screen">
 <section class="max-w-full mx-auto py-[24px] sm:py-14 overflow-x-clip left-6 right-6 ">
-                <div class=" text-white py-[12px] sm:py-6 left-6 right-6">
-                <h1 class="text-4xl text-center text-green-500">Top Course&#x27;s we offer.</h1>
+                <div class=" text-white py-[12px] sm:py-6 left-6 right-6"><br>
+                <h1 class="text-4xl font-bold text-center text-green-500">We Offer</h1>
+                <br>
                        
                     <!-- <div class="container mx-auto flex flex-col items-center"> -->
                     <div class="slider">
@@ -146,13 +148,14 @@ $user_name = isset($_SESSION['name']) ? $_SESSION['name'] : null;
 
 
             
-<section id="courses" class="max-w-full mx-auto py-[24px] sm:py-14 bg-gray-800">
+<section id="courses" class="max-w-full mx-auto py-[24px] sm:py-14 bg-green-300">
+<h2 class="text-center text-4xl font-bold text-white mb-6">Paid Courses</h2>
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6" id="courseContainer"></div>
 </section>
 
    <!-- Free course section -->
-   <section id="freeCourses" class="max-w-full mx-auto py-[24px] sm:py-14 bg-gray-700">
-            <h2 class="text-center text-3xl font-bold text-white mb-6">Free Courses</h2>
+   <section id="freeCourses" class="max-w-full mx-auto py-[24px] sm:py-14 bg-green-200">
+            <h2 class="text-center text-4xl font-bold text-green-700 mb-6">Free Courses</h2>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6" id="freeCourseContainer"></div>
     </section>
 <script>

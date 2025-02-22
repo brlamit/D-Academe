@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body class="bg-gradient-to-br from-indigo-50 to-blue-50 min-h-screen">
+    <section class="py-16">
     <div class="container mx-auto px-4 py-12">
         <br>
         <br>
@@ -18,7 +19,7 @@
         <!-- Main Card -->
         <div class="max-w-3xl mx-auto bg-white rounded-2xl shadow-xl overflow-hidden">
             <!-- Hero Section -->
-            <div class="bg-gradient-to-r from-indigo-600 to-blue-500 p-8 text-center">
+            <div class="bg-gradient-to-r from-green-600 to-blue-500 p-8 text-center">
                 <h1 class="text-4xl font-bold text-white mb-4">
                     <i class="fas fa-video mr-3"></i>Live Class
                 </h1>
@@ -50,7 +51,7 @@
                     <button 
                         id="joinButton" 
                         onclick="joinStream()" 
-                        class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-300 transform hover:scale-[1.02] shadow-md hover:shadow-lg"
+                        class="w-full bg-green-600 hover:bg-indigo-700 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-300 transform hover:scale-[1.02] shadow-md hover:shadow-lg"
                     >
                         Join Class Now
                         <i class="fas fa-arrow-right ml-2"></i>
@@ -110,17 +111,9 @@
             </div>
         </div>
 
-        <!-- Footer -->
-        <div class="mt-8 text-center text-yellow-600 text-sm">
-            <p>Powered by <span class="text-red-600 font-semibold">LiveClass D-Academe</span></p>
-            <div class="mt-2 space-x-4">
-                <a href="#" class="hover:text-indigo-600"><i class="fab fa-twitter"></i></a>
-                <a href="#" class="hover:text-indigo-600"><i class="fab fa-facebook"></i></a>
-                <a href="#" class="hover:text-indigo-600"><i class="fab fa-linkedin"></i></a>
-            </div>
-        </div>
+       
     </div>
-
+    </section>
     <script>
         function joinStream() {
             const streamUrl = document.getElementById('streamUrl').value.trim();

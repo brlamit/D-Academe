@@ -68,9 +68,9 @@ function createLivepeerStream($streamName)
 </head>
 <body class="bg-gray-100">
     <div class="min-h-screen flex items-center justify-center p-6">
-        <div class="flex bg-white shadow-lg rounded-lg w-full max-w-4xl">
+        <div class="flex bg-gradient-to-r from-green-600 to-blue-500  shadow-lg rounded-lg w-full max-w-4xl">
             <!-- Left Section: Video Streamer -->
-            <div class="w-1/3 p-4 bg-gray-200 rounded-l-lg flex flex-col items-center justify-center">
+            <div class="w-1/3 p-4 from-green-600 to-blue-500 rounded-l-lg flex flex-col items-center justify-center">
                 <h2 class="text-xl font-semibold text-gray-800 mb-4">Live Stream</h2>
                 <!-- Video Element for Camera Stream -->
                 <div class="w-full h-64 bg-gray-400 rounded-lg mb-4 relative">
@@ -95,7 +95,7 @@ function createLivepeerStream($streamName)
                 <form method="POST" action="" class="space-y-4">
                     <input type="text" name="streamName" placeholder="Enter Stream Name" 
                         class="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" required />
-                    <button type="submit" class="w-full bg-blue-500 text-white p-3 rounded-md hover:bg-blue-600 transition duration-300 ease-in-out transform hover:scale-105">
+                    <button type="submit" class="w-full bg-green-400 text-white p-3 rounded-md hover:bg-blue-600 transition duration-300 ease-in-out transform hover:scale-105">
                         Create Stream
                     </button>
                 </form>

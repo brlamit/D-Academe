@@ -7,9 +7,8 @@
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/web3/dist/web3.min.js"></script>
-    <style>
-       
-    </style>
+    <script src="https://khalti.com/static/khalti-checkout.js"></script>
+   
 </head>
 <body class="bg-gray-900 text-white flex items-center justify-center min-h-screen">
 <section class="py-16 ">
@@ -35,12 +34,15 @@
                 Buy Tokens
             </button>
 
-            <!-- Button for Esewa Payment  -->
-            <button
-                id="eSewaPaymentButton"
-                class="w-full mt-4 bg-gradient-to-r from-green-500 to-green-600 text-white font-bold py-3 rounded-lg hover:from-green-600 hover:to-teal-600 transition transform hover:scale-105">
-                Pay via eSewa
-            </button>
+          <!-- Khalti Payment Button -->
+<button 
+    type="button" 
+    id="khaltiButton" 
+    onclick="redirectToKhaltiPayment()" 
+    class="mt-4 bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded w-full">
+    Pay with Khalti
+</button>
+
 
              <!-- Token Price Section -->
             <div class="bg-green-800 p-8 mt-20 rounded-lg shadow-lg mx-auto max-w-md">
@@ -273,6 +275,46 @@ async function handleTokenPurchase(event) {
         };
     </script>
     
+    <script>
+    function redirectToKhaltiPayment() {
+        // Get the amount of tokens the user wants to buy
+        const tokensToBuy = document.getElementById("tokensToBuy").value;
+
+        if (!tokensToBuy || tokensToBuy <= 0) {
+            alert("Please enter a valid amount of tokens.");
+            return;
+        }
+
+        // Calculate total price in NRS for the amount of tokens
+        const pricePerToken = 50; // 1 token = 50 NRS
+        const totalPriceNRS = tokensToBuy * pricePerToken; 
+
+        // Create a form to submit the data
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = 'khalti-payment.php'; // Redirect to the new page
+
+        // Create form elements to pass data
+        const tokenInput = document.createElement('input');
+        tokenInput.type = 'hidden';
+        tokenInput.name = 'tokensToBuy';
+        tokenInput.value = tokensToBuy;
+
+        const priceInput = document.createElement('input');
+        priceInput.type = 'hidden';
+        priceInput.name = 'totalPriceNRS';
+        priceInput.value = totalPriceNRS;
+
+        // Append the inputs to the form
+        form.appendChild(tokenInput);
+        form.appendChild(priceInput);
+
+        // Append the form to the body and submit it
+        document.body.appendChild(form);
+        form.submit();
+    }
+</script>
+
 </body>
 </html>
 <?php

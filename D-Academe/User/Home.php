@@ -112,8 +112,8 @@ $user_name = isset($_SESSION['name']) ? $_SESSION['name'] : null;
     </div>
 </section>
      <!-- Free course section -->
-     <section id="freeCourses" class="max-w-full mx-auto py-[24px] sm:py-14 bg-gray-700">
-            <h2 class="text-center text-3xl font-bold text-white mb-6">Free Courses</h2>
+     <section id="freeCourses" class=" bg-green-200 max-w-full mx-auto py-[24px] sm:py-14 bg-gray-700">
+            <h2 class="text-center text-4xl font-bold text-green-700 mb-6">Free Courses</h2>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6" id="freeCourseContainer"></div>
         </section>
 
