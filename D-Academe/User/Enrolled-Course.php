@@ -42,6 +42,10 @@ if ($user_id) {
     <title>Enrolled Courses</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <style>
+        body {
+            background: linear-gradient(to bottom, #b2f7b5, #a0e9a1, #d4f7d1, #b2f7b5, #a0e9a1, #d4f7d1);
+            background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3), #a0e9a1, ); /* Slight dark gradient for better text visibility */
+        }
         #suggestions {
             position: absolute;
             top: 100%;
@@ -71,8 +75,9 @@ if ($user_id) {
         </div>
     </div>
     
-    <div class="container mx-auto text-center">
-        <h2 class="text-4xl font-semibold text-gray-900 mb-8">Your Enrolled Courses</h2>
+    <div class="container mx-auto text-center bg-green-300">
+        <br>
+        <h2 class="text-4xl font-semibold text-green-800 mb-8">Your Enrolled Courses</h2>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             <?php if (count($enrolled_courses) > 0): ?>
@@ -95,6 +100,7 @@ if ($user_id) {
                 <p class="text-lg text-gray-600">You have not enrolled in any courses yet.</p>
             <?php endif; ?>
         </div>
+        <br>
     </div>
 </section>
 
