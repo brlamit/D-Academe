@@ -198,6 +198,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <title>Add New Course</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
+        body{
+        background: linear-gradient(to bottom,  #203f43, #2c8364);
+           /* background-image: url('assets/hero2.webp'); */
+           background-size: cover;
+            background-position: center;
+    }
         input:focus, textarea:focus {
             border-color: #4b9f8f;
             box-shadow: 0 0 0 2px rgba(75, 159, 143, 0.5);
@@ -225,7 +231,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </style>
 </head>
 <body class="flex items-center justify-center min-h-screen">
-<div class="bg-black p-8 rounded-xl shadow-2xl w-full max-w-4xl relative">
+<div class=" p-8 rounded-xl shadow-2xl w-full max-w-4xl relative">
     <button type="button" onclick="goBack()"
             class="absolute top-4 left-4 bg-transparent underline text-white py-2 px-4 text-sm rounded-lg font-semibold hover:text-teal-800 transition-all shadow-md">
         Go Back

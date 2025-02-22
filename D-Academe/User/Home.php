@@ -36,14 +36,22 @@ $user_name = $_SESSION['name'];
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <style>
         .hero-bg {
-            background: linear-gradient(to bottom, #0f2027, #203f43, #2c8364);
-            /* background-image: url('assets/hero2.webp'); */
-            background-size: cover;
-            background-position: center;
-        }
-        .hero-overlay {
-            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5));
-        }
+    background: linear-gradient(to bottom, #b2f7b5, #a0e9a1, #d4f7d1, #b2f7b5, #a0e9a1, #d4f7d1);
+    background-size: cover;
+    background-position: center;
+    position: relative; /* Ensures the overlay is positioned correctly */
+}
+
+.hero-overlay {
+    position: absolute; /* Covers the entire hero section */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3), #a0e9a1, #d4f7d1); /* Slight dark gradient for better text visibility */
+    z-index: 1; /* Ensures the overlay is above the background */
+}
+
     </style>
 </head>
 
