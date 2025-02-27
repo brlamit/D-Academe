@@ -30,8 +30,8 @@ try {
             profile_picture VARCHAR(255),
             license VARCHAR(255),
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            reset_token VARCHAR(64) DEFAULT NULL,
-            expiry INT NOT NULL
+            reset_token VARCHAR(255) DEFAULT NULL,
+            expiry DATETIME NOT NULL
         )
     ";
     $pdo->exec($createTableSQL);
