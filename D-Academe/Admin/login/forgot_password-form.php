@@ -95,7 +95,7 @@ if (isset($_GET['message'])) {
     </style>
 </head>
 <body class="min-h-screen flex items-center justify-center">
-    <div class="bg-black bg-opacity-70 p-8 rounded-xl shadow-lg w-full max-w-md">
+    <div class=" bg-opacity-70 p-8 rounded-xl shadow-lg w-full max-w-md">
         <!-- Logo -->
         <img src="../assets/logo.png" alt="D-Academe Logo" class="w-24 mx-auto mb-6">
 

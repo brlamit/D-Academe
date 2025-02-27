@@ -54,7 +54,7 @@ $khalti_secret_key = "55561f78d07a4991877e810edde844cd";
 $postFields = json_encode([
     "return_url" => "http://localhost/D-Academe/D-Academe/user/response-pay.php",
     "website_url" => "http://localhost/D-Academe/D-Academe/user/?page=buy-course",
-    "amount" => $coursePrice * 100, // Convert to paisa
+    "amount" => $coursePrice * 100 *100, // Convert to paisa
     "purchase_order_id" => $order_id,
     "purchase_order_name" => $courseName,
     "customer_info" => [

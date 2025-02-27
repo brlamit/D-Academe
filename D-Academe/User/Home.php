@@ -76,7 +76,7 @@ $user_name = isset($_SESSION['name']) ? $_SESSION['name'] : null;
                     </h1>
                     <!-- Paragraph with Subtle Fade-In Animation -->
                     <p 
-                        class="text-xl sm:text-2xl max-w-2xl mx-auto opacity-90 hover:opacity-100 transition duration-300 ease-in-out animate-fadeInUp animate-delay-300" data-aos="fade-up" data-aos-delay="300">
+                        class=" text-green-700 text-xl sm:text-2xl max-w-2xl mx-auto opacity-90 hover:opacity-100 transition duration-300 ease-in-out animate-fadeInUp animate-delay-300" data-aos="fade-up" data-aos-delay="300">
                         Join a world-class blockchain course and get hands-on experience in building decentralized apps and smart contracts.
                     </p>
                     <!-- Call-to-Action Buttons -->
@@ -84,8 +84,8 @@ $user_name = isset($_SESSION['name']) ? $_SESSION['name'] : null;
                         <a href="userregister-form.php" class="bg-green-600 hover:bg-green-700 text-white py-3 px-10 rounded-full text-lg shadow-lg shadow-green-500/50 transform hover:scale-110 transition duration-300 ease-in-out animate-bounce" data-aos="fade-up" data-aos-delay="500">
                             Get Started
                         </a>
-                        <a href="/learn-more" class="text-white border-2 border-white py-3 px-10 rounded-full text-lg shadow-lg hover:shadow-pink-500/50 transition duration-300 ease-in-out hover:bg-white hover:text-gray-900" data-aos="fade-up" data-aos-delay="600">
-                            Learn More
+                        <a href="index.php?page=learnmore" class="text-white border-2 border-white py-3 px-10 rounded-full text-lg shadow-lg hover:shadow-pink-500/50 transition duration-300 ease-in-out hover:bg-white hover:text-gray-900" data-aos="fade-up" data-aos-delay="600">
+                            Learn More 
                         </a>
                     </div>
                 </div>

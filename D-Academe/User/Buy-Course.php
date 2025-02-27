@@ -355,7 +355,6 @@ function getCoursePrice(courseId) {
                             <p class="text-gray-600">${course.description}</p>
                         </div>
                         <div class="mt-6 flex gap-4 justify-center">
-                         <button onclick="window.location.href='viewcourse.php?course_id=' + ${course.id}" class="bg-blue-500 hover:bg-blue-600 text-white py-3 px-8 rounded-full text-lg">View</button> 
                             <button onclick="buy('${course.id}')" class="bg-green-500 hover:bg-green-600 text-white py-3 px-8 rounded-full text-lg">
                                 Buy Course
                             </button>
@@ -396,8 +395,7 @@ function appendCourse(course) {
                 <p class="text-gray-600">${course.description}</p>
             </div>
             <div class="mt-6 flex gap-4 justify-center">
-                <button onclick="viewCourse('${course.id}')" class="bg-blue-500 hover:bg-blue-600 text-white py-3 px-8 rounded-full text-lg">View </button>
-           <button onclick="buy('${course.id}')" class="bg-green-500 hover:bg-green-600 text-white py-3 px-8 rounded-full text-lg">
+                <button onclick="buy('${course.id}')" class="bg-green-500 hover:bg-green-600 text-white py-3 px-8 rounded-full text-lg">
     Buy Course
 </button>
   </div>

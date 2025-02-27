@@ -1,5 +1,5 @@
 <?php
-session_start();
+// session_start();
 include('dbconnection.php'); // Database connection
 include('header.php'); // Header
 
@@ -49,6 +49,7 @@ $course_details = [
     <script src="https://khalti.s3.ap-south-1.amazonaws.com/KPG/dist/2020.12.17.0.0.0/khalti-checkout.iffe.js"></script>
 </head>
 <body class="">
+    <br>
     <div class="container flex  items-center justify-center mx-auto my-10 relative">
     <div class=" p-8 rounded-xl shadow-2xl w-full max-w-4xl  relative ">
         <button type="button" onclick="goBack()" class="absolute top-4 left-4 bg-transparent underline text-white py-2 px-4 text-sm rounded-lg font-semibold hover:text-teal-800 transition-all shadow-md">

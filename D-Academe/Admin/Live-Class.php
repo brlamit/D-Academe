@@ -1,5 +1,5 @@
 <?php
-define("LIVEPEER_API_KEY", "5027e304-ad2d-4b3f-b61e-623de34af076");
+define("LIVEPEER_API_KEY", "ab75081e-d6ec-4ec8-8eb5-037a939e9c6b");
 
 // Initialize variables
 $streamDetails = null;

@@ -44,12 +44,15 @@ $courses = [
     </style>
 </head>
 <body class="bg-teal-100">
-
+<br>
+<br>
     <!-- Main Container -->
     <div class="container mx-auto px-4 py-8 mt=24">
-        
+       
         <!-- Header Section -->
         <section class="relative w-full mt=16">
+        <br>
+        
             <div class="bg-teal-700 text-white p-6 rounded-lg shadow-lg text-center">
                 <h2 class="text-2xl font-semibold mb-4">
                     <b>"Unlock the future with Blockchain—revolutionizing industries, ensuring transparency, and powering the next generation of innovation."</b>

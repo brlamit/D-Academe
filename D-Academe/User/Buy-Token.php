@@ -35,13 +35,13 @@
             </button>
 
           <!-- Khalti Payment Button -->
-<button 
+<!-- <button 
     type="button" 
     id="khaltiButton" 
     onclick="redirectToKhaltiPayment()" 
     class="mt-4 bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded w-full">
     Pay with Khalti
-</button>
+</button> -->
 
 
              <!-- Token Price Section -->
@@ -55,11 +55,11 @@
         </form>
         
     <!-- Wallet Info Section -->
-    <div id="walletInfo" class="bg-gray-800 p-8 mt-10 rounded-lg shadow-lg mx-auto max-w-md text-center">
+    <!-- <div id="walletInfo" class="bg-gray-800 p-8 mt-10 rounded-lg shadow-lg mx-auto max-w-md text-center">
         <h2 class="text-3xl font-bold text-green-400 text-center mb-6">Available Tokens</h2>
         <p class="font-bold text-3xl text-white"><strong id="availableTokenBalance">0</strong></p>
         <p id="walletAddress" class="text-green-400 text-sm mt-4"></p> <!-- Show wallet address here -->
-    </div>
+    </div> -->
     </div>
 
     <div id="loader" class="hidden fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center z-50">

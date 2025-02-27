@@ -154,6 +154,7 @@ if (!empty($_GET['pidx']) && $user_id) {
         $stmt->execute();
         $result = $stmt->get_result();
         $course = $result->fetch_assoc();
+        
 
         if (!$course) {
             die(json_encode(["status" => "error", "message" => "Course not found."]));
