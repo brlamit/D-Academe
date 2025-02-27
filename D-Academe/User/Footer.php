@@ -6,7 +6,7 @@
     <div class="container mx-auto flex flex-col md:flex-row items-center justify-between space-y-6 md:space-y-0">
         <!-- Logo and Branding -->
         <div class="flex items-center gap-4">
-            <img src="../assets/logo.png" alt="D-Academe Logo" class="w-32 h-auto object-contain opacity-90 hover:opacity-100 transition-opacity duration-300">
+            <img src="assets/logo.png" alt="D-Academe Logo" class="w-32 h-auto object-contain opacity-90 hover:opacity-100 transition-opacity duration-300">
             <div class="text-lg font-semibold">D-Academe</div>
         </div>
 

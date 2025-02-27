@@ -132,6 +132,11 @@ $conn->close();
     </p>
 
     <button type="submit" class="mt-4 px-6 py-2 bg-blue-600 text-white rounded-full">Update Profile</button>
+    <p class="text-gray-700">
+                <a href="./login/forgot_password-form.php" class="mt-4 px-6 py-2 bg-red-600 text-white rounded-full inline-block">
+                    Change Password?
+                </a>
+            </p>
 </form>
 
           <p class="text-gray-700">
