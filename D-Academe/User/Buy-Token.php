@@ -5,17 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Buy Tokens</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/web3/dist/web3.min.js"></script>
-    <script src="https://khalti.com/static/khalti-checkout.js"></script>
-   
 </head>
 <body class="bg-gray-900 text-white flex items-center justify-center min-h-screen">
-<section class="py-16 ">
+<section class="py-16">
     <!-- Token Purchase Section -->
     <div class="bg-gray-800 p-8 mt-20 rounded-lg shadow-lg mx-auto max-w-md">
         <h2 class="text-3xl font-bold text-green-400 text-center mb-6">Buy Tokens</h2>
-        <form method="POST" class="space-y-4" id="buyTokensForm">
+        <form id="buyTokensForm" class="space-y-4">
             <div>
                 <input
                     type="number"
@@ -30,271 +27,154 @@
             
             <button
                 type="submit"
-                class="w-full bg-gradient-to-r from-green-500 to-green-600 text-white font-bold py-3 rounded-lg hover:from-green-600 hover:to-teal-600 transition transform hover:scale-105" onclick="toggleloader()">
+                class="w-full bg-gradient-to-r from-green-500 to-green-600 text-white font-bold py-3 rounded-lg hover:from-green-600 hover:to-teal-600 transition transform hover:scale-105">
                 Buy Tokens
             </button>
 
-          <!-- Khalti Payment Button -->
-<!-- <button 
-    type="button" 
-    id="khaltiButton" 
-    onclick="redirectToKhaltiPayment()" 
-    class="mt-4 bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded w-full">
-    Pay with Khalti
-</button> -->
+            <!-- Khalti Payment Button -->
+            <button 
+                type="button" 
+                id="khaltiButton" 
+                onclick="redirectToKhaltiPayment()" 
+                class="mt-4 bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded w-full">
+                Pay with Khalti
+            </button>
 
+            <!-- eSewa Payment Button -->
+            <!-- <button 
+                type="button" 
+                id="eSewaPaymentButton" 
+                class="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-full">
+                Pay with eSewa
+            </button> -->
 
-             <!-- Token Price Section -->
+            <!-- Token Price Section -->
             <div class="bg-green-800 p-8 mt-20 rounded-lg shadow-lg mx-auto max-w-md">
                 <h2 class="text-3xl font-bold text-blue-400 text-center mb-6">Token Price</h2>
                 <div class="text-center">
-                    <p class="text-lg">1000 Token = <span id="tokenPrice" class="font-bold text-green-400">1.00</span> ETH</p>
-                    <p class="text-lg">1 Token = <span id="tokenPrice" class="font-bold text-green-400">50</span> NRS</p>
+                    <p class="text-lg">1000 Token = <span class="font-bold text-green-400">1.00</span> ETH</p>
+                    <p class="text-lg">1 Token = <span class="font-bold text-green-400">50</span> NRS</p>
                 </div>
             </div>
         </form>
-        
-    <!-- Wallet Info Section -->
-    <!-- <div id="walletInfo" class="bg-gray-800 p-8 mt-10 rounded-lg shadow-lg mx-auto max-w-md text-center">
-        <h2 class="text-3xl font-bold text-green-400 text-center mb-6">Available Tokens</h2>
-        <p class="font-bold text-3xl text-white"><strong id="availableTokenBalance">0</strong></p>
-        <p id="walletAddress" class="text-green-400 text-sm mt-4"></p> <!-- Show wallet address here -->
-    </div> -->
     </div>
 
+    <!-- Loader -->
     <div id="loader" class="hidden fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center z-50">
         <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-green-500"></div>
     </div>
-
-    
-
-
-    
-<!-- Loader (Spinner) -->
-<div id="loader" class="fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center hidden z-50">
-    <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-500 border-opacity-80"></div>
-</div>
 </section>
 
-    <script>
-        let isConnected = false;
-        let tokenABI = [];
-        const tokenContractAddress = "0x7A2450f1bF6BB66AD0FA75716752Ad903C8482C9";
-        const rate = 1000; // Rate from the smart contract
+<script>
+    let isConnected = false;
+    let tokenABI = [];
+    const tokenContractAddress = "0x7A2450f1bF6BB66AD0FA75716752Ad903C8482C9";
+    const rate = 1000; // 1000 tokens = 1 ETH
 
-        // Load ABI
-        async function loadABI() {
-            try {
-                const response = await fetch('./constants/ABI-Token.json');
-                if (!response.ok) throw new Error(`Failed to fetch ABI: ${response.statusText}`);
-                tokenABI = await response.json();
-                console.log("ABI loaded successfully.");
-            } catch (error) {
-                console.error("Error loading ABI:", error);
-                alert("Failed to load contract ABI. Please try again.");
-            }
+    // Load ABI
+    async function loadABI() {
+        try {
+            const response = await fetch('constants/ABI-Token.json'); // Ensure correct path
+            if (!response.ok) throw new Error(`Failed to fetch ABI: ${response.statusText}`);
+            tokenABI = await response.json();
+            console.log("ABI loaded successfully.");
+        } catch (error) {
+            console.error("Error loading ABI:", error);
+            alert("Failed to load contract ABI. Please try again.");
         }
-
-        // Initialize Wallet Connection
-        async function initializeWallet() {
-            console.log("Initializing wallet...");
-            if (typeof window.ethereum === 'undefined') {
-                alert("MetaMask is not installed. Please install MetaMask to use this feature.");
-                updateWalletDisconnected();
-                return;
-            }
-
-            try {
-                const accounts = await window.ethereum.request({ method: 'eth_accounts' });
-                if (accounts.length > 0) {
-                    const account = accounts[0];
-                    console.log("Wallet connected:", account);
-                    localStorage.setItem('account', account);
-                    updateWalletConnected(account);
-                    await fetchBalances(account);
-                } else {
-                    updateWalletDisconnected();
-                }
-            } catch (error) {
-                console.error("Error initializing wallet:", error);
-                updateWalletDisconnected();
-            }
-        }
-
-        // Fetch Token Balances
-        async function fetchBalances(account) {
-            console.log("Fetching balances for:", account);
-            try {
-                const web3 = new Web3(window.ethereum);
-                const tokenContract = new web3.eth.Contract(tokenABI, tokenContractAddress);
-
-                // Fetch token balance in smallest unit (e.g., Wei)
-                const rawTokenBalance = await tokenContract.methods.balanceOf(account).call();
-                console.log("Token balance retrieved (raw):", rawTokenBalance);
-
-                // Fetch token decimals to properly convert balance
-                const tokenDecimals = await tokenContract.methods.decimals().call();
-                console.log("Token decimals:", tokenDecimals);
-
-                // Convert rawTokenBalance and tokenDecimals to BigInt before performing division
-                const balanceInTokens = BigInt(rawTokenBalance) / BigInt(10 ** parseInt(tokenDecimals));
-
-                // Update the available token balance (convert to string if necessary)
-                document.getElementById('availableTokenBalance').textContent = balanceInTokens.toString();
-            } catch (error) {
-                console.error("Error fetching balances:", error);
-                document.getElementById('availableTokenBalance').textContent = "0";
-                alert("Failed to retrieve balances. Please try again.");
-            }
-        }
-
-        // Update UI for Wallet Connected
-        function updateWalletConnected(account) {
-            console.log("Updating wallet connected state.");
-            isConnected = true;
-            // document.getElementById('walletAddress').textContent = `Connected Wallet: ${account}`;
-        }
-
-        // Update UI for Wallet Disconnected
-        function updateWalletDisconnected() {
-            console.log("Updating wallet disconnected state.");
-            isConnected = false;
-            document.getElementById('walletAddress').textContent = "No Wallet Connected";
-            document.getElementById('availableTokenBalance').textContent = "0";
-            localStorage.removeItem('account');
-        }
-
-        // Handle Token Purchase
-async function handleTokenPurchase(event) {
-    event.preventDefault();
-
-    const account = localStorage.getItem('account');
-    if (!isConnected || !account) {
-        alert("Please connect your wallet first.");
-        return;
     }
 
-    const tokensToBuy = document.querySelector('input[name="tokensToBuy"]').value;
-    if (!tokensToBuy || tokensToBuy <= 0) {
-        alert("Please enter a valid amount of tokens to buy.");
-        return;
-    }
-
-    // Convert tokens to buy into ETH based on the rate
-    const ethToSend = (tokensToBuy * 1) / rate; // Adjust this formula as needed
-
-    const loader = document.getElementById('loader');
-    const buyButton = event.target.querySelector('button[type="submit"]');
-    buyButton.disabled = true;
-
-    try {
-        // Show the loader
-        loader.classList.remove('hidden');
-
-        const web3 = new Web3(window.ethereum);
-        const tokenContract = new web3.eth.Contract(tokenABI, tokenContractAddress);
-
-        // Call the buyTokens function with the required ETH
-        const receipt = await tokenContract.methods
-            .buyTokens()
-            .send({ from: account, value: web3.utils.toWei(ethToSend.toString(), 'ether') });
-
-        console.log("Purchase receipt:", receipt);
-        alert(`Successfully purchased ${tokensToBuy} tokens!`);
-        await fetchBalances(account); // Refresh the balance
-    } catch (error) {
-        console.error("Error purchasing tokens:", error);
-        alert("Token purchase failed. Please check the transaction details and try again.");
-    } finally {
-        // Hide the loader and re-enable the button
-        loader.classList.add('hidden');
-        buyButton.disabled = false;
-    }
-}
-
-         // Handle eSewa Payment
-         async function handleESewaPayment(event) {
-        event.preventDefault(); // Prevent any default behavior
-
-        const tokensToBuy = document.querySelector('input[name="tokensToBuy"]').value;
-        if (!tokensToBuy || tokensToBuy <= 0) {
-            alert("Please enter a valid amount of tokens to buy.");
+    // Initialize Wallet Connection
+    async function initializeWallet() {
+        console.log("Initializing wallet...");
+        if (typeof window.ethereum === 'undefined') {
+            alert("MetaMask is not installed. Please install MetaMask to use this feature.");
             return;
         }
 
-        const amountInNPR = tokensToBuy * 50; // Example rate: 1 token = 50 NPR
-        const esewaURL = `https://uat.esewa.com.np/epay/main`;
-        const params = new URLSearchParams({
-            amt: amountInNPR,
-            psc: 0,
-            pdc: 0,
-            txAmt: 0,
-            tAmt: amountInNPR,
-            pid: `TOKEN_PURCHASE_${Date.now()}`,
-            scd: 'EPAYTEST',
-            su: 'http://yourwebsite.com/success', // Success URL
-            fu: 'http://yourwebsite.com/failure'  // Failure URL
-        });
-
-        // Change the location to open the eSewa URL in the same page
-        window.location.href = `${esewaURL}?${params.toString()}`;
+        try {
+            const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+            if (accounts.length > 0) {
+                isConnected = true;
+                localStorage.setItem('account', accounts[0]);
+                console.log("Wallet connected:", accounts[0]);
+            } else {
+                isConnected = false;
+                console.log("No accounts found.");
+            }
+        } catch (error) {
+            console.error("Error initializing wallet:", error);
+        }
     }
-        
-    // eSewa Payment Button
-    document.getElementById('eSewaPaymentButton').addEventListener('click', handleESewaPayment);
 
-        // Initialize Application
-        window.onload = async () => {
-            await loadABI();
-            await initializeWallet();
+    // Handle Token Purchase
+    async function handleTokenPurchase(event) {
+        event.preventDefault();
 
-            // Attach form submit event listener
-            const form = document.querySelector('form');
-            form.addEventListener('submit', handleTokenPurchase);
+        if (!isConnected) {
+            alert("Please connect your wallet first.");
+            return;
+        }
 
-            // Listen for account or chain changes
-            window.ethereum.on('accountsChanged', async (accounts) => {
-                console.log("Accounts changed:", accounts);
-                if (accounts.length === 0) {
-                    updateWalletDisconnected();
-                } else {
-                    const account = accounts[0];
-                    localStorage.setItem('account', account);
-                    updateWalletConnected(account);
-                    await fetchBalances(account);
-                }
-            });
-
-            window.ethereum.on('chainChanged', async () => {
-                console.log("Chain changed. Reloading balances.");
-                const account = localStorage.getItem('account');
-                if (isConnected && account) {
-                    await fetchBalances(account);
-                }
-            });
-        };
-    </script>
-    
-    <script>
-    function redirectToKhaltiPayment() {
-        // Get the amount of tokens the user wants to buy
-        const tokensToBuy = document.getElementById("tokensToBuy").value;
-
+        const tokensToBuy = document.getElementById('tokensToBuy').value;
         if (!tokensToBuy || tokensToBuy <= 0) {
             alert("Please enter a valid amount of tokens.");
             return;
         }
 
-        // Calculate total price in NRS for the amount of tokens
-        const pricePerToken = 50; // 1 token = 50 NRS
+        const account = localStorage.getItem('account');
+        const ethToSend = (tokensToBuy * 1) / rate;
+
+        const loader = document.getElementById('loader');
+        loader.classList.remove('hidden');
+
+        try {
+            const web3 = new Web3(window.ethereum);
+            const tokenContract = new web3.eth.Contract(tokenABI, tokenContractAddress);
+
+            const receipt = await tokenContract.methods
+                .buyTokens()
+                .send({ from: account, value: web3.utils.toWei(ethToSend.toString(), 'ether') });
+
+            console.log("Purchase receipt:", receipt);
+            alert(`Successfully purchased ${tokensToBuy} tokens!`);
+        } catch (error) {
+            console.error("Error purchasing tokens:", error);
+            alert("Token purchase failed. Please try again.");
+        } finally {
+            loader.classList.add('hidden');
+        }
+    }
+
+    // Handle eSewa Payment
+    function handleESewaPayment() {
+        const tokensToBuy = document.getElementById('tokensToBuy').value;
+        if (!tokensToBuy || tokensToBuy <= 0) {
+            alert("Please enter a valid amount of tokens.");
+            return;
+        }
+
+        const amountInNPR = tokensToBuy * 50;
+        const esewaURL = `https://uat.esewa.com.np/epay/main?amt=${amountInNPR}&psc=0&pdc=0&txAmt=0&tAmt=${amountInNPR}&pid=TOKEN_PURCHASE_${Date.now()}&scd=EPAYTEST&su=http://yourwebsite.com/success&fu=http://yourwebsite.com/failure`;
+        
+        window.location.href = esewaURL;
+    }
+
+    // Handle Khalti Payment
+    function redirectToKhaltiPayment() {
+        const tokensToBuy = document.getElementById("tokensToBuy").value;
+        if (!tokensToBuy || tokensToBuy <= 0) {
+            alert("Please enter a valid amount of tokens.");
+            return;
+        }
+
+        const pricePerToken = 50;
         const totalPriceNRS = tokensToBuy * pricePerToken; 
 
-        // Create a form to submit the data
         const form = document.createElement('form');
         form.method = 'POST';
-        form.action = 'khalti-payment.php'; // Redirect to the new page
+        form.action = 'khalti-payment.php';
 
-        // Create form elements to pass data
         const tokenInput = document.createElement('input');
         tokenInput.type = 'hidden';
         tokenInput.name = 'tokensToBuy';
@@ -305,18 +185,21 @@ async function handleTokenPurchase(event) {
         priceInput.name = 'totalPriceNRS';
         priceInput.value = totalPriceNRS;
 
-        // Append the inputs to the form
         form.appendChild(tokenInput);
         form.appendChild(priceInput);
 
-        // Append the form to the body and submit it
         document.body.appendChild(form);
         form.submit();
     }
+
+    // Initialize Application
+    window.onload = async () => {
+        await loadABI();
+        await initializeWallet();
+        document.getElementById('buyTokensForm').addEventListener('submit', handleTokenPurchase);
+        document.getElementById('eSewaPaymentButton').addEventListener('click', handleESewaPayment);
+    };
 </script>
 
 </body>
 </html>
-<?php
-    include 'footer.php';
-?>
