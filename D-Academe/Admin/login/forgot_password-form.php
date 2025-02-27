@@ -95,7 +95,11 @@ if (isset($_GET['message'])) {
     </style>
 </head>
 <body class="min-h-screen flex items-center justify-center">
-    <div class=" bg-opacity-70 p-8 rounded-xl shadow-lg w-full max-w-md">
+    <div class=" bg-opacity-70 p-8 rounded-xl shadow-lg w-full max-w-md relative">
+    <button type="button" onclick="goBack()"
+                class="absolute top-4 left-4 bg-transparent underline text-white py-2 px-4 text-sm rounded-lg font-semibold hover:text-teal-400 transition-all shadow-md">
+                Go Back
+            </button>
         <!-- Logo -->
         <img src="../assets/logo.png" alt="D-Academe Logo" class="w-24 mx-auto mb-6">
 
@@ -140,6 +144,11 @@ if (isset($_GET['message'])) {
     <script>
         function closeModal() {
             document.getElementById('messageModal').style.display = 'none';
+        }
+          
+       // Function to go back to the previous page
+       function goBack() {
+            window.history.back();
         }
     </script>
 </body>

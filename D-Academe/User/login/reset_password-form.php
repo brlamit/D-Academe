@@ -65,9 +65,9 @@ if (isset($_GET['token'])) {
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 </head>
 <body class="min-h-screen flex items-center justify-center">
-    <div class="bg-black p-8 rounded-xl shadow-lg w-full max-w-md">
+    <div class=" p-8 rounded-xl shadow-lg w-full max-w-md">
         <!-- Logo -->
-        <img src="../../assets/logo.png" alt="D-Academe Logo" class="w-24 mx-auto mb-6">
+        <img src="../assets/logo.png" alt="D-Academe Logo" class="w-24 mx-auto mb-6">
 
         <!-- Heading -->
         <h1 class="text-3xl font-bold text-gray-200 text-center mb-6">Reset Your Password</h1>
