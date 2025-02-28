@@ -23,7 +23,7 @@ if (isset($_GET['course_id'])) {
         $stmt->execute();
         $result = $stmt->get_result();
         if ($row = $result->fetch_assoc()) {
-            $name = htmlspecialchars($row['name']);
+            $name = htmlspecialchars($row['course_name']);
             $imageUrl = htmlspecialchars($row['image']); // Fetch and sanitize image URL
             $description = htmlspecialchars($row['description']);
             $courseContent = htmlspecialchars($row['content']); // Fetch URL from the database
@@ -189,10 +189,10 @@ if ($currentTopicIndex !== null) {
         }
     </style>
 </head>
-<body class="bg-gray-100 font-sans">
 
+<body class="bg-gray-100 font-sans py-16 mt-8">
 <!-- Container for the entire page -->
-<div class="flex min-h-screen  mt-24">
+<div class="flex min-h-screen  ">
 
     <!-- Sidebar (Left) -->
     <div class="w-1/5 bg-white text-gray-800 h-full overflow-y-auto">
@@ -206,7 +206,7 @@ if ($currentTopicIndex !== null) {
                     <ul class="left-0 pl-5 space-y-2">
                         <?php foreach ($topics as $topic): ?>
                             <li>
-                                <a href="?course_name=<?= htmlspecialchars($courseName) ?>&topic_url=<?= urlencode($topic['url']) ?>" class="text-gray-500 hover:underline">
+                                <a href="?course_id=<?= htmlspecialchars($courseId) ?>&topic_url=<?= urlencode($topic['url']) ?>" class="text-gray-900 hover:underline">
                                     <?= htmlspecialchars($topic['name']) ?>
                                 </a>
                             </li>
@@ -220,7 +220,7 @@ if ($currentTopicIndex !== null) {
     </div>
 
     <!-- Main Content (Right) -->
-    <div class="w-full p-8 bg-white overflow-y-auto">
+    <div class="w-full  bg-white overflow-y-auto">
         <div class="max-w-1xl mx-auto content">   
             <!-- Content Section -->
             <div class="prose prose-lg prose-green pt-16 max-w-none mt-1 leading-relaxed text-2xl">
@@ -230,14 +230,14 @@ if ($currentTopicIndex !== null) {
             <!-- Navigation Links -->
             <div class="mt-8 flex justify-between">
                 <?php if ($prevCourse): ?>
-                    <a href="?course_name=<?= htmlspecialchars($courseName) ?>&topic_url=<?= htmlspecialchars($prevCourse) ?>" 
+                    <a href="?course_id=<?= htmlspecialchars($courseId) ?>&topic_url=<?= htmlspecialchars($prevCourse) ?>" 
                     class="text-blue-500 hover:text-blue-700">&larr; Previous</a>
                 <?php else: ?>
                     <span class="text-gray-400">&larr; Previous</span> <!-- Disabled -->
                 <?php endif; ?>
 
                 <?php if ($nextCourse): ?>
-                    <a href="?course_name=<?= htmlspecialchars($courseName) ?>&topic_url=<?= htmlspecialchars($nextCourse) ?>" 
+                    <a href="?course_id=<?= htmlspecialchars($courseId) ?>&topic_url=<?= htmlspecialchars($nextCourse) ?>" 
                     class="text-blue-500 hover:text-blue-700">Next &rarr;</a>
                 <?php else: ?>
                     <span class="text-gray-400">Next &rarr;</span> <!-- Disabled -->

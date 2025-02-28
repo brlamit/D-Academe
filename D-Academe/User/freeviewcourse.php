@@ -201,7 +201,7 @@ if ($currentTopicIndex !== null) {
                     <ul class="left-0 pl-5 space-y-2">
                         <?php foreach ($topics as $topic): ?>
                             <li>
-                                <a href="?course_name=<?= htmlspecialchars($courseName) ?>&topic_url=<?= urlencode($topic['url']) ?>" class="text-gray-500 hover:underline">
+                                <a href="?course_name=<?= htmlspecialchars($courseName) ?>&topic_url=<?= urlencode($topic['url']) ?>" class="text-gray-900 hover:underline">
                                     <?= htmlspecialchars($topic['name']) ?>
                                 </a>
                             </li>
@@ -215,7 +215,7 @@ if ($currentTopicIndex !== null) {
     </div>
 
     <!-- Main Content (Right) -->
-    <div class="w-full p-8 bg-white overflow-y-auto">
+    <div class="w-full  bg-white overflow-y-auto">
         <div class="max-w-1xl mx-auto content">   
             <!-- Content Section -->
             <div class="prose prose-lg prose-green pt-16 max-w-none mt-1 leading-relaxed text-2xl">

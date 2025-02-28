@@ -10,7 +10,7 @@ if (!isset($_SESSION['email'])) {
 }
 
 // Query to fetch all courses from the database
-$sql = "SELECT id, name, image, description, token_price, course_content, date_of_upload FROM paid_course_enrollments";
+$sql = "SELECT id, name, image, description, token_price, course_content, date_of_upload FROM courses";
 $result = $conn->query($sql);
 
 // Initialize an empty array to hold the course data

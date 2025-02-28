@@ -146,7 +146,7 @@ if (isset($_SESSION['validate_msg'])) {
 
 <!-- Khalti Payment Button as a Button -->
 <button 
-    onclick="window.location.href='checkout.php?course_id=<?= urlencode($course_details['id']); ?>&name=<?= urlencode($course_details['name']); ?>&token_price=<?= urlencode($course_details['price_in_tokens']); ?>&description=<?= urlencode($course_details['description']); ?>'" 
+   onclick="payWithKhalti(<?php echo (int)$course_details['id']; ?>, '<?php echo htmlspecialchars($course_details['name'], ENT_QUOTES, 'UTF-8'); ?>', <?php echo (float)$course_details['price_in_tokens']; ?>)"
     id="btn" 
     class="mt-4 w-full py-3 bg-purple-500 text-white font-bold rounded-lg hover:bg-purple-700 transition-all shadow-lg">
     Buy Now with Khalti
@@ -307,8 +307,8 @@ if (isset($_SESSION['validate_msg'])) {
     </script>
 
     <script>
-        function payWithKhalti(courseId, courseName) {
-            window.location.href = `request-pay.php?course_id=${courseId}&name=${encodeURIComponent(courseName)}`;
+       function payWithKhalti(id, name, price) {
+             window.location.href = `request-pay.php?course_id=${id}&name=${encodeURIComponent(name)}&token_price=${encodeURIComponent(price)}`;
         }
     </script>
 </body>
