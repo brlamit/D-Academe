@@ -74,11 +74,11 @@ $course_details = [
                 Buy Course
             </button>
             <!-- Khalti Payment Button -->
-                <button id="khaltiButton" 
-                onclick="payWithKhalti('<?php echo $course_details['id']; ?>', '<?php echo $course_details['name']; ?>')"
-                    class="mt-4 bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded w-full">
-                    Pay with Khalti
-                </button>
+            <a href="checkout.php?course_id=<?= urlencode($course_details['id']); ?>&name=<?= urlencode($course_details['name']); ?>&token_price=<?= urlencode($course_details['price_in_tokens']); ?>&description=<?= urlencode($course_details['description']); ?>" 
+                id="btn" 
+                class="mt-4 bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded w-full">
+                Buy Now with Khalti
+            </a>
         </div>
     </div>
     
