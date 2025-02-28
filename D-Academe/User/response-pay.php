@@ -63,7 +63,7 @@ if ($responseArray['status'] === 'Completed') {
     }
 
     $course = $result->fetch_assoc();
-    $course['course_content'] = "https://gateway.pinata.cloud/ipfs/" . $course['course_content']; // Build IPFS URL
+    $course['course_content'] =$course['course_content']; // Build IPFS URL
 
     $stmt->close();
 
