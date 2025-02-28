@@ -4,6 +4,10 @@ $Parsedown = new Parsedown();
 // Include your database connection
 require_once 'dbconnection.php'; // Ensure this file correctly establishes a connection
 include('header.php');
+if (!isset($_SESSION['email'])) {
+    echo "<script>alert('Please login to view this page!')</script>";
+    echo "<script>window.location.href='login/user_login.html'</script>";
+}
 // Default values
 $defaultMessage = "<p class='text-gray-500'>Select a course topic to begin.</p>";
 $htmlContent = $defaultMessage;
