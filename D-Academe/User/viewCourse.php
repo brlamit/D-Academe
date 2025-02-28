@@ -190,9 +190,9 @@ if ($currentTopicIndex !== null) {
     </style>
 </head>
 
-<body class="bg-gray-100 font-sans py-16 mt-8">
+<body class="bg-gray-100 font-sans mt-24">
 <!-- Main Content Wrapper -->
-<div class="flex min-h-screen">
+<div class="flex min-h-screen ">
     <!-- Sidebar (Left) -->
     <div class="w-1/5 bg-white text-gray-800 h-full overflow-y-auto">
        <!-- Display the image fetched from the database -->
@@ -267,6 +267,6 @@ if ($currentTopicIndex !== null) {
     }
 </script>
 </body>
-</html>
 
-<?php include 'footer.php'; // Include the footer file ?>
+</body>
+</html><?php include 'footer.php'; // Include the footer file ?>

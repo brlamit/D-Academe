@@ -184,10 +184,10 @@ if ($currentTopicIndex !== null) {
         }
     </style>
 </head>
-<body class="bg-gray-100 font-sans">
+<body class="bg-gray-100 font-sans  mt-24">
 
 <!-- Container for the entire page -->
-<div class="flex min-h-screen  mt-24">
+<div class="flex min-h-screen ">
 
     <!-- Sidebar (Left) -->
     <div class="w-1/5 bg-white text-gray-800 h-full overflow-y-auto">
@@ -208,9 +208,12 @@ if ($currentTopicIndex !== null) {
                         <?php endforeach; ?>
                     </ul>
 
-                <?php else: ?>
-                    <p class="text-gray-500">No topics available for this course. You can view the course content <a href="<?= htmlspecialchars($courseContent) ?>" target="_blank" class="text-blue-500 hover:underline">here</a>.</p>
-                <?php endif; ?>
+                    <?php else: ?>
+                <p class="text-gray-500 text-lg">
+                    
+                    <a href="#" id="viewContentLink" class="text-blue-500 hover:underline" onclick="showIframe()">Continue Reading...</a>.
+                </p>
+            <?php endif; ?>
             </div>
     </div>
 
@@ -219,11 +222,16 @@ if ($currentTopicIndex !== null) {
         <div class="max-w-1xl mx-auto content">   
             <!-- Content Section -->
             <div class="prose prose-lg prose-green pt-16 max-w-none mt-1 leading-relaxed text-2xl">
+            <?php if (!empty($topics)): ?>
                 <?= $htmlContent ?>
+                <?php else: ?>
+                    <!-- Display Iframe for course content on the right side -->
+                    <iframe id="courseContentIframe" src="" class="w-full h-screen mt-4 border border-gray-300 rounded-lg" style="display: none;"></iframe>
+                <?php endif; ?>
             </div>
 
             <!-- Navigation Links -->
-            <div class="mt-8 flex justify-between">
+            <div id="navigationLinks" class="mt-8 flex justify-between">
                 <?php if ($prevCourse): ?>
                     <a href="?course_name=<?= htmlspecialchars($courseName) ?>&topic_url=<?= htmlspecialchars($prevCourse) ?>" 
                     class="text-blue-500 hover:text-blue-700">&larr; Previous</a>
@@ -243,6 +251,21 @@ if ($currentTopicIndex !== null) {
         </div>
     </div>
 </div>
+
+<script>
+    function showIframe() {
+        var iframe = document.getElementById('courseContentIframe');
+        var courseContentUrl = '<?= htmlspecialchars($courseContent) ?>';
+        var navigationLinks = document.getElementById('navigationLinks');
+
+        // Show the iframe with course content
+        iframe.src = courseContentUrl;
+        iframe.style.display = 'block'; // Show the iframe
+
+        // Hide the navigation links
+        navigationLinks.style.display = 'none';
+    }
+</script>
 <?php include 'footer.php'; // Include the footer file ?>
 </body>
 </html>
