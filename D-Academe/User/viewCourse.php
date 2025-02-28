@@ -191,63 +191,82 @@ if ($currentTopicIndex !== null) {
 </head>
 
 <body class="bg-gray-100 font-sans py-16 mt-8">
-<!-- Container for the entire page -->
-<div class="flex min-h-screen  ">
-
+<!-- Main Content Wrapper -->
+<div class="flex min-h-screen">
     <!-- Sidebar (Left) -->
     <div class="w-1/5 bg-white text-gray-800 h-full overflow-y-auto">
        <!-- Display the image fetched from the database -->
         <img src="<?= htmlspecialchars($imageUrl) ?>" alt="<?= htmlspecialchars($name) ?> Logo" class="w-60 h-auto object-contain hover:scale-105 transition-transform duration-300 opacity-80 hover:opacity-100">
      
         <!-- Course Topics -->
-            <div class="bg-white shadow-md mt-8 rounded-lg p-6 left-0">
-                <!-- <h3 class="text-xl font-bold text-gray-700 mb-4">Course Topics</h3> -->
-                <?php if (!empty($topics)): ?>
-                    <ul class="left-0 pl-5 space-y-2">
-                        <?php foreach ($topics as $topic): ?>
-                            <li>
-                                <a href="?course_id=<?= htmlspecialchars($courseId) ?>&topic_url=<?= urlencode($topic['url']) ?>" class="text-gray-900 hover:underline">
-                                    <?= htmlspecialchars($topic['name']) ?>
-                                </a>
-                            </li>
-                        <?php endforeach; ?>
-                    </ul>
-
-                <?php else: ?>
-                    <p class="text-gray-500">No topics available for this course. You can view the course content <a href="<?= htmlspecialchars($courseContent) ?>" target="_blank" class="text-blue-500 hover:underline">here</a>.</p>
-                <?php endif; ?>
-            </div>
+        <div class="bg-white shadow-md mt-8 rounded-lg p-6 left-0">
+            <?php if (!empty($topics)): ?>
+                <ul class="left-0 h-full pl-5 space-y-2">
+                    <?php foreach ($topics as $topic): ?>
+                        <li>
+                            <a href="?course_id=<?= htmlspecialchars($courseId) ?>&topic_url=<?= urlencode($topic['url']) ?>" class="text-gray-900 hover:underline">
+                                <?= htmlspecialchars($topic['name']) ?>
+                            </a>
+                        </li>
+                    <?php endforeach; ?>
+                </ul>
+            <?php else: ?>
+                <p class="text-gray-500 text-lg">
+                    
+                    <a href="#" id="viewContentLink" class="text-blue-500 hover:underline" onclick="showIframe()">Continue Reading...</a>.
+                </p>
+            <?php endif; ?>
+        </div>
     </div>
 
     <!-- Main Content (Right) -->
-    <div class="w-full  bg-white overflow-y-auto">
+    <div class="w-4/5 bg-white overflow-y-auto">
         <div class="max-w-1xl mx-auto content">   
             <!-- Content Section -->
             <div class="prose prose-lg prose-green pt-16 max-w-none mt-1 leading-relaxed text-2xl">
-                <?= $htmlContent ?>
+                <?php if (!empty($topics)): ?>
+                    <?= $htmlContent ?>
+                <?php else: ?>
+                    <!-- Display Iframe for course content on the right side -->
+                    <iframe id="courseContentIframe" src="" class="w-full h-screen mt-4 border border-gray-300 rounded-lg" style="display: none;"></iframe>
+                <?php endif; ?>
             </div>
 
             <!-- Navigation Links -->
-            <div class="mt-8 flex justify-between">
+            <div id="navigationLinks" class="mt-8 flex justify-between">
                 <?php if ($prevCourse): ?>
                     <a href="?course_id=<?= htmlspecialchars($courseId) ?>&topic_url=<?= htmlspecialchars($prevCourse) ?>" 
                     class="text-blue-500 hover:text-blue-700">&larr; Previous</a>
                 <?php else: ?>
-                    <span class="text-gray-400">&larr; Previous</span> <!-- Disabled -->
+                    <span class="text-gray-400 relative left-11">&larr; Previous</span> <!-- Disabled -->
                 <?php endif; ?>
 
                 <?php if ($nextCourse): ?>
                     <a href="?course_id=<?= htmlspecialchars($courseId) ?>&topic_url=<?= htmlspecialchars($nextCourse) ?>" 
-                    class="text-blue-500 hover:text-blue-700">Next &rarr;</a>
+                    class="text-blue-500 hover:text-blue-700 relative right-11">Next &rarr;</a>
                 <?php else: ?>
                     <span class="text-gray-400">Next &rarr;</span> <!-- Disabled -->
                 <?php endif; ?>
             </div>
-
-        
         </div>
     </div>
 </div>
-<?php include 'footer.php'; // Include the footer file ?>
+
+<script>
+    function showIframe() {
+        var iframe = document.getElementById('courseContentIframe');
+        var courseContentUrl = '<?= htmlspecialchars($courseContent) ?>';
+        var navigationLinks = document.getElementById('navigationLinks');
+
+        // Show the iframe with course content
+        iframe.src = courseContentUrl;
+        iframe.style.display = 'block'; // Show the iframe
+
+        // Hide the navigation links
+        navigationLinks.style.display = 'none';
+    }
+</script>
 </body>
 </html>
+
+<?php include 'footer.php'; // Include the footer file ?>
