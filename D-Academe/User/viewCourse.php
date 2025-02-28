@@ -8,13 +8,16 @@ include 'header.php'; // Include the header file
 // Default values
 $defaultMessage = "<p class='text-gray-500'>Select a course topic to begin.</p>";
 $htmlContent = $defaultMessage;
-$name = $description = $imageUrl = $courseContent = ''; // Initialize variables
+// Initialize variables
+$courseId = $name = $description = $tokenPrice = $image = $courseContent = ''; // Added courseContent
 $message = null; // Error or success message
+
+include('dbconnection.php');  // Assuming this file contains your database connection code
 
 // Fetch course details based on course_id
 if (isset($_GET['course_id'])) {
     $courseId = $_GET['course_id'];
-    $sql = "SELECT * FROM courses WHERE id = ?";
+    $sql = "SELECT * FROM paid_course_enrollments WHERE  course_id = ?";
     if ($stmt = $conn->prepare($sql)) {
         $stmt->bind_param('s', $courseId);
         $stmt->execute();
@@ -23,7 +26,7 @@ if (isset($_GET['course_id'])) {
             $name = htmlspecialchars($row['name']);
             $imageUrl = htmlspecialchars($row['image']); // Fetch and sanitize image URL
             $description = htmlspecialchars($row['description']);
-            $courseContent = htmlspecialchars($row['course_content']); // Fetch URL from the database
+            $courseContent = htmlspecialchars($row['content']); // Fetch URL from the database
         } else {
             $message = "Course not found!";
         }
@@ -43,9 +46,11 @@ if ($courseContent) {
 
 // Fetch the content of the SUMMARY.md file
 $markdownContent = @file_get_contents($courseContentURL); // Suppress errors to handle them later
-
-// Topics array to store parsed topics from the markdown file
-$topics = [];
+// Initialize numbering variables
+$sectionNumber = 0;
+$subSectionNumber = 0;
+$skipTopics = 3; // Number of topics to skip numbering for
+$topics = []; // Ensure topics array is initialized
 
 // Handle the scenario where SUMMARY.md file is not found
 if ($markdownContent === false) {
@@ -54,16 +59,41 @@ if ($markdownContent === false) {
 } else {
     // Parse the markdown file and extract topics if available
     $lines = explode("\n", $markdownContent);
-    foreach ($lines as $line) {
-        // Extract topic links from the Markdown (assuming format: `- [Topic Name](URL)`)
-        if (preg_match('/\[(.+?)\]\((.+?)\)/', $line, $matches)) {
-            // Prepend courseContent URL to the topic URL
-            $fullUrl = $courseContent . '/' . ltrim($matches[2], '/'); // Ensure no double slashes
-            // Store the Pinata URL for each topic
-            $topics[] = ['name' => $matches[1], 'url' => $fullUrl];
+ // Loop through lines of Markdown
+foreach ($lines as $line) {
+    // Determine indentation level based on leading spaces
+    $indentLevel = (strlen($line) - strlen(ltrim($line))) / 2;
+
+    // Extract topic links from the Markdown (assuming format: `- [Topic Name](URL)`)
+    if (preg_match('/\[(.+?)\]\((.+?)\)/', $line, $matches)) {
+        // Adjust numbering based on indentation level and skipped topics
+        if (count($topics) >= $skipTopics) { // Start numbering after skipping topics
+            if ($indentLevel === 0) {
+                $sectionNumber++;
+                $subSectionNumber = 0;
+                $numbering = $sectionNumber;
+            } else {
+                $subSectionNumber++;
+                $numbering = "$sectionNumber.$subSectionNumber";
+            }
+            $numberedName = "$numbering. " . $matches[1];
+        } else {
+            $numberedName = $matches[1]; // No numbering for skipped topics
         }
+
+        // Prepend courseContent URL to the topic URL
+        $fullUrl = $courseContent . '/' . ltrim($matches[2], '/'); // Ensure no double slashes
+
+        // Add topic to the array
+        $topics[] = [
+            'name' => $numberedName,
+            'url' => $fullUrl,
+        ];
     }
 }
+
+    }
+
 
 // If a specific topic is selected, fetch its markdown content
 if (isset($_GET['topic_url'])) {
@@ -114,8 +144,8 @@ if ($currentTopicIndex !== null) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <title><?= $name ? htmlspecialchars($name) : "Dynamic Course Content" ?></title>
+    <title>View Course</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
         html {
             scroll-behavior: smooth;
@@ -161,63 +191,63 @@ if ($currentTopicIndex !== null) {
 </head>
 <body class="bg-gray-100 font-sans">
 
-    <!-- Container for the entire page -->
-    <div class="flex min-h-screen  mt-24">
+<!-- Container for the entire page -->
+<div class="flex min-h-screen  mt-24">
 
-        <!-- Sidebar (Left) -->
-        <div class="w-1/5 bg-white text-gray-800 h-full overflow-y-auto">
-           <!-- Display the image fetched from the database -->
-            <img src="<?= htmlspecialchars($imageUrl) ?>" alt="<?= htmlspecialchars($name) ?> Logo" class="w-60 h-auto object-contain hover:scale-105 transition-transform duration-300 opacity-80 hover:opacity-100">
-         
-            <!-- Course Topics -->
-                <div class="bg-white shadow-md mt-8 rounded-lg p-6">
-                    <!-- <h3 class="text-xl font-bold text-gray-700 mb-4">Course Topics</h3> -->
-                    <?php if (!empty($topics)): ?>
-                        <ul class="list-disc pl-5 space-y-2">
-                            <?php foreach ($topics as $topic): ?>
-                                <li>
-                                    <!-- Create a clickable link to the respective topic -->
-                                    <a href="?course_id=<?= htmlspecialchars($courseId) ?>&topic_url=<?= urlencode($topic['url']) ?>" class="text-gray-500 hover:underline">
-                                        <?= htmlspecialchars($topic['name']) ?>
-                                    </a>
-                                </li>
-                            <?php endforeach; ?>
-                        </ul>
-                    <?php else: ?>
-                        <p class="text-gray-500">No topics available for this course. You can view the course content <a href="<?= htmlspecialchars($courseContent) ?>" target="_blank" class="text-blue-500 hover:underline">here</a>.</p>
-                    <?php endif; ?>
-                </div>
-        </div>
+    <!-- Sidebar (Left) -->
+    <div class="w-1/5 bg-white text-gray-800 h-full overflow-y-auto">
+       <!-- Display the image fetched from the database -->
+        <img src="<?= htmlspecialchars($imageUrl) ?>" alt="<?= htmlspecialchars($name) ?> Logo" class="w-60 h-auto object-contain hover:scale-105 transition-transform duration-300 opacity-80 hover:opacity-100">
+     
+        <!-- Course Topics -->
+            <div class="bg-white shadow-md mt-8 rounded-lg p-6 left-0">
+                <!-- <h3 class="text-xl font-bold text-gray-700 mb-4">Course Topics</h3> -->
+                <?php if (!empty($topics)): ?>
+                    <ul class="left-0 pl-5 space-y-2">
+                        <?php foreach ($topics as $topic): ?>
+                            <li>
+                                <a href="?course_name=<?= htmlspecialchars($courseName) ?>&topic_url=<?= urlencode($topic['url']) ?>" class="text-gray-500 hover:underline">
+                                    <?= htmlspecialchars($topic['name']) ?>
+                                </a>
+                            </li>
+                        <?php endforeach; ?>
+                    </ul>
 
-        <!-- Main Content (Right) -->
-        <div class="w-full p-8 bg-white overflow-y-auto">
-            <div class="max-w-1xl mx-auto content">   
-                <!-- Content Section -->
-                <div class="prose prose-lg prose-green pt-16 max-w-none mt-1 leading-relaxed text-2xl">
-                    <?= $htmlContent ?>
-                </div>
-
-                <!-- Navigation Links -->
-                <div class="mt-8 flex justify-between">
-                    <?php if ($prevCourse): ?>
-                        <a href="?course_id=<?= htmlspecialchars($courseId) ?>&topic_url=<?= htmlspecialchars($prevCourse) ?>" 
-                        class="text-blue-500 hover:text-blue-700">&larr; Previous</a>
-                    <?php else: ?>
-                        <span class="text-gray-400">&larr; Previous</span> <!-- Disabled -->
-                    <?php endif; ?>
-
-                    <?php if ($nextCourse): ?>
-                        <a href="?course_id=<?= htmlspecialchars($courseId) ?>&topic_url=<?= htmlspecialchars($nextCourse) ?>" 
-                        class="text-blue-500 hover:text-blue-700">Next &rarr;</a>
-                    <?php else: ?>
-                        <span class="text-gray-400">Next &rarr;</span> <!-- Disabled -->
-                    <?php endif; ?>
-                </div>
-
-            
+                <?php else: ?>
+                    <p class="text-gray-500">No topics available for this course. You can view the course content <a href="<?= htmlspecialchars($courseContent) ?>" target="_blank" class="text-blue-500 hover:underline">here</a>.</p>
+                <?php endif; ?>
             </div>
+    </div>
+
+    <!-- Main Content (Right) -->
+    <div class="w-full p-8 bg-white overflow-y-auto">
+        <div class="max-w-1xl mx-auto content">   
+            <!-- Content Section -->
+            <div class="prose prose-lg prose-green pt-16 max-w-none mt-1 leading-relaxed text-2xl">
+                <?= $htmlContent ?>
+            </div>
+
+            <!-- Navigation Links -->
+            <div class="mt-8 flex justify-between">
+                <?php if ($prevCourse): ?>
+                    <a href="?course_name=<?= htmlspecialchars($courseName) ?>&topic_url=<?= htmlspecialchars($prevCourse) ?>" 
+                    class="text-blue-500 hover:text-blue-700">&larr; Previous</a>
+                <?php else: ?>
+                    <span class="text-gray-400">&larr; Previous</span> <!-- Disabled -->
+                <?php endif; ?>
+
+                <?php if ($nextCourse): ?>
+                    <a href="?course_name=<?= htmlspecialchars($courseName) ?>&topic_url=<?= htmlspecialchars($nextCourse) ?>" 
+                    class="text-blue-500 hover:text-blue-700">Next &rarr;</a>
+                <?php else: ?>
+                    <span class="text-gray-400">Next &rarr;</span> <!-- Disabled -->
+                <?php endif; ?>
+            </div>
+
+        
         </div>
     </div>
-    <?php include 'footer.php'; // Include the footer file ?>
+</div>
+<?php include 'footer.php'; // Include the footer file ?>
 </body>
 </html>

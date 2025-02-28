@@ -29,7 +29,7 @@ if ($user_id) {
     $stmt->bind_param("s", $user_id);
     $stmt->execute();
     $result = $stmt->get_result();
-    $enrolled_courses = $result->fetch_all(MYSQLI_ASSOC);
+    $free_courses = $result->fetch_all(MYSQLI_ASSOC);
     $stmt->close();
 
     $sql = "SELECT * FROM paid_course_enrollments WHERE user_id = ?";
@@ -39,9 +39,8 @@ if ($user_id) {
     $results = $stmt->get_result();
     $paid_courses = $results->fetch_all(MYSQLI_ASSOC);
     $stmt->close();
+    $courseId = $row['course_id'];
     
-    // Merge both free and paid course enrollments
-    $enrolled_courses = array_merge($enrolled_courses, $paid_courses);
 }
 ?>
 
@@ -95,27 +94,47 @@ if ($user_id) {
             </div>
     </div>
     
-    <div class="container mx-auto text-center bg-green-300 p-6 rounded-lg shadow-lg">
-        <h2 class="text-4xl font-semibold text-green-800 mb-8">Your Enrolled Courses</h2>
+    <div class="container mx-auto text-center bg-green-300 p-6 rounded-lg shadow-lg mb-8">
+        <h2 class="text-4xl font-semibold text-green-800 mb-8">Your Enrolled Free Courses</h2>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            <?php if (!empty($enrolled_courses)): ?>
-                <?php foreach ($enrolled_courses as $course): ?>
+            <?php if (!empty($free_courses)): ?>
+                <?php foreach ($free_courses as $course): ?>
                     <div class="course-card bg-white rounded-xl shadow-xl hover:shadow-2lg transition-all duration-300 transform hover:scale-105 p-4 border border-gray-200 hover:border-green-400 relative max-w-xs mx-auto mb-4" data-tags="<?= htmlspecialchars($course['course_name']); ?>">
-    <img src="<?= htmlspecialchars($course['image']); ?>" alt="Course Image" class="w-full h-36 object-cover rounded-lg mb-6 transition-transform duration-300 hover:scale-105">
-    <h3 class="text-2xl font-semibold text-gray-800 hover:text-green-500 transition-colors duration-300"><?= htmlspecialchars($course['course_name']); ?></h3>
-    <p class="text-lg text-gray-600 mt-2"><?= htmlspecialchars($course['description']); ?></p>
-    <p class="text-xl font-bold text-green-600 mt-4">Tkn <?= htmlspecialchars($course['course_price']); ?></p>
-    <p class="mt-2 text-gray-500">Status: <?= htmlspecialchars($course['status']); ?></p>
-    <div class="mt-6 flex gap-4 justify-center">
-        <button onclick="window.location.href='freeviewcourse.php?course_name=<?= urlencode($course['course_name']); ?>'" class="bg-green-500 hover:bg-green-600 text-white py-3 px-8 rounded-full text-lg">
-            View Course
-        </button>
-    </div>
-</div>
-
+                        <img src="<?= htmlspecialchars($course['image']); ?>" alt="Course Image" class="w-full h-36 object-cover rounded-lg mb-6 transition-transform duration-300 hover:scale-105">
+                        <h3 class="text-2xl font-semibold text-gray-800 hover:text-green-500 transition-colors duration-300"><?= htmlspecialchars($course['course_name']); ?></h3>
+                        <p class="text-lg text-gray-600 mt-2"><?= htmlspecialchars($course['description']); ?></p>
+                        <p class="text-xl font-bold text-green-600 mt-4">Tkn <?= htmlspecialchars($course['course_price']); ?></p>
+                        <p class="mt-2 text-gray-500">Status: <?= htmlspecialchars($course['status']); ?></p>
+                        <div class="mt-6 flex gap-4 justify-center">
+                            <button onclick="window.location.href='freeviewcourse.php?course_name=<?= urlencode($course['course_name']); ?>'" class="bg-green-500 hover:bg-green-600 text-white py-3 px-8 rounded-full text-lg">
+                                View Course
+                            </button>
+                        </div>
+                    </div>
                 <?php endforeach; ?>
             <?php else: ?>
-                <p class="text-lg text-gray-600">You have not enrolled in any courses yet.</p>
+                <p class="text-lg text-gray-600">You have not enrolled in any free courses yet.</p>
+            <?php endif; ?>
+        </div>
+    </div>
+
+    <div class="container mx-auto text-center bg-green-300 p-6 rounded-lg shadow-lg">
+        <h2 class="text-4xl font-semibold text-blue-800 mb-8">Your Enrolled Paid Courses</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <?php if (!empty($paid_courses)): ?>
+                <?php foreach ($paid_courses as $course): ?>
+                    <div class="course-card bg-white rounded-xl shadow-xl p-4 border border-gray-200 hover:border-blue-400 relative max-w-xs mx-auto mb-4" data-tags="<?= htmlspecialchars($course['course_name']); ?>">
+                        <img src="<?= htmlspecialchars($course['image']); ?>" alt="Course Image" class="w-full h-36 object-cover rounded-lg mb-6">
+                        <h3 class="text-2xl font-semibold text-gray-800"><?= htmlspecialchars($course['course_name']); ?></h3>
+                        <p class="text-lg text-gray-600"><?= htmlspecialchars($course['description']); ?></p>
+                        <p class="text-xl font-bold text-green-600 mt-4">Tkn <?= htmlspecialchars($course['course_price']); ?></p>
+                        <p class="mt-2 text-gray-500">Status: <?= htmlspecialchars($course['status']); ?></p>
+                        <div class="mt-6 flex gap-4 justify-center"></div>
+                        <button onclick="window.location.href='viewCourse.php?course_id=<?= urlencode($course['course_id']); ?>'" class="bg-blue-500 hover:bg-blue-600 text-white py-3 px-8 rounded-full text-lg mt-4">View</button>
+                    </div>
+                <?php endforeach; ?>
+            <?php else: ?>
+                <p class="text-lg text-gray-600">You have not enrolled in any paid courses yet.</p>
             <?php endif; ?>
         </div>
     </div>
@@ -224,5 +243,7 @@ if ($user_id) {
         }
     });
 </script>
+
+
 </body>
 </html>
