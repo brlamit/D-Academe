@@ -64,7 +64,7 @@ D-Academe is a decentralized learning platform that enables live classes, course
 Feel free to contribute by submitting issues and pull requests.
 
 ## License
-This project is licensed under the MIT License.
+This project is open-source and available under the MIT License.
 
 ## Contact
 For queries, reach out via [GitHub Issues](https://github.com/brlamit/D-Academe/issues).
